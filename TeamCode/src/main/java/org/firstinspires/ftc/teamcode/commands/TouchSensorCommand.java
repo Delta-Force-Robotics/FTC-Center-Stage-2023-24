@@ -14,7 +14,7 @@ public class TouchSensorCommand extends CommandBase {
 
     public TouchSensorCommand(ScoreSubsystem scoreSubsystem, IntakeSubsystem intakeSubsystem) {
         this.scoreSubsystem = scoreSubsystem;
-        this. intakeSubsystem = intakeSubsystem;
+        this.intakeSubsystem = intakeSubsystem;
 
         addRequirements(scoreSubsystem);
     }

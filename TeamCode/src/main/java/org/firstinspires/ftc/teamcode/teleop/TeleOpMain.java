@@ -26,7 +26,6 @@ import org.firstinspires.ftc.teamcode.subsystems.SlideSubsystem;
 import org.firstinspires.ftc.teamcode.threads.IntakeThread;
 import org.firstinspires.ftc.teamcode.threads.ScoreReleaseThread;
 import org.firstinspires.ftc.teamcode.threads.ScoreThread;
-import org.firstinspires.ftc.teamcode.threads.SlideLevelThread;
 
 @TeleOp
 public class TeleOpMain extends CommandOpMode {
@@ -65,7 +64,6 @@ public class TeleOpMain extends CommandOpMode {
 
     private IntakeThread intakeThread;
     private ScoreThread scoreThread;
-    private SlideLevelThread slideLevelThread;
     private ScoreReleaseThread scoreReleaseThread;
 
     private InstantCommand useClaw;
@@ -117,7 +115,7 @@ public class TeleOpMain extends CommandOpMode {
         driveSubsystem = new DriveSubsystem(driveLeftFront, driveLeftBack, driveRightFront, driveRightBack);
         intakeSubsystem = new IntakeSubsystem(intakeMotor, intakeServo);
         scoreSubsystem = new ScoreSubsystem(clawServo, pivotServo, armServoLeft, armServoRight, rotateServo, droneServo, touchSensorLeft, touchSensorRight, false);
-        slideSubsystem = new SlideSubsystem(slideMotorLeft, slideMotorRight, slideLevelThread, true);
+        slideSubsystem = new SlideSubsystem(slideMotorLeft, slideMotorRight, telemetry, true);
         climbSubsystem = new ClimbSubsystem(climbMotor, climbServoLeft, climbServoRight);
 
         driver1 = new GamepadEx(gamepad1);
@@ -135,6 +133,11 @@ public class TeleOpMain extends CommandOpMode {
         scoreThread = new ScoreThread(slideSubsystem, scoreSubsystem);
         scoreReleaseThread = new ScoreReleaseThread(scoreSubsystem, slideSubsystem);
 
+        Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
+        intakeThread.setPriority(Thread.MIN_PRIORITY);
+        scoreThread.setPriority(Thread.MIN_PRIORITY);
+        scoreReleaseThread.setPriority(Thread.MIN_PRIORITY);
+
         clawBool = false;
         useClaw = new InstantCommand(() -> {
             if (clawBool == false) {
@@ -147,17 +150,11 @@ public class TeleOpMain extends CommandOpMode {
         });
 
         changeLevelUp = new InstantCommand(() -> {
-            if (slideLevelThread.currLevel < 10) {
-                slideLevelThread.currLevel++;
-                sleep(350);
-            }
+            slideSubsystem.setCurrentLevel(slideSubsystem.getCurrLevel()+1);
         });
 
         changeLevelDown = new InstantCommand(() -> {
-            if (slideLevelThread.currLevel > 1) {
-                slideLevelThread.currLevel--;
-                sleep(350);
-            }
+            slideSubsystem.setCurrentLevel(slideSubsystem.getCurrLevel()-1);
         });
 
         stopIntakeInstantCommand = new InstantCommand(() -> {

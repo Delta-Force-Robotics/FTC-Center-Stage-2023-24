@@ -20,7 +20,6 @@ import org.firstinspires.ftc.teamcode.subsystems.SlideSubsystem;
 import org.firstinspires.ftc.teamcode.threads.IntakeAutoThread;
 import org.firstinspires.ftc.teamcode.threads.IntakeThread;
 import org.firstinspires.ftc.teamcode.threads.ScoreThread;
-import org.firstinspires.ftc.teamcode.threads.SlideLevelThread;
 import org.firstinspires.ftc.teamcode.roadrunner.drive.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.vision.BarCodeDetection;
 import org.firstinspires.ftc.teamcode.vision.BarcodeUtil;
@@ -78,7 +77,6 @@ public class BoardAuto extends LinearOpMode {
 
     private IntakeThread intakeThread;
     private ScoreThread scoreThread;
-    private SlideLevelThread slideLevelThread;
     private IntakeAutoThread intakeAutoThread;
 
     private Consumer<Double> intakeThreadExecutor;
@@ -106,7 +104,7 @@ public class BoardAuto extends LinearOpMode {
         webcam = new BarcodeUtil(hardwareMap, "Webcam 1", telemetry, 1);
         webcam.init();
 
-        slideSubsystem = new SlideSubsystem(slideMotorLeft, slideMotorRight, slideLevelThread, true);
+        slideSubsystem = new SlideSubsystem(slideMotorLeft, slideMotorRight, telemetry, true);
         scoreSubsystem = new ScoreSubsystem(clawServo, pivotClawServo, pivotServoLeft, pivotServoRight, flipServo, droneServo, touchSensorLeft, touchSensorRight, true);
         intakeSubsystem = new IntakeSubsystem(intakeMotor, intakeServo);
 
