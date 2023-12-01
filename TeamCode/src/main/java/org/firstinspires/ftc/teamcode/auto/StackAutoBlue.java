@@ -101,7 +101,7 @@ public class StackAutoBlue extends LinearOpMode {
 
         preloadServo.setPosition(Constants.PRELOAD_SERVO_INIT_POS);
 
-        webcam = new BarcodeUtil(hardwareMap, "Webcam 1", telemetry, 1);
+        webcam = new BarcodeUtil(hardwareMap, "Webcam 1", telemetry, BarCodeDetection.Color.BLUE);
         webcam.init();
 
         slideSubsystem = new SlideSubsystem(slideMotorLeft, slideMotorRight, telemetry, true);

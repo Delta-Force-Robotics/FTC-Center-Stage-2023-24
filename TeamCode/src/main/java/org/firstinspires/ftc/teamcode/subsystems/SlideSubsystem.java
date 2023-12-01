@@ -22,7 +22,7 @@ public class SlideSubsystem extends SubsystemBase {
     private PIDController rightPIDController;
     private FeedforwardController feedForwardController;
 
-    private WPILibMotionProfile motionProfile = null;
+    private WPILibMotionProfile motionProfile = getMotionProfile(0, 0);
     private Timer timer;
     private double motionProfileDelay = 0;
     public double lastVelocity = 0;
@@ -67,7 +67,8 @@ public class SlideSubsystem extends SubsystemBase {
     public void updateControlLoop() {
         Constants.SLIDE_INPUT_STATE = Constants.InputState.PRESET_POSITIONS;
 
-        WPILibMotionProfile.State state = motionProfile.calculate(timer.currentTime() - motionProfileDelay);
+        WPILibMotionProfile.State state = motionProfile.calculate(Math.max(timer.currentTime() - motionProfileDelay, 0));
+
         double leftPower = feedForwardController.calculate(
                 state.position,
                 state.velocity,
@@ -95,12 +96,15 @@ public class SlideSubsystem extends SubsystemBase {
     public void setLevel(double level, double delay) {
         timer = new Timer();
         motionProfileDelay = delay;
+        motionProfile = getMotionProfile(level, 0);
+    }
 
+    public WPILibMotionProfile getMotionProfile(double goalLevel, double goalSpeed) {
         WPILibMotionProfile.Constraints constraints = new WPILibMotionProfile.Constraints(Constants.SLIDE_MAX_VELOCITY, Constants.SLIDE_MAX_ACCEL);
         WPILibMotionProfile.State initialState = new WPILibMotionProfile.State(ticksToMeters(getMotorTicks()), getMotorSpeedsAverage());
-        WPILibMotionProfile.State goalState = new WPILibMotionProfile.State(level, 0);
+        WPILibMotionProfile.State goalState = new WPILibMotionProfile.State(goalLevel, goalSpeed);
 
-        motionProfile = new WPILibMotionProfile(constraints, initialState, goalState);
+        return new WPILibMotionProfile(constraints, initialState, goalState);
     }
 
     public double getPassivePower() {
@@ -114,7 +118,6 @@ public class SlideSubsystem extends SubsystemBase {
     public double getMotorSpeedsAverage() {
         double leftSpeed = slideMotorLeft.getCorrectedVelocity() / 60 * 2 * Math.PI * Constants.SPOOL_SIZE_METERS;
         double rightSpeed = slideMotorRight.getCorrectedVelocity() / 60 * 2 * Math.PI * Constants.SPOOL_SIZE_METERS;
-
 
         return (leftSpeed + rightSpeed) / 2;
     }

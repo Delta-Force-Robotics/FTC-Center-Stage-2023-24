@@ -27,6 +27,8 @@ import org.firstinspires.ftc.teamcode.threads.IntakeThread;
 import org.firstinspires.ftc.teamcode.threads.ScoreReleaseThread;
 import org.firstinspires.ftc.teamcode.threads.ScoreThread;
 
+
+
 @TeleOp
 public class TeleOpMain extends CommandOpMode {
     private IMU imu;
@@ -85,7 +87,6 @@ public class TeleOpMain extends CommandOpMode {
 
     @Override
     public void initialize() {
-
         Constants.SLIDE_INPUT_STATE = Constants.InputState.MANUAL_CONTROL;
 
         driveLeftFront = new Motor(hardwareMap, HardwareConstants.ID_LEFT_FRONT_MOTOR);

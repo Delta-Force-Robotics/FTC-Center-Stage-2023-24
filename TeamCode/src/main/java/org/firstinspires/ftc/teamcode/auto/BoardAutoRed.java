@@ -27,7 +27,7 @@ import org.firstinspires.ftc.teamcode.vision.BarcodeUtil;
 import java.util.function.Consumer;
 
 @Autonomous
-public class BoardAuto extends LinearOpMode {
+public class BoardAutoRed extends LinearOpMode {
 
     private BarcodeUtil webcam;
     private BarCodeDetection.BarcodePosition barcodePosition;
@@ -101,7 +101,7 @@ public class BoardAuto extends LinearOpMode {
 
         preloadServo.setPosition(Constants.PRELOAD_SERVO_INIT_POS);
 
-        webcam = new BarcodeUtil(hardwareMap, "Webcam 1", telemetry, 1);
+        webcam = new BarcodeUtil(hardwareMap, "Webcam 1", telemetry, BarCodeDetection.Color.RED);
         webcam.init();
 
         slideSubsystem = new SlideSubsystem(slideMotorLeft, slideMotorRight, telemetry, true);
