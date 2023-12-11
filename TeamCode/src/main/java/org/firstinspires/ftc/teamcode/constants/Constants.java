@@ -1,8 +1,6 @@
 package org.firstinspires.ftc.teamcode.constants;
 
-import com.ThermalEquilibrium.homeostasis.Parameters.FeedforwardCoefficients;
 import com.acmerobotics.dashboard.config.Config;
-import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
 /**
  * A class containing all constants for subsystems. <br><br>
@@ -35,11 +33,15 @@ public class Constants {
     public static double SLIDE_ALLOWED_VELOCITY_ERROR = 0.07;
     public static double SLIDE_MAX_ERROR_INTEGRATION = 0.1;
     public static double[] SLIDE_POSITIONS = {0.2, 0.28, 0.33, 0.41, 0.46, 0.52, 0.58, 0.65, 0.68};
-    public static PIDFCoefficients SLIDE_PIDF_COEFF = new PIDFCoefficients(0, 0, 0, 0);
-    public static FeedforwardCoefficients SLIDE_FEEDFORWARD_COEFF = new FeedforwardCoefficients(0, 0, 0);
-    public static double SPOOL_SIZE_METERS = 0;
-    public static double SLIDE_MAX_VELOCITY = 0;
-    public static double SLIDE_MAX_ACCEL = 0;
+    public static double SPOOL_RADIUS_METERS = 0.017825;
+    public static double SLIDE_MAX_VELOCITY = 0.696;
+    public static double SLIDE_MAX_ACCEL = 0.696;
+
+    public static double SLIDE_FF_KV = 0;
+    public static double SLIDE_FF_KA = 0;
+    public static double SLIDE_FF_KS = 0;
+    public static double SLIDE_FF_KG = 0;
+    public static double SLIDE_FEEDBACK_KP = 0;
 
     public static final double OPEN_CLAW = 0.24;
     public static final double CLOSE_CLAW_AUTO = 0.8;

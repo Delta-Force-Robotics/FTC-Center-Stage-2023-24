@@ -1,16 +1,15 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
-import com.ThermalEquilibrium.homeostasis.Controllers.Feedback.FeedbackController;
-import com.ThermalEquilibrium.homeostasis.Controllers.Feedforward.FeedforwardController;
+import com.ThermalEquilibrium.homeostasis.Controllers.Feedforward.FeedforwardEx
+        ;
+import com.ThermalEquilibrium.homeostasis.Parameters.FeedforwardCoefficientsEx;
 import com.ThermalEquilibrium.homeostasis.Utils.Timer;
 import com.ThermalEquilibrium.homeostasis.Utils.WPILibMotionProfile;
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.controller.PIDController;
 
 
-import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
-import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.constants.Constants;
@@ -26,9 +25,9 @@ public class SlideSubsystem extends SubsystemBase {
     public boolean isAuto;
     public int currLevel = 1;
 
-    private PIDController leftPIDController;
-    private PIDController rightPIDController;
-    private FeedforwardController feedForwardController;
+    private PIDController leftPIDController = new PIDController(Constants.SLIDE_FEEDBACK_KP, 0, 0);
+    private PIDController rightPIDController = new PIDController(Constants.SLIDE_FEEDBACK_KP, 0, 0);
+    private FeedforwardEx feedForwardController = new FeedforwardEx(new FeedforwardCoefficientsEx(Constants.SLIDE_FF_KV, Constants.SLIDE_FF_KA, Constants.SLIDE_FF_KS, Constants.SLIDE_FF_KG, 0));
 
     private WPILibMotionProfile motionProfile = getMotionProfile(0, 0);
     private Timer timer;
@@ -53,7 +52,7 @@ public class SlideSubsystem extends SubsystemBase {
 
     public SlideState slideState = SlideState.INTAKE;
 
-    public SlideSubsystem(Motor slideMotorLeft, Motor slideMotorRight, Telemetry telemetry, boolean resetEncoders) {
+    public SlideSubsystem(Motor slideMotorLeft, Motor slideMotorRight, Telemetry telemetry, boolean resetEncoders, boolean isAuto) {
         this.slideMotorLeft = slideMotorLeft;
         this.slideMotorRight = slideMotorRight;
         this.telemetry = telemetry;
@@ -82,9 +81,6 @@ public class SlideSubsystem extends SubsystemBase {
     }
 
     public void updateControlLoop() {
-        Constants.SLIDE_INPUT_STATE = Constants.InputState.PRESET_POSITIONS;
-        slideState.setId(level);
-
         WPILibMotionProfile.State state = motionProfile.calculate(Math.max(timer.currentTime() - motionProfileDelay, 0));
 
         double leftPower = feedForwardController.calculate(
@@ -104,8 +100,6 @@ public class SlideSubsystem extends SubsystemBase {
 
         slideMotorRight.set(rightPower);
         slideMotorLeft.set(leftPower);
-        
-        Constants.SLIDE_INPUT_STATE = Constants.InputState.MANUAL_CONTROL;
     }
 
     public void setLevel(double level){
@@ -135,8 +129,8 @@ public class SlideSubsystem extends SubsystemBase {
     }
 
     public double getMotorSpeedsAverage() {
-        double leftSpeed = slideMotorLeft.getCorrectedVelocity() / 60 * 2 * Math.PI * Constants.SPOOL_SIZE_METERS;
-        double rightSpeed = slideMotorRight.getCorrectedVelocity() / 60 * 2 * Math.PI * Constants.SPOOL_SIZE_METERS;
+        double leftSpeed = slideMotorLeft.getCorrectedVelocity() / 60 * 2 * Math.PI * Constants.SPOOL_RADIUS_METERS;
+        double rightSpeed = slideMotorRight.getCorrectedVelocity() / 60 * 2 * Math.PI * Constants.SPOOL_RADIUS_METERS;
 
         return (leftSpeed + rightSpeed) / 2;
     }
@@ -172,5 +166,10 @@ public class SlideSubsystem extends SubsystemBase {
 
     public int getCurrLevel() {
         return currLevel;
+    }
+
+    public void showTelemetry() {
+        telemetry.addData("Motion Profile Velocity", lastVelocity);
+        telemetry.addData("Motor Velocity", getMotorSpeedsAverage());
     }
 }

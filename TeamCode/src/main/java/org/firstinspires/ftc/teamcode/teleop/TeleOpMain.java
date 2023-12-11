@@ -176,7 +176,7 @@ public class TeleOpMain extends CommandOpMode {
         });
 
         changeLevelUp = new InstantCommand(() ->  {
-            slideSubsystem.setCurrentLevel(slideSubsystem.getCurrLevel()-1);
+            slideSubsystem.setLevel(slideSubsystem.getCurrLevel()-1);
             currLevel++;
             // slideSubsystem.setLevel(0.2);
             if (currLevel >= 0 && currLevel < 10) {
@@ -186,7 +186,7 @@ public class TeleOpMain extends CommandOpMode {
         });
 
         changeLevelDown = new InstantCommand(() -> {
-            slideSubsystem.setCurrentLevel(slideSubsystem.getCurrLevel() - 1);
+            slideSubsystem.setLevel(slideSubsystem.getCurrLevel() - 1);
             currLevel--;
             //slideSubsystem.setLevel(0);
             if (currLevel > 0 && currLevel < 10) {
