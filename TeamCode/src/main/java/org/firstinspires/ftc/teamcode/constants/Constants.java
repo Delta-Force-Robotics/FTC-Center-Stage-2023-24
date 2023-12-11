@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.constants;
 
+import com.ThermalEquilibrium.homeostasis.Parameters.FeedforwardCoefficients;
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
@@ -11,6 +12,7 @@ import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 @Config
 public class Constants {
     public static boolean ROBOT_STOPPED = false;
+
     public enum InputState {
         MANUAL_CONTROL,
         PRESET_POSITIONS;
@@ -25,19 +27,19 @@ public class Constants {
 
     public static final int SLIDE_INIT_POS = 0;
     public static double SLIDE_MANUAL_CONTROL_MAX = 0.72;
-    public static int SLIDE_MAX_EXTENSION_TICKS = 880;
+    public static double SLIDE_MAX_EXTENSION_TICKS = 880;
     public static double SLIDE_MAX_EXTENSION_METERS = 0.696;
-    public static double SLIDE_GRAVITY_COMPENSATOR = 0.1;
-    public static double SLIDE_MOTOR_PASSIVE_POWER = 0.2;
+    public static double SLIDE_MOTOR_PASSIVE_POWER = 0.25;
+    public static double SLIDE_MOTOR_PASSIVE_POWER_CLAW_WEIGHT = 0.1;
     public static double SLIDE_ALLOWED_ERROR = 0.01;
     public static double SLIDE_ALLOWED_VELOCITY_ERROR = 0.07;
     public static double SLIDE_MAX_ERROR_INTEGRATION = 0.1;
     public static double[] SLIDE_POSITIONS = {0.2, 0.28, 0.33, 0.41, 0.46, 0.52, 0.58, 0.65, 0.68};
-    public static PIDFCoefficients SLIDE_RETRACT_PIDF_COEFF = new PIDFCoefficients(4, 0, 0, 0);
-    public static PIDFCoefficients SLIDE_EXTEND_PIDF_COEFF = new PIDFCoefficients(4, 0, 0, 0);
-    public static PIDFCoefficients SLIDE_RETRACT_PIDF_COEFF_TELEOP = new PIDFCoefficients(4, 0, 0, 0);
-    public static PIDFCoefficients SLIDE_EXTEND_PIDF_COEFF_TELEOP = new PIDFCoefficients(4, 0, 0, 0);
-
+    public static PIDFCoefficients SLIDE_PIDF_COEFF = new PIDFCoefficients(0, 0, 0, 0);
+    public static FeedforwardCoefficients SLIDE_FEEDFORWARD_COEFF = new FeedforwardCoefficients(0, 0, 0);
+    public static double SPOOL_SIZE_METERS = 0;
+    public static double SLIDE_MAX_VELOCITY = 0;
+    public static double SLIDE_MAX_ACCEL = 0;
 
     public static final double OPEN_CLAW = 0.24;
     public static final double CLOSE_CLAW_AUTO = 0.8;

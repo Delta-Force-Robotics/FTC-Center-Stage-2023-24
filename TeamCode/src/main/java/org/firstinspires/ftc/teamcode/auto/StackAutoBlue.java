@@ -105,12 +105,12 @@ public class StackAutoBlue extends LinearOpMode {
         webcam = new BarcodeUtil(hardwareMap, "Webcam 1", telemetry, BarCodeDetection.Color.BLUE);
         webcam.init();
 
+
         slideSubsystem = new SlideSubsystem(slideMotorLeft, slideMotorRight, FtcDashboard.getInstance().getTelemetry(), true, true);
         scoreSubsystem = new ScoreSubsystem(clawServo, pivotClawServo, pivotServoLeft, pivotServoRight, flipServo, droneServo, touchSensorLeft, touchSensorRight, true);
         intakeSubsystem = new IntakeSubsystem(intakeMotor, intakeServo);
 
         scoreThread = new ScoreThread(slideSubsystem, scoreSubsystem);
-
         preloadThread = new Thread(() -> {
             preloadServo.setPosition(Constants.PRELOAD_SERVO_SCORE_RIGHT_POS);
         });

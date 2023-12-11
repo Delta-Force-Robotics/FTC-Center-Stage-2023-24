@@ -94,16 +94,20 @@ public class BoardAutoRed extends LinearOpMode {
         intakeServo = hardwareMap.get(Servo.class, HardwareConstants.ID_INTAKE_SERVO);
         pivotClawServo = hardwareMap.get(Servo.class, HardwareConstants.ID_PIVOT_CLAW_SERVO);
         flipServo = hardwareMap.get(Servo.class, HardwareConstants.ID_FLIP_SERVO);
+
         pivotServoLeft = hardwareMap.get(Servo.class, HardwareConstants.ID_ARM_SERVO_LEFT);
         pivotServoRight = hardwareMap.get(Servo.class, HardwareConstants.ID_ARM_SERVO_RIGHT);
+
         droneServo = hardwareMap.get(Servo.class, HardwareConstants.ID_DRONE_SERVO);
 
         preloadServo = hardwareMap.get(Servo.class, HardwareConstants.ID_PRELOAD_SERVO);
+
 
         preloadServo.setPosition(Constants.PRELOAD_SERVO_LEFT_POS);
 
         webcam = new BarcodeUtil(hardwareMap, "Webcam 1", telemetry, BarCodeDetection.Color.RED);
         webcam.init();
+
 
         slideSubsystem = new SlideSubsystem(slideMotorLeft, slideMotorRight, FtcDashboard.getInstance().getTelemetry(), true, true);
         scoreSubsystem = new ScoreSubsystem(clawServo, pivotClawServo, pivotServoLeft, pivotServoRight, flipServo, droneServo, touchSensorLeft, touchSensorRight, true);

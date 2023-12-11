@@ -1,30 +1,40 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
-import static java.lang.Thread.sleep;
+import com.ThermalEquilibrium.homeostasis.Controllers.Feedback.FeedbackController;
+import com.ThermalEquilibrium.homeostasis.Controllers.Feedforward.FeedforwardController;
+import com.ThermalEquilibrium.homeostasis.Utils.Timer;
+import com.ThermalEquilibrium.homeostasis.Utils.WPILibMotionProfile;
+import com.arcrobotics.ftclib.command.SubsystemBase;
+import com.arcrobotics.ftclib.controller.PIDController;
+
 
 import com.arcrobotics.ftclib.command.SubsystemBase;
-import com.arcrobotics.ftclib.controller.PIDFController;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.constants.Constants;
-
 import java.util.function.BooleanSupplier;
 
 public class SlideSubsystem extends SubsystemBase {
     public Motor slideMotorLeft;
     public Motor slideMotorRight;
     public BooleanSupplier isInterrupted;
-    private PIDFController pidfLeftSlideMotor;
-    private PIDFController pidfRightSlideMotor;
-    private double[] pidfCoefficientsExtend;
-    private double[] pidfCoefficientsRetract;
     public double calculateLeft;
     public double calculateRight;
     private Telemetry telemetry;
     public boolean isAuto;
     public int currLevel = 1;
+
+    private PIDController leftPIDController;
+    private PIDController rightPIDController;
+    private FeedforwardController feedForwardController;
+
+    private WPILibMotionProfile motionProfile = getMotionProfile(0, 0);
+    private Timer timer;
+    private double motionProfileDelay = 0;
+    public double lastVelocity = 0;
+    public double lastTime = 0;
 
     public enum SlideState {
         INTAKE(Constants.SLIDE_INTAKE);
@@ -43,9 +53,10 @@ public class SlideSubsystem extends SubsystemBase {
 
     public SlideState slideState = SlideState.INTAKE;
 
-    public SlideSubsystem(Motor slideMotorLeft, Motor slideMotorRight, Telemetry telemetry, boolean resetEncoders, boolean isAuto) {
+    public SlideSubsystem(Motor slideMotorLeft, Motor slideMotorRight, Telemetry telemetry, boolean resetEncoders) {
         this.slideMotorLeft = slideMotorLeft;
         this.slideMotorRight = slideMotorRight;
+        this.telemetry = telemetry;
 
         this.slideMotorLeft.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
         this.slideMotorRight.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
@@ -64,77 +75,55 @@ public class SlideSubsystem extends SubsystemBase {
         this.isAuto = isAuto;
     }
 
-    /**
-     * Sets the extension level for the slides using a PID.
-     * @param level Intended level for slide extension, in millimeters.
-     */
-    public void setLevel(double level) {
+    @Override
+    public void periodic() {
+        showTelemetry();
+        updateControlLoop();
+    }
+
+    public void updateControlLoop() {
         Constants.SLIDE_INPUT_STATE = Constants.InputState.PRESET_POSITIONS;
         slideState.setId(level);
 
-        try {
-            sleep(50);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        WPILibMotionProfile.State state = motionProfile.calculate(Math.max(timer.currentTime() - motionProfileDelay, 0));
 
-        if(isAuto) {
-            pidfCoefficientsExtend  = new double[]{Constants.SLIDE_EXTEND_PIDF_COEFF.p, Constants.SLIDE_EXTEND_PIDF_COEFF.i, Constants.SLIDE_EXTEND_PIDF_COEFF.d, Constants.SLIDE_EXTEND_PIDF_COEFF.f};
-            pidfCoefficientsRetract = new double[]{Constants.SLIDE_RETRACT_PIDF_COEFF.p, Constants.SLIDE_RETRACT_PIDF_COEFF.i, Constants.SLIDE_RETRACT_PIDF_COEFF.d, Constants.SLIDE_RETRACT_PIDF_COEFF.f};
-        }
-        else {
-            pidfCoefficientsExtend  = new double[]{Constants.SLIDE_EXTEND_PIDF_COEFF_TELEOP.p, Constants.SLIDE_EXTEND_PIDF_COEFF_TELEOP.i, Constants.SLIDE_EXTEND_PIDF_COEFF_TELEOP.d, Constants.SLIDE_EXTEND_PIDF_COEFF_TELEOP.f};
-            pidfCoefficientsRetract = new double[]{Constants.SLIDE_RETRACT_PIDF_COEFF_TELEOP.p, Constants.SLIDE_RETRACT_PIDF_COEFF_TELEOP.i, Constants.SLIDE_RETRACT_PIDF_COEFF_TELEOP.d, Constants.SLIDE_RETRACT_PIDF_COEFF_TELEOP.f};
-        }
+        double leftPower = feedForwardController.calculate(
+                state.position,
+                state.velocity,
+                (state.velocity - lastVelocity) / (timer.currentTime() - lastTime)
+        ) + leftPIDController.calculate(ticksToMeters(slideMotorLeft.getCurrentPosition()), state.position) + getPassivePower();
 
-        if(Math.signum(Constants.SLIDE_POSITIONS[8])*(ticksToMeters(slideMotorLeft.getCurrentPosition()) - level) < 0) {
-            telemetry.addData("1", ticksToMeters(slideMotorLeft.getCurrentPosition()) - level);
-            pidfRightSlideMotor = new PIDFController(pidfCoefficientsExtend[0], pidfCoefficientsExtend[1], pidfCoefficientsExtend[2], pidfCoefficientsExtend[3]);
-            pidfLeftSlideMotor  = new PIDFController(pidfCoefficientsExtend[0], pidfCoefficientsExtend[1], pidfCoefficientsExtend[2], pidfCoefficientsExtend[3]);
-        }
-        else {
-            telemetry.addData("2", ticksToMeters(slideMotorLeft.getCurrentPosition()) - level);
-            pidfRightSlideMotor = new PIDFController(pidfCoefficientsRetract[0], pidfCoefficientsRetract[1], pidfCoefficientsRetract[2], pidfCoefficientsRetract[3]);
-            pidfLeftSlideMotor  = new PIDFController(pidfCoefficientsRetract[0], pidfCoefficientsRetract[1], pidfCoefficientsRetract[2], pidfCoefficientsRetract[3]);
-        }
+        double rightPower = feedForwardController.calculate(
+                state.position,
+                state.velocity,
+                (state.velocity - lastVelocity) / (timer.currentTime() - lastTime)
+        ) + rightPIDController.calculate(ticksToMeters(slideMotorRight.getCurrentPosition()), state.position) + getPassivePower();
 
-        pidfRightSlideMotor.setSetPoint(level);
-        pidfLeftSlideMotor.setSetPoint(level);
+        lastVelocity = state.velocity;
+        lastTime = timer.currentTime();
 
-        pidfRightSlideMotor.setTolerance(Constants.SLIDE_ALLOWED_ERROR);
-        pidfLeftSlideMotor.setTolerance(Constants.SLIDE_ALLOWED_ERROR);
-
-        while(!pidfLeftSlideMotor.atSetPoint() && !pidfRightSlideMotor.atSetPoint() && !isInterrupted.getAsBoolean()) {
-            calculateRight = pidfRightSlideMotor.calculate(ticksToMeters(slideMotorRight.getCurrentPosition()));
-            calculateLeft = pidfLeftSlideMotor.calculate(ticksToMeters(slideMotorLeft.getCurrentPosition()));
-
-            slideMotorRight.set(calculateRight);
-            slideMotorLeft.set(calculateLeft);
-
-            telemetry.addData("slideMotorLeft", ticksToMeters(slideMotorLeft.getCurrentPosition()));
-            telemetry.addData("slideMotorRight", ticksToMeters(slideMotorRight.getCurrentPosition()));
-            telemetry.update();
-
-            try {
-                sleep(25);
-            } catch (InterruptedException e) {
-                Constants.SLIDE_INPUT_STATE = Constants.InputState.MANUAL_CONTROL;
-                slideMotorLeft.set(Constants.SLIDE_MOTOR_PASSIVE_POWER * (double)ticksToMeters(slideMotorLeft.getCurrentPosition())/(double)Constants.SLIDE_MAX_EXTENSION_METERS + 0.15);
-                slideMotorRight.set(Constants.SLIDE_MOTOR_PASSIVE_POWER * (double)ticksToMeters(slideMotorRight.getCurrentPosition())/(double)Constants.SLIDE_MAX_EXTENSION_METERS + 0.15);
-
-                e.printStackTrace();
-            }
-        }
-
-        if (level >= 0.05) {
-            slideMotorLeft.set(Constants.SLIDE_MOTOR_PASSIVE_POWER * (double) ticksToMeters(slideMotorLeft.getCurrentPosition())/(double)Constants.SLIDE_MAX_EXTENSION_METERS + 0.15);
-            slideMotorRight.set(Constants.SLIDE_MOTOR_PASSIVE_POWER * (double)ticksToMeters(slideMotorRight.getCurrentPosition())/(double)Constants.SLIDE_MAX_EXTENSION_METERS + 0.15);
-        } else {
-            slideMotorLeft.set(0);
-            slideMotorRight.set(0);
-        }
-
+        slideMotorRight.set(rightPower);
+        slideMotorLeft.set(leftPower);
+        
         Constants.SLIDE_INPUT_STATE = Constants.InputState.MANUAL_CONTROL;
+    }
+
+    public void setLevel(double level){
+        setLevel(level, 0);
+    }
+  
+    public void setLevel(double level, double delay) {
+        timer = new Timer();
+        motionProfileDelay = delay;
+        motionProfile = getMotionProfile(level, 0);
+    }
+
+    public WPILibMotionProfile getMotionProfile(double goalLevel, double goalSpeed) {
+        WPILibMotionProfile.Constraints constraints = new WPILibMotionProfile.Constraints(Constants.SLIDE_MAX_VELOCITY, Constants.SLIDE_MAX_ACCEL);
+        WPILibMotionProfile.State initialState = new WPILibMotionProfile.State(ticksToMeters(getMotorTicks()), getMotorSpeedsAverage());
+        WPILibMotionProfile.State goalState = new WPILibMotionProfile.State(goalLevel, goalSpeed);
+
+        return new WPILibMotionProfile(constraints, initialState, goalState);
     }
 
     public double getPassivePower() {
@@ -142,7 +131,14 @@ public class SlideSubsystem extends SubsystemBase {
             return 0;
         }
 
-        return Constants.SLIDE_MOTOR_PASSIVE_POWER * (double)ticksToMeters(slideMotorLeft.getCurrentPosition())/(double)Constants.SLIDE_MAX_EXTENSION_METERS + 0.1;
+        return Constants.SLIDE_MOTOR_PASSIVE_POWER * Math.ceil(ticksToMeters(slideMotorLeft.getCurrentPosition())/Constants.SLIDE_MAX_EXTENSION_METERS*4) + Constants.SLIDE_MOTOR_PASSIVE_POWER_CLAW_WEIGHT;
+    }
+
+    public double getMotorSpeedsAverage() {
+        double leftSpeed = slideMotorLeft.getCorrectedVelocity() / 60 * 2 * Math.PI * Constants.SPOOL_SIZE_METERS;
+        double rightSpeed = slideMotorRight.getCorrectedVelocity() / 60 * 2 * Math.PI * Constants.SPOOL_SIZE_METERS;
+
+        return (leftSpeed + rightSpeed) / 2;
     }
 
     public void setMotorPower( double power ) {
@@ -172,158 +168,6 @@ public class SlideSubsystem extends SubsystemBase {
 
     public double getSlideExtensionMeters() {
         return ticksToMeters(getMotorTicks());
-    }
-
-    public void changeLevel() {
-        setLevel(Constants.SLIDE_POSITIONS[currLevel-1]);
-    }
-
-    public void showTelemetry() {
-        if (currLevel == 1) {
-            telemetry.log().clear();
-            telemetry.log().add(
-                    "10- ⬜️⬜️⬜️⬜️\n" +
-                            " 9 - ⬜️⬜️⬜️⬜️\n" +
-                            " 8 - ⬜️⬜️⬜️⬜️\n" +
-                            " 7 - ⬜️⬜️⬜️⬜️\n" +
-                            " 6 - ⬜️⬜️⬜️⬜️\n" +
-                            " 5 - ⬜️⬜️⬜️⬜️\n" +
-                            " 4 - ⬜️⬜️⬜️⬜️\n" +
-                            " 3 - ⬜️⬜️⬜️⬜️\n" +
-                            " 2 - ⬜️⬜️⬜️⬜️\n" +
-                            " 1 - 🟩🟩🟩🟩");
-        }
-        else if (currLevel == 2) {
-            telemetry.log().clear();
-            telemetry.log().add(
-                    "10- ⬜️⬜️⬜️⬜️\n" +
-                            " 9 - ⬜️⬜️⬜️⬜️\n" +
-                            " 8 - ⬜️⬜️⬜️⬜️\n" +
-                            " 7 - ⬜️⬜️⬜️⬜️\n" +
-                            " 6 - ⬜️⬜️⬜️⬜️\n" +
-                            " 5 - ⬜️⬜️⬜️⬜️\n" +
-                            " 4 - ⬜️⬜️⬜️⬜️\n" +
-                            " 3 - ⬜️⬜️⬜️⬜️\n" +
-                            " 2 - 🟩🟩🟩🟩\n" +
-                            " 1 - ⬜️⬜️⬜️⬜️");
-        }
-        else if (currLevel == 3){
-            telemetry.log().clear();
-            telemetry.log().add(
-                    "10- ⬜️⬜️⬜️⬜️\n" +
-                            " 9 - ⬜️⬜️⬜️⬜️\n" +
-                            " 8 - ⬜️⬜️⬜️⬜️\n" +
-                            " 7 - ⬜️⬜️⬜️⬜️\n" +
-                            " 6 - ⬜️⬜️⬜️⬜️\n" +
-                            " 5 - ⬜️⬜️⬜️⬜️\n" +
-                            " 4 - ⬜️⬜️⬜️⬜️\n" +
-                            " 3 - 🟩🟩🟩🟩\n" +
-                            " 2 - ⬜️⬜️⬜️⬜️\n" +
-                            " 1 - ⬜️⬜️⬜️⬜️\n");
-        }
-        else if (currLevel == 4){
-            telemetry.log().clear();
-            telemetry.log().add(
-                    "10- ⬜️⬜️⬜️⬜️\n" +
-                            " 9 - ⬜️⬜️⬜️⬜️\n" +
-                            " 8 - ⬜️⬜️⬜️⬜️\n" +
-                            " 7 - ⬜️⬜️⬜️⬜️\n" +
-                            " 6 - ⬜️⬜️⬜️⬜️\n" +
-                            " 5 - ⬜️⬜️⬜️⬜️\n" +
-                            " 4 - 🟩🟩🟩🟩\n" +
-                            " 3 - ⬜️⬜️⬜️⬜️\n" +
-                            " 2 - ⬜️⬜️⬜️⬜️\n" +
-                            " 1 - ⬜️⬜️⬜️⬜️\n");
-        }
-        else if (currLevel == 5){
-            telemetry.log().clear();
-            telemetry.log().add(
-                    "10- ⬜️⬜️⬜️⬜️\n" +
-                            " 9 - ⬜️⬜️⬜️⬜️\n" +
-                            " 8 - ⬜️⬜️⬜️⬜️\n" +
-                            " 7 - ⬜️⬜️⬜️⬜️\n" +
-                            " 6 - ⬜️⬜️⬜️⬜️\n" +
-                            " 5 - 🟩🟩🟩🟩\n" +
-                            " 4 - ⬜️⬜️⬜️⬜️\n" +
-                            " 3 - ⬜️⬜️⬜️⬜️\n" +
-                            " 2 - ⬜️⬜️⬜️⬜️\n" +
-                            " 1 - ⬜️⬜️⬜️⬜️\n");
-        }
-        else if (currLevel == 6){
-            telemetry.log().clear();
-            telemetry.log().add(
-                    "10- ⬜️⬜️⬜️⬜️\n" +
-                            " 9 - ⬜️⬜️⬜️⬜️\n" +
-                            " 8 - ⬜️⬜️⬜️⬜️\n" +
-                            " 7 - ⬜️⬜️⬜️⬜️\n" +
-                            " 6 - 🟩🟩🟩🟩️\n" +
-                            " 5 - ⬜️⬜️⬜️⬜️\n" +
-                            " 4 - ⬜️⬜️⬜️⬜️\n" +
-                            " 3 - ⬜️⬜️⬜️⬜️\n" +
-                            " 2 - ⬜️⬜️⬜️⬜️\n" +
-                            " 1 - ⬜️⬜️⬜️⬜️\n");
-        }
-        else if (currLevel == 7){
-            telemetry.log().clear();
-            telemetry.log().add(
-                    "10- ⬜️⬜️⬜️⬜️\n" +
-                            " 9 - ⬜️⬜️⬜️⬜️\n" +
-                            " 8 - ⬜️⬜️⬜️⬜️\n" +
-                            " 7 - 🟩🟩🟩🟩️\n" +
-                            " 6 - ⬜️⬜️⬜️⬜️\n" +
-                            " 5 - ⬜️⬜️⬜️⬜️\n" +
-                            " 4 - ⬜️⬜️⬜️⬜️\n" +
-                            " 3 - ⬜️⬜️⬜️⬜️\n" +
-                            " 2 - ⬜️⬜️⬜️⬜️\n" +
-                            " 1 - ⬜️⬜️⬜️⬜️\n");
-        }
-        else if (currLevel == 8){
-            telemetry.log().clear();
-            telemetry.log().add(
-                    "10- ⬜️⬜️⬜️⬜️\n" +
-                            " 9 - ⬜️⬜️⬜️⬜️\n" +
-                            " 8 - 🟩🟩🟩🟩\n" +
-                            " 7 - ⬜️⬜️⬜️⬜️\n" +
-                            " 6 - ⬜️⬜️⬜️⬜️\n" +
-                            " 5 - ⬜️⬜️⬜️⬜️\n" +
-                            " 4 - ⬜️⬜️⬜️⬜️\n" +
-                            " 3 - ⬜️⬜️⬜️⬜️\n" +
-                            " 2 - ⬜️⬜️⬜️⬜️\n" +
-                            " 1 - ⬜️⬜️⬜️⬜️\n");
-        }
-        else if (currLevel == 9){
-            telemetry.log().clear();
-            telemetry.log().add(
-                    "10- ⬜️⬜️⬜️⬜️\n" +
-                            " 9 - 🟩🟩🟩🟩️\n" +
-                            " 8 - ⬜️⬜️⬜️⬜️\n" +
-                            " 7 - ⬜️⬜️⬜️⬜️\n" +
-                            " 6 - ⬜️⬜️⬜️⬜️\n" +
-                            " 5 - ⬜️⬜️⬜️⬜️\n" +
-                            " 4 - ⬜️⬜️⬜️⬜️\n" +
-                            " 3 - ⬜️⬜️⬜️⬜️\n" +
-                            " 2 - ⬜️⬜️⬜️⬜️\n" +
-                            " 1 - ⬜️⬜️⬜️⬜️\n");
-        }
-        else if (currLevel == 10){
-            telemetry.log().clear();
-            telemetry.log().add(
-                    "10- 🟩🟩🟩🟩️️\n" +
-                            " 9 - ⬜️⬜️⬜️⬜️\n" +
-                            " 8 - ⬜️⬜️⬜️⬜️\n" +
-                            " 7 - ⬜️⬜️⬜️⬜️\n" +
-                            " 6 - ⬜️⬜️⬜️⬜️\n" +
-                            " 5 - ⬜️⬜️⬜️⬜️\n" +
-                            " 4 - ⬜️⬜️⬜️⬜️\n" +
-                            " 3 - ⬜️⬜️⬜️⬜️\n" +
-                            " 2 - ⬜️⬜️⬜️⬜️\n" +
-                            " 1 - ⬜️⬜️⬜️⬜️\n");
-        }
-        telemetry.update();
-    }
-
-    public void setCurrentLevel(int currLevel){
-        this.currLevel = Range.clip(currLevel, 1, 9);
     }
 
     public int getCurrLevel() {

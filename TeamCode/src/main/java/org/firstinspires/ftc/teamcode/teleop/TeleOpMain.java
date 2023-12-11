@@ -31,6 +31,7 @@ import org.firstinspires.ftc.teamcode.threads.IntakeThread;
 import org.firstinspires.ftc.teamcode.threads.ScoreReleaseThread;
 import org.firstinspires.ftc.teamcode.threads.ScoreThread;
 
+
 @TeleOp
 public class TeleOpMain extends CommandOpMode {
     private IMU imu;
@@ -94,7 +95,6 @@ public class TeleOpMain extends CommandOpMode {
 
     @Override
     public void initialize() {
-
         Constants.SLIDE_INPUT_STATE = Constants.InputState.MANUAL_CONTROL;
 
         driveLeftFront = new Motor(hardwareMap, HardwareConstants.ID_LEFT_FRONT_MOTOR);
@@ -175,7 +175,8 @@ public class TeleOpMain extends CommandOpMode {
             scoreSubsystem.useClaw(Constants.CLOSE_CLAW_TELEOP);
         });
 
-        changeLevelUp = new InstantCommand(() -> {
+        changeLevelUp = new InstantCommand(() ->  {
+            slideSubsystem.setCurrentLevel(slideSubsystem.getCurrLevel()-1);
             currLevel++;
             // slideSubsystem.setLevel(0.2);
             if (currLevel >= 0 && currLevel < 10) {
