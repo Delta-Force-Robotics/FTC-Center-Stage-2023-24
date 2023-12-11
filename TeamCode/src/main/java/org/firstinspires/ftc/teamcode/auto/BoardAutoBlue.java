@@ -28,7 +28,7 @@ import org.firstinspires.ftc.teamcode.vision.BarcodeUtil;
 import java.util.function.Consumer;
 
 @Autonomous
-public class BoardAutoRed extends LinearOpMode {
+public class BoardAutoBlue extends LinearOpMode {
 
     private BarcodeUtil webcam;
     private BarCodeDetection.BarcodePosition barcodePosition;
@@ -94,20 +94,16 @@ public class BoardAutoRed extends LinearOpMode {
         intakeServo = hardwareMap.get(Servo.class, HardwareConstants.ID_INTAKE_SERVO);
         pivotClawServo = hardwareMap.get(Servo.class, HardwareConstants.ID_PIVOT_CLAW_SERVO);
         flipServo = hardwareMap.get(Servo.class, HardwareConstants.ID_FLIP_SERVO);
-
         pivotServoLeft = hardwareMap.get(Servo.class, HardwareConstants.ID_ARM_SERVO_LEFT);
         pivotServoRight = hardwareMap.get(Servo.class, HardwareConstants.ID_ARM_SERVO_RIGHT);
-
         droneServo = hardwareMap.get(Servo.class, HardwareConstants.ID_DRONE_SERVO);
 
         preloadServo = hardwareMap.get(Servo.class, HardwareConstants.ID_PRELOAD_SERVO);
 
-
         preloadServo.setPosition(Constants.PRELOAD_SERVO_LEFT_POS);
 
-        webcam = new BarcodeUtil(hardwareMap, "Webcam 1", telemetry, BarCodeDetection.Color.RED);
+        webcam = new BarcodeUtil(hardwareMap, "Webcam 1", telemetry, BarCodeDetection.Color.BLUE);
         webcam.init();
-
 
         slideSubsystem = new SlideSubsystem(slideMotorLeft, slideMotorRight, FtcDashboard.getInstance().getTelemetry(), true, true);
         scoreSubsystem = new ScoreSubsystem(clawServo, pivotClawServo, pivotServoLeft, pivotServoRight, flipServo, droneServo, touchSensorLeft, touchSensorRight, true);
@@ -130,14 +126,14 @@ public class BoardAutoRed extends LinearOpMode {
             scoreSubsystem.useClaw(Constants.CLOSE_CLAW_AUTO);
         });
 
-         retractThread = new Thread(() -> {
+        retractThread = new Thread(() -> {
             scoreSubsystem.rotateClaw(Constants.ROTATE_SERVO_INIT_POSITION);
             sleep(250);
 
             scoreSubsystem.pivotClaw(Constants.PIVOT_INIT_POS);
-             scoreSubsystem.useArm(Constants.ARM_SERVO_INIT_POSITION);
+            scoreSubsystem.useArm(Constants.ARM_SERVO_INIT_POSITION);
 
-             slideSubsystem.setLevel(Constants.SLIDE_INTAKE);
+            slideSubsystem.setLevel(Constants.SLIDE_INTAKE);
         });
 
         intakeThreadExecutor = (Double intakeLevel) -> {
@@ -158,80 +154,80 @@ public class BoardAutoRed extends LinearOpMode {
         imu.initialize(parameters);
 
         drive = new SampleMecanumDrive(hardwareMap);
-        drive.setPoseEstimate(new Pose2d(11.6, -63.5, Math.toRadians(90)));
+        drive.setPoseEstimate(new Pose2d(11.6, 63.5, Math.toRadians(270)));
 
         trajPreloadCaseA = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
-                .splineToSplineHeading(new Pose2d(27, -35, Math.toRadians(0)), Math.toRadians(0))
-                .lineTo(new Vector2d(6.5, -35))
+                .splineToSplineHeading(new Pose2d(27, 25, Math.toRadians(270)), Math.toRadians(270))
                 .build();
 
         trajPreloadCaseB = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
-                .lineTo(new Vector2d(11.6, -18))
+                .lineTo(new Vector2d(11.6, 18))
                 .build();
 
         trajPreloadCaseC = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
-                .splineToSplineHeading(new Pose2d(27, -25, Math.toRadians(90)), Math.toRadians(90))
+                .splineToSplineHeading(new Pose2d(27, 35, Math.toRadians(0)), Math.toRadians(0))
+                .lineTo(new Vector2d(6.5, 35))
                 .build();
 
         trajToIntakePreloadCaseA = drive.trajectorySequenceBuilder(trajPreloadCaseA.end())
-                .splineToLinearHeading(new Pose2d(15, -11.6, Math.toRadians(90)), Math.toRadians(90))
-                .turn(Math.toRadians(90))
-                .lineTo(new Vector2d(-60, -11.6))
+                .lineTo(new Vector2d(27, 11.6))
+                .turn(Math.toRadians(-90))
+                .lineTo(new Vector2d(-60, 11.6))
                 .build();
 
         trajToIntakePreloadCaseB = drive.trajectorySequenceBuilder(trajPreloadCaseB.end())
-                .lineTo(new Vector2d(11.6, -11.6))
-                .turn(Math.toRadians(90))
-                .lineTo(new Vector2d(-60, -11.6))
+                .lineTo(new Vector2d(11.6, 11.6))
+                .turn(Math.toRadians(-90))
+                .lineTo(new Vector2d(-60, 11.6))
                 .build();
 
         trajToIntakePreloadCaseC = drive.trajectorySequenceBuilder(trajPreloadCaseC.end())
-                .lineTo(new Vector2d(27, -11.6))
-                .turn(Math.toRadians(90))
-                .lineTo(new Vector2d(-60, -11.6))
+                .splineToLinearHeading(new Pose2d(15, 11.6, Math.toRadians(270)), Math.toRadians(270))
+                .turn(Math.toRadians(-90))
+                .lineTo(new Vector2d(-60, 11.6))
                 .build();
 
-        trajToScoreCaseA = drive.trajectorySequenceBuilder(new Pose2d(-60, -11.6, Math.toRadians(180)))
-                .lineTo(new Vector2d(20, -11.6))
-                .splineToSplineHeading(new Pose2d(45, -27, Math.toRadians(180)), Math.toRadians(0))
+        trajToScoreCaseA = drive.trajectorySequenceBuilder(new Pose2d(-60, 11.6, Math.toRadians(180)))
+                .lineTo(new Vector2d(20, 11.6))
+                .splineToSplineHeading(new Pose2d(45, 43, Math.toRadians(180)), Math.toRadians(0))
                 .build();
 
-        trajToScoreCaseB = drive.trajectorySequenceBuilder(new Pose2d(-60, -11.6, Math.toRadians(180)))
-                .lineTo(new Vector2d(20, -11.6))
-                .splineToSplineHeading(new Pose2d(45, -35, Math.toRadians(180)), Math.toRadians(0))
+        trajToScoreCaseB = drive.trajectorySequenceBuilder(new Pose2d(-60, 11.6, Math.toRadians(180)))
+                .lineTo(new Vector2d(20, 11.6))
+                .splineToSplineHeading(new Pose2d(45, 35, Math.toRadians(180)), Math.toRadians(0))
                 .build();
 
-        trajToScoreCaseC = drive.trajectorySequenceBuilder(new Pose2d(-60, -11.6, Math.toRadians(180)))
-                .lineTo(new Vector2d(20, -11.6))
-                .splineToSplineHeading(new Pose2d(45, -43, Math.toRadians(180)), Math.toRadians(0))
+        trajToScoreCaseC = drive.trajectorySequenceBuilder(new Pose2d(-60, 11.6, Math.toRadians(180)))
+                .lineTo(new Vector2d(20, 11.6))
+                .splineToSplineHeading(new Pose2d(45, 27, Math.toRadians(180)), Math.toRadians(0))
                 .build();
 
         trajToIntakeCaseA = drive.trajectorySequenceBuilder(trajToScoreCaseA.end())
-                .splineToSplineHeading(new Pose2d(20, -11.6, Math.toRadians(180)), Math.toRadians(180))
-                .lineTo(new Vector2d(-60, -11.6))
+                .splineToSplineHeading(new Pose2d(20, 11.6, Math.toRadians(180)), Math.toRadians(180))
+                .lineTo(new Vector2d(-60, 11.6))
                 .build();
 
         trajToIntakeCaseB = drive.trajectorySequenceBuilder(trajToScoreCaseB.end())
-                .splineToSplineHeading(new Pose2d(20, -11.6, Math.toRadians(180)), Math.toRadians(180))
+                .splineToSplineHeading(new Pose2d(20, 11.6, Math.toRadians(180)), Math.toRadians(180))
                 .lineTo(new Vector2d(-60, -11.6))
                 .build();
 
         trajToIntakeCaseC = drive.trajectorySequenceBuilder(trajToScoreCaseC.end())
-                .splineToSplineHeading(new Pose2d(20, -11.6, Math.toRadians(180)), Math.toRadians(180))
-                .lineTo(new Vector2d(-60, -11.6))
+                .splineToSplineHeading(new Pose2d(20, 11.6, Math.toRadians(180)), Math.toRadians(180))
+                .lineTo(new Vector2d(-60, 11.6))
                 .build();
 
 
         parkSpotA = drive.trajectorySequenceBuilder(trajToScoreCaseA.end())
-                .lineTo(new Vector2d(50, -27))
+                .lineTo(new Vector2d(50, 27))
                 .build();
 
         parkSpotB = drive.trajectorySequenceBuilder(trajToScoreCaseB.end())
-                .lineTo(new Vector2d(50, -35))
+                .lineTo(new Vector2d(50, 35))
                 .build();
 
         parkSpotC = drive.trajectorySequenceBuilder(trajToScoreCaseC.end())
-                .lineTo(new Vector2d(50, -43))
+                .lineTo(new Vector2d(50, 43))
                 .build();
 
 
@@ -243,16 +239,16 @@ public class BoardAutoRed extends LinearOpMode {
         Thread stopCamera = new Thread(() -> webcam.stopCamera());
         stopCamera.start();
 
-       waitForStart();
+        waitForStart();
 
-       if(barcodePosition == BarCodeDetection.BarcodePosition.LEFT) {
-           CaseA();
-       } else if(barcodePosition == BarCodeDetection.BarcodePosition.MIDDLE) {
-           CaseB();
-       }   else {
-           CaseC();
-       }
-            //    sleep(30000);
+        if(barcodePosition == BarCodeDetection.BarcodePosition.LEFT) {
+            CaseA();
+        } else if(barcodePosition == BarCodeDetection.BarcodePosition.MIDDLE) {
+            CaseB();
+        }   else {
+            CaseC();
+        }
+        //    sleep(30000);
     }
 
     private void CaseA() {

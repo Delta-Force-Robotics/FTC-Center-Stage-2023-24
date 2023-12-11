@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.auto;
 
+import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
@@ -93,24 +94,25 @@ public class StackAutoBlue extends LinearOpMode {
         intakeServo = hardwareMap.get(Servo.class, HardwareConstants.ID_INTAKE_SERVO);
         pivotClawServo = hardwareMap.get(Servo.class, HardwareConstants.ID_PIVOT_CLAW_SERVO);
         flipServo = hardwareMap.get(Servo.class, HardwareConstants.ID_FLIP_SERVO);
-        pivotServoLeft = hardwareMap.get(Servo.class, HardwareConstants.ID_PIVOT_SERVO_LEFT);
-        pivotServoRight = hardwareMap.get(Servo.class, HardwareConstants.ID_PIVOT_SERVO_RIGHT);
+        pivotServoLeft = hardwareMap.get(Servo.class, HardwareConstants.ID_ARM_SERVO_LEFT);
+        pivotServoRight = hardwareMap.get(Servo.class, HardwareConstants.ID_ARM_SERVO_RIGHT);
         droneServo = hardwareMap.get(Servo.class, HardwareConstants.ID_DRONE_SERVO);
 
         preloadServo = hardwareMap.get(Servo.class, HardwareConstants.ID_PRELOAD_SERVO);
 
-        preloadServo.setPosition(Constants.PRELOAD_SERVO_INIT_POS);
+        preloadServo.setPosition(Constants.PRELOAD_SERVO_LEFT_POS);
 
         webcam = new BarcodeUtil(hardwareMap, "Webcam 1", telemetry, BarCodeDetection.Color.BLUE);
         webcam.init();
 
-        slideSubsystem = new SlideSubsystem(slideMotorLeft, slideMotorRight, telemetry, true);
+
+        slideSubsystem = new SlideSubsystem(slideMotorLeft, slideMotorRight, FtcDashboard.getInstance().getTelemetry(), true, true);
         scoreSubsystem = new ScoreSubsystem(clawServo, pivotClawServo, pivotServoLeft, pivotServoRight, flipServo, droneServo, touchSensorLeft, touchSensorRight, true);
         intakeSubsystem = new IntakeSubsystem(intakeMotor, intakeServo);
 
         scoreThread = new ScoreThread(slideSubsystem, scoreSubsystem);
         preloadThread = new Thread(() -> {
-            preloadServo.setPosition(Constants.PRELOAD_SERVO_SCORE_POS);
+            preloadServo.setPosition(Constants.PRELOAD_SERVO_SCORE_RIGHT_POS);
         });
 
         scoreAutoThread = new Thread(() -> {
@@ -141,7 +143,7 @@ public class StackAutoBlue extends LinearOpMode {
         };
 
         scoreThreadExecutor = (Double levelForSlides) -> {
-            scoreThread.levelForSlides = levelForSlides;
+            scoreThread.slideLevel = levelForSlides;
             scoreThread.interrupt();
             scoreThread.start();
         };
@@ -152,10 +154,10 @@ public class StackAutoBlue extends LinearOpMode {
         imu.initialize(parameters);
 
         drive = new SampleMecanumDrive(hardwareMap);
-        drive.setPoseEstimate(new Pose2d(-36, -63.5, Math.toRadians(90)));
+        drive.setPoseEstimate(new Pose2d(-36, 63.5, Math.toRadians(90)));
 
         trajPreloadCaseA = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
-                .splineToSplineHeading(new Pose2d(-50, -25, Math.toRadians(90)), Math.toRadians(90))
+                .splineToSplineHeading(new Pose2d(-50, 25, Math.toRadians(-90)), Math.toRadians(-90))
                 .build();
 
         trajPreloadCaseB = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
@@ -168,9 +170,9 @@ public class StackAutoBlue extends LinearOpMode {
                 .build();
 
         trajToIntakePreloadCaseA = drive.trajectorySequenceBuilder(trajPreloadCaseA.end())
-                .lineTo(new Vector2d(-50, -11.6))
-                .turn(Math.toRadians(90))
-                .lineTo(new Vector2d(-60, -11.6))
+                .lineTo(new Vector2d(-50, 11.6))
+                .turn(Math.toRadians(-90))
+                .lineTo(new Vector2d(-60, 11.6))
                 .build();
 
         trajToIntakePreloadCaseB = drive.trajectorySequenceBuilder(trajPreloadCaseB.end())
@@ -186,8 +188,8 @@ public class StackAutoBlue extends LinearOpMode {
                 .build();
 
         trajToScoreCaseA = drive.trajectorySequenceBuilder(new Pose2d(-60, -11.6, Math.toRadians(180)))
-                .lineTo(new Vector2d(20, -11.6))
-                .splineToSplineHeading(new Pose2d(45, -27, Math.toRadians(180)), Math.toRadians(0))
+                .lineTo(new Vector2d(20, 11.6))
+                .splineToSplineHeading(new Pose2d(45, 27, Math.toRadians(180)), Math.toRadians(0))
                 .build();
 
         trajToScoreCaseB = drive.trajectorySequenceBuilder(new Pose2d(-60, -11.6, Math.toRadians(180)))
@@ -201,8 +203,8 @@ public class StackAutoBlue extends LinearOpMode {
                 .build();
 
         trajToIntakeCaseA = drive.trajectorySequenceBuilder(trajToScoreCaseA.end())
-                .splineToSplineHeading(new Pose2d(20, -11.6, Math.toRadians(180)), Math.toRadians(180))
-                .lineTo(new Vector2d(-60, -11.6))
+                .splineToSplineHeading(new Pose2d(20, 11.6, Math.toRadians(180)), Math.toRadians(180))
+                .lineTo(new Vector2d(-60, 11.6))
                 .build();
 
         trajToIntakeCaseB = drive.trajectorySequenceBuilder(trajToScoreCaseB.end())
@@ -217,15 +219,15 @@ public class StackAutoBlue extends LinearOpMode {
 
 
         parkSpotA = drive.trajectorySequenceBuilder(trajToScoreCaseA.end())
-                .lineTo(new Vector2d(50, -27))
+                .lineTo(new Vector2d(50, 27))
                 .build();
 
         parkSpotB = drive.trajectorySequenceBuilder(trajToScoreCaseB.end())
-                .lineTo(new Vector2d(50, -35))
+                .lineTo(new Vector2d(50, 35))
                 .build();
 
         parkSpotC = drive.trajectorySequenceBuilder(trajToScoreCaseC.end())
-                .lineTo(new Vector2d(50, -43))
+                .lineTo(new Vector2d(50, 43))
                 .build();
 
 

@@ -24,8 +24,8 @@ public class HardwareConstants {
     public static final String ID_INTAKE_SERVO = "intakeServo";
     public static final String ID_PIVOT_CLAW_SERVO = "pivotServo";
     public static final String ID_FLIP_SERVO = "rotateServo";
-    public static final String ID_PIVOT_SERVO_LEFT = "armServoLeft";
-    public static final String ID_PIVOT_SERVO_RIGHT = "armServoRight";
+    public static final String ID_ARM_SERVO_LEFT = "armServoLeft";
+    public static final String ID_ARM_SERVO_RIGHT = "armServoRight";
     public static final String ID_DRONE_SERVO = "droneRelease";
     public static final String ID_LEFT_CLIMB_SERVO = "leftClimbRelease";
     public static final String ID_RIGHT_CLIMB_SERVO = "rightClimbRelease";

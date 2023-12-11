@@ -7,6 +7,7 @@ import org.firstinspires.ftc.teamcode.subsystems.SlideSubsystem;
 public class ScoreReleaseThread extends Thread{
     private ScoreSubsystem scoreSubsystem;
     private SlideSubsystem slideSubsystem;
+    public double slideLevel = 0;
 
     public ScoreReleaseThread(ScoreSubsystem scoreSubsystem, SlideSubsystem slideSubsystem) {
         this.scoreSubsystem = scoreSubsystem;
@@ -22,11 +23,21 @@ public class ScoreReleaseThread extends Thread{
             throw new RuntimeException(e);
         }
 
-        scoreSubsystem.rotateClaw(Constants.ROTATE_SERVO_INIT_POSITION);
-        scoreSubsystem.pivotClaw(Constants.PIVOT_PIVOT_POS);
+        scoreSubsystem.pivotClaw(0);
+        scoreSubsystem.rotateClaw(0.5);
         scoreSubsystem.useArm(Constants.ARM_SERVO_PIVOT_30);
 
-        slideSubsystem.setLevel(Constants.SLIDE_INTAKE);
-        scoreSubsystem.useArm(Constants.ARM_SERVO_INIT_POSITION);
+        try {
+            sleep(1000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
+        slideSubsystem.setLevel(slideLevel);
+    }
+
+    public void interrupt() {
+        Constants.SLIDE_INPUT_STATE = Constants.InputState.MANUAL_CONTROL;
+        super.interrupt();
     }
 }

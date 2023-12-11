@@ -6,17 +6,25 @@ import com.ThermalEquilibrium.homeostasis.Utils.Timer;
 import com.ThermalEquilibrium.homeostasis.Utils.WPILibMotionProfile;
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.controller.PIDController;
+
+
+import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.constants.Constants;
+import java.util.function.BooleanSupplier;
 
 public class SlideSubsystem extends SubsystemBase {
-    private Motor slideMotorLeft;
-    private Motor slideMotorRight;
-    private int currLevel = 1;
+    public Motor slideMotorLeft;
+    public Motor slideMotorRight;
+    public BooleanSupplier isInterrupted;
+    public double calculateLeft;
+    public double calculateRight;
     private Telemetry telemetry;
+    public boolean isAuto;
+    public int currLevel = 1;
 
     private PIDController leftPIDController;
     private PIDController rightPIDController;
@@ -50,12 +58,21 @@ public class SlideSubsystem extends SubsystemBase {
         this.slideMotorRight = slideMotorRight;
         this.telemetry = telemetry;
 
+        this.slideMotorLeft.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+        this.slideMotorRight.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+
+        this.slideMotorLeft.setRunMode(Motor.RunMode.RawPower);
+        this.slideMotorRight.setRunMode(Motor.RunMode.RawPower);
+
         this.slideMotorLeft.setInverted(true);
 
-        if (resetEncoders) {
-            slideMotorLeft.resetEncoder();
-            slideMotorRight.resetEncoder();
+        if(resetEncoders) {
+            this.slideMotorLeft.resetEncoder();
+            this.slideMotorRight.resetEncoder();
         }
+
+        this.telemetry = telemetry;
+        this.isAuto = isAuto;
     }
 
     @Override
@@ -66,6 +83,7 @@ public class SlideSubsystem extends SubsystemBase {
 
     public void updateControlLoop() {
         Constants.SLIDE_INPUT_STATE = Constants.InputState.PRESET_POSITIONS;
+        slideState.setId(level);
 
         WPILibMotionProfile.State state = motionProfile.calculate(Math.max(timer.currentTime() - motionProfileDelay, 0));
 
@@ -93,6 +111,7 @@ public class SlideSubsystem extends SubsystemBase {
     public void setLevel(double level){
         setLevel(level, 0);
     }
+  
     public void setLevel(double level, double delay) {
         timer = new Timer();
         motionProfileDelay = delay;
@@ -139,163 +158,16 @@ public class SlideSubsystem extends SubsystemBase {
         return (double) ticks / Constants.SLIDE_MAX_EXTENSION_TICKS * Constants.SLIDE_MAX_EXTENSION_METERS;
     }
 
-    public int metersToTicks(double meters) {
-        return (int) Math.round(meters / Constants.SLIDE_MAX_EXTENSION_METERS * Constants.SLIDE_MAX_EXTENSION_TICKS);
+    public double metersToTicks(double meters) {
+        return Math.round(meters / Constants.SLIDE_MAX_EXTENSION_METERS * Constants.SLIDE_MAX_EXTENSION_TICKS);
     }
 
     public int getMotorTicks() {
         return slideMotorLeft.getCurrentPosition();
     }
 
-    private void showTelemetry() {
-        if (currLevel == 1) {
-            telemetry.log().clear();
-            telemetry.log().add(
-                    "10- ⬜️⬜️⬜️⬜️\n" +
-                            " 9 - ⬜️⬜️⬜️⬜️\n" +
-                            " 8 - ⬜️⬜️⬜️⬜️\n" +
-                            " 7 - ⬜️⬜️⬜️⬜️\n" +
-                            " 6 - ⬜️⬜️⬜️⬜️\n" +
-                            " 5 - ⬜️⬜️⬜️⬜️\n" +
-                            " 4 - ⬜️⬜️⬜️⬜️\n" +
-                            " 3 - ⬜️⬜️⬜️⬜️\n" +
-                            " 2 - ⬜️⬜️⬜️⬜️\n" +
-                            " 1 - 🟩🟩🟩🟩");
-        }
-        else if (currLevel == 2) {
-            telemetry.log().clear();
-            telemetry.log().add(
-                    "10- ⬜️⬜️⬜️⬜️\n" +
-                            " 9 - ⬜️⬜️⬜️⬜️\n" +
-                            " 8 - ⬜️⬜️⬜️⬜️\n" +
-                            " 7 - ⬜️⬜️⬜️⬜️\n" +
-                            " 6 - ⬜️⬜️⬜️⬜️\n" +
-                            " 5 - ⬜️⬜️⬜️⬜️\n" +
-                            " 4 - ⬜️⬜️⬜️⬜️\n" +
-                            " 3 - ⬜️⬜️⬜️⬜️\n" +
-                            " 2 - 🟩🟩🟩🟩\n" +
-                            " 1 - ⬜️⬜️⬜️⬜️");
-        }
-        else if (currLevel == 3){
-            telemetry.log().clear();
-            telemetry.log().add(
-                    "10- ⬜️⬜️⬜️⬜️\n" +
-                            " 9 - ⬜️⬜️⬜️⬜️\n" +
-                            " 8 - ⬜️⬜️⬜️⬜️\n" +
-                            " 7 - ⬜️⬜️⬜️⬜️\n" +
-                            " 6 - ⬜️⬜️⬜️⬜️\n" +
-                            " 5 - ⬜️⬜️⬜️⬜️\n" +
-                            " 4 - ⬜️⬜️⬜️⬜️\n" +
-                            " 3 - 🟩🟩🟩🟩\n" +
-                            " 2 - ⬜️⬜️⬜️⬜️\n" +
-                            " 1 - ⬜️⬜️⬜️⬜️\n");
-        }
-        else if (currLevel == 4){
-            telemetry.log().clear();
-            telemetry.log().add(
-                    "10- ⬜️⬜️⬜️⬜️\n" +
-                            " 9 - ⬜️⬜️⬜️⬜️\n" +
-                            " 8 - ⬜️⬜️⬜️⬜️\n" +
-                            " 7 - ⬜️⬜️⬜️⬜️\n" +
-                            " 6 - ⬜️⬜️⬜️⬜️\n" +
-                            " 5 - ⬜️⬜️⬜️⬜️\n" +
-                            " 4 - 🟩🟩🟩🟩\n" +
-                            " 3 - ⬜️⬜️⬜️⬜️\n" +
-                            " 2 - ⬜️⬜️⬜️⬜️\n" +
-                            " 1 - ⬜️⬜️⬜️⬜️\n");
-        }
-        else if (currLevel == 5){
-            telemetry.log().clear();
-            telemetry.log().add(
-                    "10- ⬜️⬜️⬜️⬜️\n" +
-                            " 9 - ⬜️⬜️⬜️⬜️\n" +
-                            " 8 - ⬜️⬜️⬜️⬜️\n" +
-                            " 7 - ⬜️⬜️⬜️⬜️\n" +
-                            " 6 - ⬜️⬜️⬜️⬜️\n" +
-                            " 5 - 🟩🟩🟩🟩\n" +
-                            " 4 - ⬜️⬜️⬜️⬜️\n" +
-                            " 3 - ⬜️⬜️⬜️⬜️\n" +
-                            " 2 - ⬜️⬜️⬜️⬜️\n" +
-                            " 1 - ⬜️⬜️⬜️⬜️\n");
-        }
-        else if (currLevel == 6){
-            telemetry.log().clear();
-            telemetry.log().add(
-                    "10- ⬜️⬜️⬜️⬜️\n" +
-                            " 9 - ⬜️⬜️⬜️⬜️\n" +
-                            " 8 - ⬜️⬜️⬜️⬜️\n" +
-                            " 7 - ⬜️⬜️⬜️⬜️\n" +
-                            " 6 - 🟩🟩🟩🟩️\n" +
-                            " 5 - ⬜️⬜️⬜️⬜️\n" +
-                            " 4 - ⬜️⬜️⬜️⬜️\n" +
-                            " 3 - ⬜️⬜️⬜️⬜️\n" +
-                            " 2 - ⬜️⬜️⬜️⬜️\n" +
-                            " 1 - ⬜️⬜️⬜️⬜️\n");
-        }
-        else if (currLevel == 7){
-            telemetry.log().clear();
-            telemetry.log().add(
-                    "10- ⬜️⬜️⬜️⬜️\n" +
-                            " 9 - ⬜️⬜️⬜️⬜️\n" +
-                            " 8 - ⬜️⬜️⬜️⬜️\n" +
-                            " 7 - 🟩🟩🟩🟩️\n" +
-                            " 6 - ⬜️⬜️⬜️⬜️\n" +
-                            " 5 - ⬜️⬜️⬜️⬜️\n" +
-                            " 4 - ⬜️⬜️⬜️⬜️\n" +
-                            " 3 - ⬜️⬜️⬜️⬜️\n" +
-                            " 2 - ⬜️⬜️⬜️⬜️\n" +
-                            " 1 - ⬜️⬜️⬜️⬜️\n");
-        }
-        else if (currLevel == 8){
-            telemetry.log().clear();
-            telemetry.log().add(
-                    "10- ⬜️⬜️⬜️⬜️\n" +
-                            " 9 - ⬜️⬜️⬜️⬜️\n" +
-                            " 8 - 🟩🟩🟩🟩\n" +
-                            " 7 - ⬜️⬜️⬜️⬜️\n" +
-                            " 6 - ⬜️⬜️⬜️⬜️\n" +
-                            " 5 - ⬜️⬜️⬜️⬜️\n" +
-                            " 4 - ⬜️⬜️⬜️⬜️\n" +
-                            " 3 - ⬜️⬜️⬜️⬜️\n" +
-                            " 2 - ⬜️⬜️⬜️⬜️\n" +
-                            " 1 - ⬜️⬜️⬜️⬜️\n");
-        }
-        else if (currLevel == 9){
-            telemetry.log().clear();
-            telemetry.log().add(
-                    "10- ⬜️⬜️⬜️⬜️\n" +
-                            " 9 - 🟩🟩🟩🟩️\n" +
-                            " 8 - ⬜️⬜️⬜️⬜️\n" +
-                            " 7 - ⬜️⬜️⬜️⬜️\n" +
-                            " 6 - ⬜️⬜️⬜️⬜️\n" +
-                            " 5 - ⬜️⬜️⬜️⬜️\n" +
-                            " 4 - ⬜️⬜️⬜️⬜️\n" +
-                            " 3 - ⬜️⬜️⬜️⬜️\n" +
-                            " 2 - ⬜️⬜️⬜️⬜️\n" +
-                            " 1 - ⬜️⬜️⬜️⬜️\n");
-        }
-        else if (currLevel == 10){
-            telemetry.log().clear();
-            telemetry.log().add(
-                    "10- 🟩🟩🟩🟩️️\n" +
-                            " 9 - ⬜️⬜️⬜️⬜️\n" +
-                            " 8 - ⬜️⬜️⬜️⬜️\n" +
-                            " 7 - ⬜️⬜️⬜️⬜️\n" +
-                            " 6 - ⬜️⬜️⬜️⬜️\n" +
-                            " 5 - ⬜️⬜️⬜️⬜️\n" +
-                            " 4 - ⬜️⬜️⬜️⬜️\n" +
-                            " 3 - ⬜️⬜️⬜️⬜️\n" +
-                            " 2 - ⬜️⬜️⬜️⬜️\n" +
-                            " 1 - ⬜️⬜️⬜️⬜️\n");
-        }
-    }
-
-    public void setCurrentLevel(int currLevel){
-        this.currLevel = Range.clip(currLevel, 1, 10);
-    }
-
-    public void changeLevel() {
-        setLevel(Constants.SLIDE_POSITIONS[currLevel-1]);
+    public double getSlideExtensionMeters() {
+        return ticksToMeters(getMotorTicks());
     }
 
     public int getCurrLevel() {
