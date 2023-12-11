@@ -16,6 +16,6 @@ public class IntakeThread extends Thread {
     @Override
     public void run() {
         intakeSubsystem.setIntakePos(Constants.INTAKE_SERVO_INTAKE_POS);
-        intakeSubsystem.setIntakePower(1);
+        intakeSubsystem.setIntakePower(0.6);
     }
 }

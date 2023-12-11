@@ -22,6 +22,8 @@ public class TeleOpSimple extends LinearOpMode {
     private DcMotor rb = null;
     private Motor slideMotorLeft;
     private Motor slideMotorRight;
+    private Motor climbMotor;
+    private Motor intakeMotor;
 
     private Servo clawServo;
     private Servo rotateServo;
@@ -36,7 +38,6 @@ public class TeleOpSimple extends LinearOpMode {
 
     private Encoder leftFwEncoder;
     private Encoder rightFwEncoder;
-    private Encoder strafeEncoder;
 
     double lfPower;
     double rfPower;
@@ -51,21 +52,24 @@ public class TeleOpSimple extends LinearOpMode {
         rb = hardwareMap.get(DcMotor.class, HardwareConstants.ID_RIGHT_BACK_MOTOR);
         slideMotorLeft = new Motor(hardwareMap, HardwareConstants.ID_SLIDE_MOTOR_LEFT);
         slideMotorRight = new Motor(hardwareMap, HardwareConstants.ID_SLIDE_MOTOR_RIGHT);
-        strafeEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, HardwareConstants.ID_LATERAL_ENCODER));
         rightFwEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, HardwareConstants.ID_RIGHT_ENCODER));
         leftFwEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, HardwareConstants.ID_LEFT_ENCODER));
 
+        climbMotor = new Motor(hardwareMap, HardwareConstants.ID_CLIMB_MOTOR);
+        intakeMotor = new Motor(hardwareMap, HardwareConstants.ID_INTSKE_MOTOR);
+
         leftFwEncoder.setDirection(Encoder.Direction.REVERSE);
-        strafeEncoder.setDirection(Encoder.Direction.REVERSE);
 
         clawServo = hardwareMap.get(Servo.class, HardwareConstants.ID_CLAW_SERVO);
         intakeServo = hardwareMap.get(Servo.class, HardwareConstants.ID_INTAKE_SERVO);
         pivotServo = hardwareMap.get(Servo.class, HardwareConstants.ID_PIVOT_CLAW_SERVO);
         rotateServo = hardwareMap.get(Servo.class, HardwareConstants.ID_FLIP_SERVO);
-        armServoLeft = hardwareMap.get(Servo.class, HardwareConstants.ID_PIVOT_SERVO_LEFT);
-        armServoRight = hardwareMap.get(Servo.class, HardwareConstants.ID_PIVOT_SERVO_RIGHT);
+        armServoLeft = hardwareMap.get(Servo.class, HardwareConstants.ID_ARM_SERVO_LEFT);
+        armServoRight = hardwareMap.get(Servo.class, HardwareConstants.ID_ARM_SERVO_RIGHT);
         droneServo = hardwareMap.get(Servo.class, HardwareConstants.ID_DRONE_SERVO);
         preloadServo = hardwareMap.get(Servo.class, HardwareConstants.ID_PRELOAD_SERVO);
+        leftClimbRelease = hardwareMap.get(Servo.class, HardwareConstants.ID_LEFT_CLIMB_SERVO);
+        rightClimbRelease = hardwareMap.get(Servo.class, HardwareConstants.ID_RIGHT_CLIMB_SERVO);
 
         rf.setDirection(DcMotor.Direction.REVERSE);
         rb.setDirection(DcMotor.Direction.REVERSE);
@@ -90,16 +94,20 @@ public class TeleOpSimple extends LinearOpMode {
         preloadServo.setDirection(Servo.Direction.REVERSE);
 
         clawServo.setPosition(Constants.OPEN_CLAW);
-        intakeServo.setPosition(Constants.INTAKE_SERVO_INIT_POS);
+        // intakeServo.setPosition(Constants.INTAKE_SERVO_INIT_POS);
         pivotServo.setPosition(Constants.PIVOT_INIT_POS);
-        armServoLeft.setPosition(Constants.ARM_SERVO_INIT_POSITION);
-        armServoRight.setPosition(Constants.ARM_SERVO_INIT_POSITION);
+        armServoLeft.setPosition(0);
+        armServoRight.setPosition(0);
         rotateServo.setPosition(Constants.ROTATE_SERVO_INIT_POSITION);
         droneServo.setPosition(Constants.DRONE_SERVO_INIT_POS);
-        preloadServo.setPosition(Constants.PRELOAD_SERVO_INIT_POS);
+        preloadServo.setPosition(Constants.PRELOAD_SERVO_SCORE_RIGHT_POS);
+        leftClimbRelease.setPosition(Constants.CLIMB_SERVO_INIT_POS);
+        rightClimbRelease.setPosition(Constants.CLIMB_SERVO_INIT_POS);
 
         slideMotorLeft.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
         slideMotorRight.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+        climbMotor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+        intakeMotor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
 
         slideMotorLeft.setInverted(true);
         waitForStart();
@@ -152,48 +160,70 @@ public class TeleOpSimple extends LinearOpMode {
                 sleep(200);
             }
 
-            if(gamepad1.left_bumper) {
+            if(gamepad2.left_bumper) {
                 intakeServo.setPosition(intakeServo.getPosition() + 0.01);
                 sleep(200);
             }
-            if(gamepad1.right_bumper) {
+            if(gamepad2.right_bumper) {
                 intakeServo.setPosition(intakeServo.getPosition() - 0.01);
                 sleep(200);
             }
 
-            if(gamepad2.a) {
+            if(gamepad1.left_bumper) {
+                intakeServo.setPosition(Constants.INTAKE_SERVO_INTAKE_POS);
+                sleep(200);
+            }
+            if(gamepad1.right_bumper) {
+                intakeServo.setPosition(Constants.INTAKE_SERVO_INIT_POS);
+                sleep(200);
+            }
+
+            if(gamepad2.dpad_up) {
                 pivotServo.setPosition(pivotServo.getPosition() + 0.01);
                 sleep(200);
             }
-            if(gamepad2.y) {
+            if(gamepad2.dpad_down) {
                 pivotServo.setPosition(pivotServo.getPosition() - 0.01);
                 sleep(200);
             }
 
-            if (gamepad1.dpad_right) {
-                droneServo.setPosition(droneServo.getPosition() + 0.05);
+           if (gamepad1.dpad_right) {
+               intakeMotor.set(0.8);
+            }
+            if (gamepad1.dpad_left) {
+                intakeMotor.set(0);
+            }
+
+           /* if (gamepad1.dpad_right) {
+                rightClimbRelease.setPosition(rightClimbRelease.getPosition() + 0.05);
                 sleep(200);
             }
             if (gamepad1.dpad_left) {
-                droneServo.setPosition(droneServo.getPosition() - 0.05);
-            }
+                rightClimbRelease.setPosition(rightClimbRelease.getPosition() - 0.05);
+                sleep(200);
+            } */
 
             slideMotorLeft.set(gamepad1.right_trigger - gamepad1.left_trigger);
             slideMotorRight.set(gamepad1.right_trigger - gamepad1.left_trigger);
+
+            climbMotor.set(gamepad2.right_trigger - gamepad2.left_trigger);
 
             telemetry.addData("Slide Motor Left", slideMotorLeft.getCurrentPosition());
             telemetry.addData("Slide Motor Left", slideMotorRight.getCurrentPosition());
             telemetry.addData("Slide Motor Power", gamepad1.right_trigger - gamepad1.left_trigger);
             telemetry.addData("Claw Servo", clawServo.getPosition());
-            telemetry.addData("Pivot Claw Servo", pivotServo.getPosition());
+            telemetry.addData("Pivot Servo", pivotServo.getPosition());
             telemetry.addData("Intake Servo", intakeServo.getPosition());
-            telemetry.addData("Flip Servo", rotateServo.getPosition());
-            telemetry.addData("Pivot Servo Left", armServoLeft.getPosition());
-            telemetry.addData("Pivot Servo Right", armServoRight.getPosition());
+            telemetry.addData("Rotate Servo", rotateServo.getPosition());
+            telemetry.addData("Arm Servo Left", armServoLeft.getPosition());
+            telemetry.addData("Arm Servo Right", armServoRight.getPosition());
             telemetry.addData("Drone Servo", droneServo.getPosition());
-            telemetry.addData("Strafe Encoder", strafeEncoder.getCurrentPosition());
             telemetry.addData("Right Encoder", rightFwEncoder.getCurrentPosition());
             telemetry.addData("Left Encoder", leftFwEncoder.getCurrentPosition());
+            telemetry.addData("Left Climb Servo", leftClimbRelease.getPosition());
+            telemetry.addData("Right Climb Servo", rightClimbRelease.getPosition());
+            telemetry.addData("Preload Servo", preloadServo.getPosition());
+            telemetry.addData("Climb Motor", climbMotor.getCurrentPosition());
             telemetry.update();
         }
     }

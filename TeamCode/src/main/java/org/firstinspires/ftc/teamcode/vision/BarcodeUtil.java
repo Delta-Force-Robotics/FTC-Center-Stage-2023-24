@@ -17,16 +17,16 @@ public class BarcodeUtil {
     private OpenCvWebcam webcam;
     private BarCodeDetection pipeline;
 
-    public BarcodeUtil( HardwareMap hardwareMap, String webcamName, Telemetry telemetry, int gameElemType) {
+    public BarcodeUtil(HardwareMap hardwareMap, String webcamName, Telemetry telemetry, BarCodeDetection.Color color) {
         this.telemetry = telemetry;
-        setup( hardwareMap, webcamName, gameElemType);
+        setup( hardwareMap, webcamName, color);
     }
 
-    public void setup( HardwareMap hardwareMap, String webcamName, int tseType) {
+    public void setup(HardwareMap hardwareMap, String webcamName, BarCodeDetection.Color color) {
 
         int cameraMonitorViewId = hardwareMap.appContext.getResources( ).getIdentifier( "cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName( ) );
         webcam = OpenCvCameraFactory.getInstance( ).createWebcam( hardwareMap.get( WebcamName.class, webcamName ), cameraMonitorViewId );
-        pipeline = new BarCodeDetection( telemetry, tseType );
+        pipeline = new BarCodeDetection( telemetry, color );
         webcam.setPipeline( pipeline );
     }
 

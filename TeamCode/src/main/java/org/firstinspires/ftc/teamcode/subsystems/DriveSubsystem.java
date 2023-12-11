@@ -35,8 +35,6 @@ public class DriveSubsystem extends SubsystemBase {
         motorGroupLeft.setRunMode(Motor.RunMode.RawPower);
         motorGroupRight.setRunMode(Motor.RunMode.RawPower);
 
-        motorGroupRight.setInverted(true);
-
         sixWheelDrive = new DifferentialDrive(true, motorGroupLeft, motorGroupRight);
     }
 

@@ -5,28 +5,25 @@ import org.firstinspires.ftc.teamcode.subsystems.ScoreSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.SlideSubsystem;
 
 public class ScoreThread extends Thread {
-    private SlideSubsystem slideSubsystem;
+    public SlideSubsystem slideSubsystem;
     private ScoreSubsystem scoreSubsystem;
-    public double levelForSlides = 0;
+    public double slideLevel = 0;
+
     public boolean selectRotate = false;
 
     public ScoreThread(SlideSubsystem slideSubsystem, ScoreSubsystem scoreSubsystem) {
         this.slideSubsystem = slideSubsystem;
         this.scoreSubsystem = scoreSubsystem;
+        this.slideSubsystem.isInterrupted = this::isInterrupted;
     }
 
     @Override
     public void run() {
-            scoreSubsystem.useArm(Constants.ARM_SERVO_PIVOT_POSITION);
-            scoreSubsystem.pivotClaw(Constants.PIVOT_PIVOT_POS);
+        scoreSubsystem.useArm(Constants.ARM_SERVO_PIVOT_POSITION);
 
-            if(selectRotate = false) {
-                scoreSubsystem.rotateClaw(Constants.ROTATE_SERVO_45);
-            } else if (selectRotate = true) {
-                scoreSubsystem.rotateClaw(Constants.ROTATE_SERVO_180);
-            }
-
-            slideSubsystem.changeLevel();
+        slideSubsystem.setLevel(slideLevel);
+        scoreSubsystem.rotateClaw(0.26);
+        scoreSubsystem.pivotClaw(0.88);
     }
 
     public void interrupt() {

@@ -34,8 +34,8 @@ public class ScoreSubsystem extends SubsystemBase {
         if (!isAuto) {
             this.clawServo.setPosition(Constants.OPEN_CLAW);
             this.pivotServo.setPosition(Constants.PIVOT_INIT_POS);
-            this.armServoL.setPosition(Constants.ARM_SERVO_INIT_POSITION);
             this.armServoR.setPosition(Constants.ARM_SERVO_INIT_POSITION);
+            this.armServoL.setPosition(Constants.ARM_SERVO_INIT_POSITION);
             this.rotateServo.setPosition(Constants.ROTATE_SERVO_INIT_POSITION);
             this.droneServo.setPosition(Constants.DRONE_SERVO_INIT_POS);
         } else {

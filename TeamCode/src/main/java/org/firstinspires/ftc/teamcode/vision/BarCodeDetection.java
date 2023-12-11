@@ -12,15 +12,20 @@ import org.openftc.easyopencv.OpenCvPipeline;
 public class BarCodeDetection extends OpenCvPipeline {
 
     Telemetry telemetry;
-    Mat mat = new Mat( );
-    int pixel;
-    int teamGameElemet;
+    Mat mat = new Mat();
+    Mat mat1 = new Mat();
+    Color pixel;
 
     public enum BarcodePosition {
         LEFT,
         MIDDLE,
         RIGHT,
         NOT_FOUND
+    }
+
+    public enum Color {
+        RED,
+        BLUE
     }
 
     private BarcodePosition barcodePosition = BarcodePosition.NOT_FOUND;
@@ -40,29 +45,33 @@ public class BarCodeDetection extends OpenCvPipeline {
 
     static double PERCENT_COLOR_THRESHOLD = 0.20;
 
-    public BarCodeDetection(Telemetry t, int type) {
+    public BarCodeDetection(Telemetry t, Color color) {
         telemetry = t;
-        pixel = type;
+        pixel = color;
     }
 
     public Mat processFrame( Mat input, String type ) {
-
-        Imgproc.cvtColor( input, mat, Imgproc.COLOR_RGB2HSV );
+        Imgproc.cvtColor(input, mat, Imgproc.COLOR_RGB2HSV);
         Scalar lowHSV;
         Scalar highHSV;
+        Scalar lowHSV1;
+        Scalar highHSV1;
 
-        if( pixel == 1 ) {
-            lowHSV = new Scalar(6, 100, 20);
-            highHSV = new Scalar(25, 255, 255);
-        } else if(pixel == 2) {
-            lowHSV = new Scalar(40, 40, 40);
-            highHSV = new Scalar(70, 255, 255);
+        if( pixel == Color.RED ) {
+            lowHSV = new Scalar(0, 50, 100);
+            highHSV = new Scalar(4, 255, 255);
+
+            lowHSV1 = new Scalar(120, 50, 100);
+            highHSV1 = new Scalar(179, 255, 255);
+
+            Core.inRange(mat, lowHSV1, highHSV1, mat1);
         } else {
-            lowHSV = new Scalar( 56, 100, 10 );
-            highHSV = new Scalar( 60, 80, 100 );
+            lowHSV = new Scalar(100, 50, 100);
+            highHSV = new Scalar(130, 255, 255);
         }
 
-        Core.inRange( mat, lowHSV, highHSV, mat );
+        Core.inRange(mat, lowHSV, highHSV, mat);
+        Core.add(mat, mat1, mat);
 
         Mat left = mat.submat(LEFT_ROW);
         Mat middle = mat.submat(MIDDLE_ROW);

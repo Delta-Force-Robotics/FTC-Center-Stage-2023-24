@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.auto;
 
+import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
@@ -20,7 +21,6 @@ import org.firstinspires.ftc.teamcode.subsystems.SlideSubsystem;
 import org.firstinspires.ftc.teamcode.threads.IntakeAutoThread;
 import org.firstinspires.ftc.teamcode.threads.IntakeThread;
 import org.firstinspires.ftc.teamcode.threads.ScoreThread;
-import org.firstinspires.ftc.teamcode.threads.SlideLevelThread;
 import org.firstinspires.ftc.teamcode.roadrunner.drive.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.vision.BarCodeDetection;
 import org.firstinspires.ftc.teamcode.vision.BarcodeUtil;
@@ -28,7 +28,7 @@ import org.firstinspires.ftc.teamcode.vision.BarcodeUtil;
 import java.util.function.Consumer;
 
 @Autonomous
-public class BoardAuto extends LinearOpMode {
+public class BoardAutoRed extends LinearOpMode {
 
     private BarcodeUtil webcam;
     private BarCodeDetection.BarcodePosition barcodePosition;
@@ -78,7 +78,6 @@ public class BoardAuto extends LinearOpMode {
 
     private IntakeThread intakeThread;
     private ScoreThread scoreThread;
-    private SlideLevelThread slideLevelThread;
     private IntakeAutoThread intakeAutoThread;
 
     private Consumer<Double> intakeThreadExecutor;
@@ -95,25 +94,25 @@ public class BoardAuto extends LinearOpMode {
         intakeServo = hardwareMap.get(Servo.class, HardwareConstants.ID_INTAKE_SERVO);
         pivotClawServo = hardwareMap.get(Servo.class, HardwareConstants.ID_PIVOT_CLAW_SERVO);
         flipServo = hardwareMap.get(Servo.class, HardwareConstants.ID_FLIP_SERVO);
-        pivotServoLeft = hardwareMap.get(Servo.class, HardwareConstants.ID_PIVOT_SERVO_LEFT);
-        pivotServoRight = hardwareMap.get(Servo.class, HardwareConstants.ID_PIVOT_SERVO_RIGHT);
+        pivotServoLeft = hardwareMap.get(Servo.class, HardwareConstants.ID_ARM_SERVO_LEFT);
+        pivotServoRight = hardwareMap.get(Servo.class, HardwareConstants.ID_ARM_SERVO_RIGHT);
         droneServo = hardwareMap.get(Servo.class, HardwareConstants.ID_DRONE_SERVO);
 
         preloadServo = hardwareMap.get(Servo.class, HardwareConstants.ID_PRELOAD_SERVO);
 
-        preloadServo.setPosition(Constants.PRELOAD_SERVO_INIT_POS);
+        preloadServo.setPosition(Constants.PRELOAD_SERVO_LEFT_POS);
 
-        webcam = new BarcodeUtil(hardwareMap, "Webcam 1", telemetry, 1);
+        webcam = new BarcodeUtil(hardwareMap, "Webcam 1", telemetry, BarCodeDetection.Color.RED);
         webcam.init();
 
-        slideSubsystem = new SlideSubsystem(slideMotorLeft, slideMotorRight, slideLevelThread, true);
+        slideSubsystem = new SlideSubsystem(slideMotorLeft, slideMotorRight, FtcDashboard.getInstance().getTelemetry(), true, true);
         scoreSubsystem = new ScoreSubsystem(clawServo, pivotClawServo, pivotServoLeft, pivotServoRight, flipServo, droneServo, touchSensorLeft, touchSensorRight, true);
         intakeSubsystem = new IntakeSubsystem(intakeMotor, intakeServo);
 
         scoreThread = new ScoreThread(slideSubsystem, scoreSubsystem);
 
         preloadThread = new Thread(() -> {
-            preloadServo.setPosition(Constants.PRELOAD_SERVO_SCORE_POS);
+            preloadServo.setPosition(Constants.PRELOAD_SERVO_SCORE_RIGHT_POS);
         });
 
         scoreAutoThread = new Thread(() -> {
@@ -144,7 +143,7 @@ public class BoardAuto extends LinearOpMode {
         };
 
         scoreThreadExecutor = (Double levelForSlides) -> {
-            scoreThread.levelForSlides = levelForSlides;
+            scoreThread.slideLevel = levelForSlides;
             scoreThread.interrupt();
             scoreThread.start();
         };
