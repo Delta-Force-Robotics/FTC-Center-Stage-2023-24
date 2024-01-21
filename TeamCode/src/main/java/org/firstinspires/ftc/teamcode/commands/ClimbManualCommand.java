@@ -25,12 +25,12 @@ public class ClimbManualCommand extends CommandBase {
 
     @Override
     public void execute() {
-        if(Constants.CLIMB_INPUT_STATE == Constants.InputState.MANUAL_CONTROL) {
+
             double rightTriggerOutput = rightTrigger.getAsDouble();
             double leftTriggerOutput = leftTrigger.getAsDouble();
             double climbPower = rightTriggerOutput - leftTriggerOutput;
 
             climbSubsystem.setClimbPower(climbPower);
-        }
+
     }
 }

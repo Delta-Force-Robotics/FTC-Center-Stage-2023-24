@@ -215,8 +215,8 @@ public class TeleOpMain extends CommandOpMode {
 
         //new GamepadButton(driver2, GamepadKeys.Button.DPAD_LEFT).whenPressed(rotate45);
         //new GamepadButton(driver2, GamepadKeys.Button.DPAD_RIGHT).whenPressed(rotate180);
-        new GamepadButton(driver2, GamepadKeys.Button.DPAD_LEFT).whenPressed(() -> climbThreadExecutor.accept(Constants.CLIMB_MOTOR_CLIMB_POS_METERS));
-        new GamepadButton(driver2, GamepadKeys.Button.DPAD_RIGHT).whenPressed(() -> climbThreadExecutor.accept(Constants.CLIMB_MOTOR_INIT_POS_METERS));
+        new GamepadButton(driver2, GamepadKeys.Button.DPAD_LEFT).whenPressed(() -> climbSubsystem.setClimbPos(Constants.CLIMB_MOTOR_CLIMB_POS));
+        new GamepadButton(driver2, GamepadKeys.Button.DPAD_RIGHT).whenPressed(() -> climbSubsystem.setClimbPos(Constants.CLIMB_MOTOR_INIT_POS));
 
         new GamepadButton(driver2, GamepadKeys.Button.A).whenPressed(() -> intakeThread.start());
         new GamepadButton(driver2, GamepadKeys.Button.B).whenPressed(() -> stopIntakeThread.start());

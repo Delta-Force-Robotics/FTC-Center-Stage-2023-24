@@ -20,26 +20,6 @@ public class ClimbSubsystem extends SubsystemBase {
     public BooleanSupplier isInterrupted;
     private double position = 0;
 
-/*
-    public enum ClimbState {
-        INIT(Constants.CLIMB_MOTOR_INIT_POS);
-
-        private double id;
-        ClimbState(double climbLevel) {
-            id = climbLevel;
-        }
-
-        public double getId() { return id; }
-        public void setId(double climbLevel) {
-            id = climbLevel;
-        }
-        public boolean isSameClimbLevel(double climbLevel) { return id == climbLevel; }
-    }
-
-    public ClimbState climbState = ClimbState.INIT;
-*/
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     public ClimbSubsystem(Motor climbMotor, Telemetry telemetry, boolean resetEncoder) {
         this.climbMotor = climbMotor;
@@ -55,66 +35,10 @@ public class ClimbSubsystem extends SubsystemBase {
     }
 
 
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/*
-
-    /**
-     * Sets the extension position for the climbMotor using a PID.
-     * @param position Intended position for climb extension, in millimeters.
-     */
-
-    /*
-    public void setPosition(double position) {
-        Constants.CLIMB_INPUT_STATE = Constants.InputState.PRESET_POSITIONS;
-        climbState.setId(position);
-
-        try {
-            sleep(50);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        pidfClimbMotor = new PIDFController(1, 0, 0, 0);
-
-        pidfClimbMotor.setSetPoint(position);
-
-        pidfClimbMotor.setTolerance(0.01);
-
-        while(!pidfClimbMotor.atSetPoint() && !isInterrupted.getAsBoolean()) {
-            calculate = pidfClimbMotor.calculate(ticksToMeters(climbMotor.getCurrentPosition()));
-
-            climbMotor.set(calculate);
-
-            telemetry.addData("climbMotorMeters", ticksToMeters(climbMotor.getCurrentPosition()));
-            telemetry.update();
-
-
-            try {
-                sleep(25);
-            } catch (InterruptedException e) {
-                Constants.CLIMB_INPUT_STATE = Constants.InputState.MANUAL_CONTROL;
-
-                e.printStackTrace();
-            }
-
-        }
-
-        climbMotor.set(0);
-        Constants.CLIMB_INPUT_STATE = Constants.InputState.MANUAL_CONTROL;
-
-    }
-*/
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
     public void setClimbPower(double power) {
         climbMotor.set(power);
     }
-/*
-    public double getClimbExtensionMeters() {
-        return ticksToMeters(climbMotor.getCurrentPosition());
-    }
-*/
+
     public void setClimbPos(int pos) {
         climbMotor.setRunMode(Motor.RunMode.PositionControl);
         climbMotor.setTargetPosition(pos);
@@ -128,33 +52,4 @@ public class ClimbSubsystem extends SubsystemBase {
 
         climbMotor.stopMotor();
     }
-    /*
-
-    public double ticksToMeters(int ticks) {
-        return (double) ticks / Constants.CLIMB_MOTOR_MAX_EXTENSION * Constants.CLIMB_MAX_EXTENSION_METERS;
-    }
-
-    public double getMotorPos() {
-        return climbMotor.getCurrentPosition();
-    }
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-/*
-    public ClimbState getClimbState() {
-        return climbState;
-    }
-
-    public void setCLimbState(ClimbState climbState) {
-        this.climbState = climbState;
-    }
-
-    public double metersToTicks(double meters) {
-        return Math.round(meters / Constants.CLIMB_MAX_EXTENSION_METERS * Constants.CLIMB_MOTOR_MAX_EXTENSION);
-    }
-
-    public int getMotorTicks() {
-        return climbMotor.getCurrentPosition();
-    }
-*/
-}
+ }
