@@ -18,9 +18,9 @@ public class ClimbSubsystem extends SubsystemBase {
     private double calculate;
     private Telemetry telemetry;
     public BooleanSupplier isInterrupted;
-    private double position = 0 ;
+    private double position = 0;
 
-
+/*
     public enum ClimbState {
         INIT(Constants.CLIMB_MOTOR_INIT_POS);
 
@@ -37,7 +37,7 @@ public class ClimbSubsystem extends SubsystemBase {
     }
 
     public ClimbState climbState = ClimbState.INIT;
-
+*/
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -56,14 +56,14 @@ public class ClimbSubsystem extends SubsystemBase {
 
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
+/*
 
     /**
      * Sets the extension position for the climbMotor using a PID.
      * @param position Intended position for climb extension, in millimeters.
      */
 
-
+    /*
     public void setPosition(double position) {
         Constants.CLIMB_INPUT_STATE = Constants.InputState.PRESET_POSITIONS;
         climbState.setId(position);
@@ -103,46 +103,32 @@ public class ClimbSubsystem extends SubsystemBase {
         Constants.CLIMB_INPUT_STATE = Constants.InputState.MANUAL_CONTROL;
 
     }
-
+*/
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-
-
-    public void setClimbPower(double power) { climbMotor.set(power); }
-
+    public void setClimbPower(double power) {
+        climbMotor.set(power);
+    }
+/*
     public double getClimbExtensionMeters() {
         return ticksToMeters(climbMotor.getCurrentPosition());
     }
-/*
+*/
     public void setClimbPos(int pos) {
-        if (Constants.CLIMB_INPUT_STATE == Constants.InputState.PRESET_POSITIONS) {
+        climbMotor.setRunMode(Motor.RunMode.PositionControl);
+        climbMotor.setTargetPosition(pos);
+        climbMotor.set(0);
 
-            climbMotor.setTargetPosition(pos);
-            climbMotor.setRunMode(Motor.RunMode.PositionControl);
+        climbMotor.setPositionTolerance(20);
 
-            while(!climbMotor.atTargetPosition() && !isInterrupted.getAsBoolean()) {
-                if (pos == Constants.CLIMB_MOTOR_CLIMB_POS) {
-                    climbMotor.set(-0.2);
-                } else {
-                    climbMotor.set(0.2);
-                }
-            }
-
-            if (climbMotor.atTargetPosition()) {
-                climbMotor.set(0);
-                Constants.CLIMB_INPUT_STATE = Constants.InputState.MANUAL_CONTROL;
-            }
+        while (!climbMotor.atTargetPosition() && !isInterrupted.getAsBoolean()) {
+            climbMotor.set(0.2);
         }
 
-       /* if (pos >= 3000) {
-            climbMotor.set(Constants.CLIMB_MOTOR_PASSIVE_POWER * climbMotor.getCurrentPosition()/Constants.CLIMB_MAX_EXTENSION_METERS + 0.15);
-        } else {
-            climbMotor.set(0);
-        }
+        climbMotor.stopMotor();
     }
-
- */
+    /*
 
     public double ticksToMeters(int ticks) {
         return (double) ticks / Constants.CLIMB_MOTOR_MAX_EXTENSION * Constants.CLIMB_MAX_EXTENSION_METERS;
@@ -154,7 +140,7 @@ public class ClimbSubsystem extends SubsystemBase {
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
+/*
     public ClimbState getClimbState() {
         return climbState;
     }
@@ -170,5 +156,5 @@ public class ClimbSubsystem extends SubsystemBase {
     public int getMotorTicks() {
         return climbMotor.getCurrentPosition();
     }
-
+*/
 }
