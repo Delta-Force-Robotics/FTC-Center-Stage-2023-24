@@ -18,7 +18,7 @@ public class OutakeThread extends Thread {
         scoreSubsystem.useBlock(Constants.BLOCK_SERVO_BLOCK_POS);
         intakeSubsystem.setIntakePower(-1);
         try {
-            sleep(1500);
+            sleep(1000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

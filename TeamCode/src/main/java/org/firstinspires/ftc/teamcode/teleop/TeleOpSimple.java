@@ -179,7 +179,7 @@ public class TeleOpSimple extends LinearOpMode {
             }*/
 
            if (gamepad1.dpad_right) {
-               intakeMotor.set(1);
+               intakeMotor.set(0.7);
             }
             if (gamepad1.dpad_left) {
                 intakeMotor.set(0);

@@ -1,39 +1,20 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
-import static java.lang.Thread.sleep;
-
 import com.arcrobotics.ftclib.command.SubsystemBase;
-import com.arcrobotics.ftclib.controller.PIDFController;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
-
-import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.constants.Constants;
-
-import java.util.function.BooleanSupplier;
 
 public class ClimbSubsystem extends SubsystemBase {
     private Motor climbMotor;
 
-    private PIDFController pidfClimbMotor;
-    private double calculate;
-    private Telemetry telemetry;
-    public BooleanSupplier isInterrupted;
-    private double position = 0;
-
-
-    public ClimbSubsystem(Motor climbMotor, Telemetry telemetry, boolean resetEncoder) {
+    public ClimbSubsystem(Motor climbMotor) {
         this.climbMotor = climbMotor;
 
         this.climbMotor.setRunMode(Motor.RunMode.RawPower);
         this.climbMotor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
         this.climbMotor.setInverted(true);
-        this.telemetry = telemetry;
 
-        if (resetEncoder) {
-            this.climbMotor.resetEncoder();
-        }
+        this.climbMotor.resetEncoder();
     }
-
 
     public void setClimbPower(double power) {
         climbMotor.set(power);
@@ -44,12 +25,13 @@ public class ClimbSubsystem extends SubsystemBase {
         climbMotor.setTargetPosition(pos);
         climbMotor.set(0);
 
-        climbMotor.setPositionTolerance(20);
+        climbMotor.setPositionTolerance(10);
 
-        while (!climbMotor.atTargetPosition() && !isInterrupted.getAsBoolean()) {
-            climbMotor.set(0.2);
+        while (!climbMotor.atTargetPosition()) {
+            climbMotor.set(1);
         }
 
         climbMotor.stopMotor();
+        climbMotor.setRunMode(Motor.RunMode.RawPower);
     }
  }

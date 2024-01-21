@@ -28,7 +28,6 @@ import org.firstinspires.ftc.teamcode.subsystems.IntakeSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.ScoreSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.SlideSubsystem;
 import org.firstinspires.ftc.teamcode.threads.BackupThread;
-import org.firstinspires.ftc.teamcode.threads.ClimbThread;
 import org.firstinspires.ftc.teamcode.threads.IntakeThread;
 import org.firstinspires.ftc.teamcode.threads.OutakeThread;
 import org.firstinspires.ftc.teamcode.threads.ScoreReleaseThread;
@@ -70,7 +69,6 @@ public class TeleOpMain extends CommandOpMode {
     private OutakeThread outakeThread;
     private BackupThread backupThread;
     private StopIntakeThread stopIntakeThread;
-    private ClimbThread climbThread;
 
     private InstantCommand changeLevelUp;
     private InstantCommand changeLevelDown;
@@ -122,7 +120,7 @@ public class TeleOpMain extends CommandOpMode {
         intakeSubsystem = new IntakeSubsystem(intakeMotor, intakeServo);
         scoreSubsystem = new ScoreSubsystem(armServoLeft, armServoRight, rotateServo, blockServo, droneServo, false);
         slideSubsystem = new SlideSubsystem(slideMotorLeft, slideMotorRight, FtcDashboard.getInstance().getTelemetry(), true, false);
-        climbSubsystem = new ClimbSubsystem(climbMotor, telemetry, true);
+        climbSubsystem = new ClimbSubsystem(climbMotor);
 
         driver1 = new GamepadEx(gamepad1);
         driver2 = new GamepadEx(gamepad2);
@@ -135,8 +133,6 @@ public class TeleOpMain extends CommandOpMode {
         intakeThread = new IntakeThread(intakeSubsystem, scoreSubsystem, false);
         scoreThread = new ScoreThread(slideSubsystem, scoreSubsystem);
 
-        climbThread = new ClimbThread(climbSubsystem);
-
         scoreReleaseThread = new ScoreReleaseThread(slideSubsystem, scoreSubsystem);
         outakeThread = new OutakeThread(intakeSubsystem, scoreSubsystem);
         backupThread = new BackupThread(scoreSubsystem);
@@ -145,7 +141,6 @@ public class TeleOpMain extends CommandOpMode {
         intakeThread.setPriority(Thread.MIN_PRIORITY);
         outakeThread.setPriority(Thread.MIN_PRIORITY);
         scoreThread.setPriority(Thread.MIN_PRIORITY);
-        climbThread.setPriority(Thread.MIN_PRIORITY);
         backupThread.setPriority(Thread.MIN_PRIORITY);
         stopIntakeThread.setPriority(Thread.MIN_PRIORITY);
         Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
@@ -154,12 +149,6 @@ public class TeleOpMain extends CommandOpMode {
             scoreThread.slideLevel = levelForSlides;
             scoreThread.interrupt();
             scoreThread.start();
-        };
-
-        climbThreadExecutor = (Double positionForClimb) -> {
-            climbThread.position = positionForClimb;
-            climbThread.interrupt();
-            climbThread.start();
         };
 
         scoreReleaseThreadExecutor = (Double levelForSlides) -> {

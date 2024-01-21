@@ -31,6 +31,6 @@ public class ClimbManualCommand extends CommandBase {
             double climbPower = rightTriggerOutput - leftTriggerOutput;
 
             climbSubsystem.setClimbPower(climbPower);
-
     }
+
 }
