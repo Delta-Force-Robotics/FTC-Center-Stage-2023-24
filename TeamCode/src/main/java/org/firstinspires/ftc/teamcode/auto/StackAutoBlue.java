@@ -14,14 +14,14 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.constants.Constants;
 import org.firstinspires.ftc.teamcode.constants.HardwareConstants;
-import org.firstinspires.ftc.teamcode.roadrunner.drive.SampleMecanumDrive;
+import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.subsystems.IntakeSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.ScoreSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.SlideSubsystem;
 import org.firstinspires.ftc.teamcode.threads.IntakeAutoThread;
 import org.firstinspires.ftc.teamcode.threads.IntakeThread;
 import org.firstinspires.ftc.teamcode.threads.ScoreThread;
-import org.firstinspires.ftc.teamcode.roadrunner.drive.trajectorysequence.TrajectorySequence;
+import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.vision.BarCodeDetection;
 import org.firstinspires.ftc.teamcode.vision.BarcodeUtil;
 
@@ -46,6 +46,9 @@ public class StackAutoBlue extends LinearOpMode {
     private TrajectorySequence trajPreloadCaseA;
     private TrajectorySequence trajPreloadCaseB;
     private TrajectorySequence trajPreloadCaseC;
+    private TrajectorySequence trajPreloadScoreCaseA;
+    private TrajectorySequence trajPreloadScoreCaseB;
+    private TrajectorySequence trajPreloadScoreCaseC;
     private TrajectorySequence trajToIntakePreloadCaseA;
     private TrajectorySequence trajToIntakePreloadCaseB;
     private TrajectorySequence trajToIntakePreloadCaseC;
@@ -64,17 +67,14 @@ public class StackAutoBlue extends LinearOpMode {
     private Motor slideMotorRight;
     private Motor intakeMotor;
 
-    private Servo clawServo;
     private Servo intakeServo;
-    private Servo pivotClawServo;
-    private Servo pivotServoLeft;
-    private Servo pivotServoRight;
-    private Servo flipServo;
+    private Servo armServoLeft;
+    private Servo armServoRight;
+    private Servo rotateServo;
     private Servo droneServo;
+    private Servo blockServo;
 
     private Servo preloadServo;
-    private DigitalChannel touchSensorLeft;
-    private DigitalChannel touchSensorRight;
 
     private IntakeThread intakeThread;
     private ScoreThread scoreThread;
@@ -90,48 +90,50 @@ public class StackAutoBlue extends LinearOpMode {
         slideMotorLeft = new Motor(hardwareMap, HardwareConstants.ID_SLIDE_MOTOR_LEFT);
         slideMotorRight = new Motor(hardwareMap, HardwareConstants.ID_SLIDE_MOTOR_RIGHT);
 
-        clawServo = hardwareMap.get(Servo.class, HardwareConstants.ID_CLAW_SERVO);
+        intakeMotor = new Motor(hardwareMap, HardwareConstants.ID_INTAKE_MOTOR);
+
         intakeServo = hardwareMap.get(Servo.class, HardwareConstants.ID_INTAKE_SERVO);
-        pivotClawServo = hardwareMap.get(Servo.class, HardwareConstants.ID_PIVOT_CLAW_SERVO);
-        flipServo = hardwareMap.get(Servo.class, HardwareConstants.ID_FLIP_SERVO);
-        pivotServoLeft = hardwareMap.get(Servo.class, HardwareConstants.ID_ARM_SERVO_LEFT);
-        pivotServoRight = hardwareMap.get(Servo.class, HardwareConstants.ID_ARM_SERVO_RIGHT);
+        rotateServo = hardwareMap.get(Servo.class, HardwareConstants.ID_FLIP_SERVO);
+        blockServo = hardwareMap.get(Servo.class, HardwareConstants.ID_BLOCK_SERVO);
+        armServoLeft = hardwareMap.get(Servo.class, HardwareConstants.ID_ARM_SERVO_LEFT);
+        armServoRight = hardwareMap.get(Servo.class, HardwareConstants.ID_ARM_SERVO_RIGHT);
         droneServo = hardwareMap.get(Servo.class, HardwareConstants.ID_DRONE_SERVO);
 
         preloadServo = hardwareMap.get(Servo.class, HardwareConstants.ID_PRELOAD_SERVO);
 
-        preloadServo.setPosition(Constants.PRELOAD_SERVO_LEFT_POS);
+        preloadServo.setDirection(Servo.Direction.REVERSE);
+        preloadServo.setPosition(Constants.PRELOAD_SERVO_INIT_POS);
 
         webcam = new BarcodeUtil(hardwareMap, "Webcam 1", telemetry, BarCodeDetection.Color.BLUE);
         webcam.init();
 
+        BNO055IMUNew.Parameters parameters = new BNO055IMUNew.Parameters(new RevHubOrientationOnRobot(RevHubOrientationOnRobot.LogoFacingDirection.UP, RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD));
+        parameters.calibrationDataFile = "BNO055IMUCalibration.json";
+        imu = hardwareMap.get(IMU.class,"imu");
+        imu.initialize(parameters);
+
         slideSubsystem = new SlideSubsystem(slideMotorLeft, slideMotorRight, FtcDashboard.getInstance().getTelemetry(), true, true);
-        scoreSubsystem = new ScoreSubsystem(clawServo, pivotClawServo, pivotServoLeft, pivotServoRight, flipServo, droneServo, touchSensorLeft, touchSensorRight, true);
+        scoreSubsystem = new ScoreSubsystem(armServoLeft, armServoRight, rotateServo, blockServo, droneServo, true);
         intakeSubsystem = new IntakeSubsystem(intakeMotor, intakeServo);
 
         scoreThread = new ScoreThread(slideSubsystem, scoreSubsystem);
 
         preloadThread = new Thread(() -> {
-            preloadServo.setPosition(Constants.PRELOAD_SERVO_SCORE_RIGHT_POS);
+            preloadServo.setPosition(Constants.PRELOAD_SERVO_SCORE_POS);
         });
 
         scoreAutoThread = new Thread(() -> {
             slideSubsystem.setLevel(Constants.SLIDE_POSITIONS[1]);
+            sleep(100);
+
             scoreSubsystem.useArm(Constants.ARM_SERVO_PIVOT_POSITION);
-            sleep(500);
-
-            scoreSubsystem.useClaw(Constants.OPEN_CLAW);
-            sleep(500);
-
-            scoreSubsystem.useClaw(Constants.CLOSE_CLAW_AUTO);
+            scoreSubsystem.rotateClaw(Constants.ROTATE_SERVO_45);
         });
 
         retractThread = new Thread(() -> {
             scoreSubsystem.rotateClaw(Constants.ROTATE_SERVO_INIT_POSITION);
-            sleep(250);
-
-            scoreSubsystem.pivotClaw(Constants.PIVOT_INIT_POS);
             scoreSubsystem.useArm(Constants.ARM_SERVO_INIT_POSITION);
+            sleep(500);
 
             slideSubsystem.setLevel(Constants.SLIDE_INTAKE);
         });
@@ -148,88 +150,66 @@ public class StackAutoBlue extends LinearOpMode {
             scoreThread.start();
         };
 
-        BNO055IMUNew.Parameters parameters = new BNO055IMUNew.Parameters(new RevHubOrientationOnRobot(RevHubOrientationOnRobot.LogoFacingDirection.LEFT, RevHubOrientationOnRobot.UsbFacingDirection.FORWARD));
-        parameters.calibrationDataFile = "BNO055IMUCalibration.json";
-        imu = hardwareMap.get(IMU.class, "imu");
-        imu.initialize(parameters);
-
         drive = new SampleMecanumDrive(hardwareMap);
         drive.setPoseEstimate(new Pose2d(-36, 63.5, Math.toRadians(90)));
 
+
         trajPreloadCaseA = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
-                .splineToSplineHeading(new Pose2d(-50, 25, Math.toRadians(-90)), Math.toRadians(-90))
+                .setTangent(Math.toRadians(240))
+                .splineToLinearHeading(new Pose2d(-30, 35.5, Math.toRadians(180)), Math.toRadians(0))
                 .build();
 
         trajPreloadCaseB = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
-                .lineTo(new Vector2d(-36, -18))
+                .lineTo(new Vector2d(-35,31))
                 .build();
 
         trajPreloadCaseC = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
-                .splineToSplineHeading(new Pose2d(-50, -35, Math.toRadians(180)), Math.toRadians(180))
-                .lineTo(new Vector2d(-30, -35))
+                .setTangent(Math.toRadians(270))
+                .splineToLinearHeading(new Pose2d(-42,32,Math.toRadians(0)), Math.toRadians(260))
                 .build();
 
-        trajToIntakePreloadCaseA = drive.trajectorySequenceBuilder(trajPreloadCaseA.end())
-                .lineTo(new Vector2d(-50, 11.6))
-                .turn(Math.toRadians(-90))
-                .lineTo(new Vector2d(-60, 11.6))
+        trajToIntakeCaseA = drive.trajectorySequenceBuilder(trajPreloadCaseA.end())
+                .lineTo(new Vector2d(-53.3,23))
                 .build();
 
-        trajToIntakePreloadCaseB = drive.trajectorySequenceBuilder(trajPreloadCaseB.end())
-                .lineTo(new Vector2d(-36, -11.6))
-                .turn(Math.toRadians(90))
-                .lineTo(new Vector2d(-60, -11.6))
+        trajToIntakeCaseB = drive.trajectorySequenceBuilder(trajPreloadCaseB.end())
+                .splineToLinearHeading(new Pose2d(-54,35, Math.toRadians(180)), Math.toRadians(180))
                 .build();
 
-        trajToIntakePreloadCaseC = drive.trajectorySequenceBuilder(trajPreloadCaseC.end())
-                .splineToLinearHeading(new Pose2d(-36, -11.6, Math.toRadians(90)), Math.toRadians(90))
-                .turn(Math.toRadians(90))
-                .lineTo(new Vector2d(-60, -11.6))
+        trajToIntakeCaseC = drive.trajectorySequenceBuilder(trajPreloadCaseC.end())
+                .lineTo(new Vector2d(-36,32))
+                .splineToLinearHeading(new Pose2d(-55,11, Math.toRadians(181)), Math.toRadians(180))
                 .build();
 
-        trajToScoreCaseA = drive.trajectorySequenceBuilder(new Pose2d(-60, -11.6, Math.toRadians(180)))
-                .lineTo(new Vector2d(20, 11.6))
-                .splineToSplineHeading(new Pose2d(45, 27, Math.toRadians(180)), Math.toRadians(0))
+        trajToScoreCaseA = drive.trajectorySequenceBuilder(trajToIntakeCaseA.end())
+                .setTangent(Math.toRadians(330))
+                .splineToLinearHeading(new Pose2d(40,41.5,Math.toRadians(180)), Math.toRadians(80))
                 .build();
 
-        trajToScoreCaseB = drive.trajectorySequenceBuilder(new Pose2d(-60, -11.6, Math.toRadians(180)))
-                .lineTo(new Vector2d(20, -11.6))
-                .splineToSplineHeading(new Pose2d(45, -35, Math.toRadians(180)), Math.toRadians(0))
+        trajToScoreCaseB = drive.trajectorySequenceBuilder(trajToIntakeCaseB.end())
+                .setTangent(Math.toRadians(260))
+                .splineToLinearHeading(new Pose2d(42,35, Math.toRadians(180)), Math.toRadians(90))
                 .build();
 
-        trajToScoreCaseC = drive.trajectorySequenceBuilder(new Pose2d(-60, -11.6, Math.toRadians(180)))
-                .lineTo(new Vector2d(20, -11.6))
-                .splineToSplineHeading(new Pose2d(45, -43, Math.toRadians(180)), Math.toRadians(0))
+        trajToScoreCaseC = drive.trajectorySequenceBuilder(trajToIntakeCaseC.end())
+                .setTangent(Math.toRadians(0))
+                .splineToLinearHeading(new Pose2d(42,29, Math.toRadians(180)),Math.toRadians(40))
                 .build();
-
-        trajToIntakeCaseA = drive.trajectorySequenceBuilder(trajToScoreCaseA.end())
-                .splineToSplineHeading(new Pose2d(20, 11.6, Math.toRadians(180)), Math.toRadians(180))
-                .lineTo(new Vector2d(-60, 11.6))
-                .build();
-
-        trajToIntakeCaseB = drive.trajectorySequenceBuilder(trajToScoreCaseB.end())
-                .splineToSplineHeading(new Pose2d(20, -11.6, Math.toRadians(180)), Math.toRadians(180))
-                .lineTo(new Vector2d(-60, -11.6))
-                .build();
-
-        trajToIntakeCaseC = drive.trajectorySequenceBuilder(trajToScoreCaseC.end())
-                .splineToSplineHeading(new Pose2d(20, -11.6, Math.toRadians(180)), Math.toRadians(180))
-                .lineTo(new Vector2d(-60, -11.6))
-                .build();
-
 
         parkSpotA = drive.trajectorySequenceBuilder(trajToScoreCaseA.end())
-                .lineTo(new Vector2d(50, 27))
+                .setTangent(Math.toRadians(270))
+                .splineToLinearHeading(new Pose2d(60,10, Math.toRadians(180)),Math.toRadians(0))
                 .build();
 
         parkSpotB = drive.trajectorySequenceBuilder(trajToScoreCaseB.end())
-                .lineTo(new Vector2d(50, 35))
+                .setTangent(Math.toRadians(270))
+                .splineToLinearHeading(new Pose2d(60,10, Math.toRadians(180)),Math.toRadians(0))
                 .build();
 
         parkSpotC = drive.trajectorySequenceBuilder(trajToScoreCaseC.end())
-                .lineTo(new Vector2d(50, 43))
+                .setTangent(Math.toRadians(270))
+                .splineToLinearHeading(new Pose2d(60,10, Math.toRadians(180)),Math.toRadians(0))
                 .build();
-
 
         while (!isStarted() && !isStopRequested()) {
             telemetry.addData("Element position", webcam.getBarcodePosition());
@@ -241,25 +221,25 @@ public class StackAutoBlue extends LinearOpMode {
 
         waitForStart();
 
-        if(barcodePosition == BarCodeDetection.BarcodePosition.LEFT) {
-            CaseA();
+        if(barcodePosition == BarCodeDetection.BarcodePosition.RIGHT) {
+            CaseC();
         } else if(barcodePosition == BarCodeDetection.BarcodePosition.MIDDLE) {
             CaseB();
         }   else {
-            CaseC();
+            CaseA();
         }
-        //    sleep(30000);
+            sleep(3000);
     }
 
     private void CaseA() {
-        drive.setPoseEstimate(new Pose2d(0, 0, Math.toRadians(0)));
+        drive.setPoseEstimate(new Pose2d(-36, -63.5, Math.toRadians(90)));
 
         drive.followTrajectorySequence(trajPreloadCaseA);
 
-        preloadThread.start();
-        sleep(200);
+        preloadServo.setPosition(Constants.PRELOAD_SERVO_SCORE_POS);
+        sleep(600);
 
-        drive.followTrajectorySequence(trajToIntakePreloadCaseA);
+        /*drive.followTrajectorySequence(trajToIntakePreloadCaseA);
         intakeRoutine(Constants.INTAKE_SERVO_FIRST_PIXEL_POS_AUTO);
 
         drive.followTrajectorySequence(trajToScoreCaseA);
@@ -278,20 +258,20 @@ public class StackAutoBlue extends LinearOpMode {
 
         drive.followTrajectorySequence(trajToScoreCaseA);
         scoreAutoThread.start();
-        retractThread.start();
+        retractThread.start();*/
 
         drive.followTrajectorySequence(parkSpotA);
     }
 
     private void CaseB() {
-        drive.setPoseEstimate(new Pose2d(0, 0, Math.toRadians(0)));
+        drive.setPoseEstimate(new Pose2d(-36, -63.5, Math.toRadians(90)));
 
         drive.followTrajectorySequence(trajPreloadCaseB);
 
-        preloadThread.start();
-        sleep(200);
+        preloadServo.setPosition(Constants.PRELOAD_SERVO_SCORE_POS);
+        sleep(600);
 
-        drive.followTrajectorySequence(trajToIntakePreloadCaseB);
+       /* drive.followTrajectorySequence(trajToIntakePreloadCaseB);
         intakeRoutine(Constants.INTAKE_SERVO_FIRST_PIXEL_POS_AUTO);
 
         drive.followTrajectorySequence(trajToScoreCaseB);
@@ -310,20 +290,20 @@ public class StackAutoBlue extends LinearOpMode {
 
         drive.followTrajectorySequence(trajToScoreCaseB);
         scoreAutoThread.start();
-        retractThread.start();
+        retractThread.start();*/
 
         drive.followTrajectorySequence(parkSpotB);
     }
 
     private void CaseC() {
-        drive.setPoseEstimate(new Pose2d(0, 0, Math.toRadians(0)));
+        drive.setPoseEstimate(new Pose2d(-36, -63.5, Math.toRadians(90)));
 
         drive.followTrajectorySequence(trajPreloadCaseC);
 
-        preloadThread.start();
-        sleep(200);
+        preloadServo.setPosition(Constants.PRELOAD_SERVO_SCORE_POS);
+        sleep(600);
 
-        drive.followTrajectorySequence(trajToIntakePreloadCaseC);
+       /* drive.followTrajectorySequence(trajToIntakePreloadCaseC);
         intakeRoutine(Constants.INTAKE_SERVO_FIRST_PIXEL_POS_AUTO);
 
         drive.followTrajectorySequence(trajToScoreCaseC);
@@ -342,22 +322,21 @@ public class StackAutoBlue extends LinearOpMode {
 
         drive.followTrajectorySequence(trajToScoreCaseC);
         scoreAutoThread.start();
-        retractThread.start();
+        retractThread.start();*/
 
         drive.followTrajectorySequence(parkSpotC);
     }
 
     public void intakeRoutine(double intakeLevel) {
         intakeThreadExecutor.accept(intakeLevel);
-        sleep(400);
+        sleep(1000);
 
         intakeSubsystem.setIntakePower(0);
+        scoreSubsystem.useBlock(Constants.BLOCK_SERVO_BLOCK_POS);
         intakeSubsystem.setIntakePos(Constants.INTAKE_SERVO_INIT_POS);
+        sleep(300);
 
-        scoreSubsystem.useClaw(Constants.CLOSE_CLAW_AUTO);
-        sleep(50);
-        scoreSubsystem.pivotClaw(Constants.PIVOT_PIVOT_POS);
-        scoreSubsystem.rotateClaw(Constants.ROTATE_SERVO_45);
+        scoreSubsystem.useArm(Constants.ARM_SERVO_PIVOT_30);
     }
 }
 

@@ -15,10 +15,7 @@ public class DriveSubsystem extends SubsystemBase {
     private Motor rightFront;
     private Motor rightBack;
 
-    private MotorGroup motorGroupLeft;
-    private MotorGroup motorGroupRight;
-
-    private DifferentialDrive sixWheelDrive;
+    private MecanumDrive mecanumDrive;
 
     public DriveSubsystem(Motor leftFront, Motor leftBack, Motor rightFront, Motor rightBack) {
         this.leftFront = leftFront;
@@ -26,28 +23,31 @@ public class DriveSubsystem extends SubsystemBase {
         this.rightFront = rightFront;
         this.rightBack = rightBack;
 
-        motorGroupLeft = new MotorGroup(leftFront, leftBack);
-        motorGroupRight = new MotorGroup(rightFront, rightBack);
+        this.leftFront.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+        this.leftBack.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+        this.rightFront.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+        this.rightBack.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
 
-        motorGroupLeft.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
-        motorGroupRight.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+        this.leftFront.setRunMode(Motor.RunMode.RawPower);
+        this.leftBack.setRunMode(Motor.RunMode.RawPower);
+        this.rightFront.setRunMode(Motor.RunMode.RawPower);
+        this.rightBack.setRunMode(Motor.RunMode.RawPower);
 
-        motorGroupLeft.setRunMode(Motor.RunMode.RawPower);
-        motorGroupRight.setRunMode(Motor.RunMode.RawPower);
-
-        sixWheelDrive = new DifferentialDrive(true, motorGroupLeft, motorGroupRight);
+        mecanumDrive = new MecanumDrive(true, leftFront, rightFront, leftBack, rightBack);
     }
 
     /**
      * Drives the robot using arcade controls.
      *
+     * @param str the commanded strafe movement
      * @param fwd the commanded forward movement
      * @param rot the commanded rotation movement
-     */
-    public void drive(double fwd, double rot) {
+     * */
+    public void drive(double str, double fwd, double rot) {
+        str = (Math.abs(str) >= 0.1) ? str : 0;
         fwd = (Math.abs(fwd) >= 0.1) ? fwd : 0;
         rot = (Math.abs(rot) >= 0.1) ? rot : 0;
 
-        sixWheelDrive.arcadeDrive(fwd, rot, true);
+        mecanumDrive.driveRobotCentric(-str, -fwd, -rot, true);
     }
 }

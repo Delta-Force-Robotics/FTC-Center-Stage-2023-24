@@ -1,5 +1,8 @@
 package org.firstinspires.ftc.teamcode.vision;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.config.Config;
+
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
@@ -9,12 +12,20 @@ import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 import org.openftc.easyopencv.OpenCvPipeline;
 
+@Config
 public class BarCodeDetection extends OpenCvPipeline {
 
-    Telemetry telemetry;
+    FtcDashboard dashboard = FtcDashboard.getInstance();
+    Telemetry telemetry = dashboard.getTelemetry();
+
     Mat mat = new Mat();
     Mat mat1 = new Mat();
+    Mat mat2 = new Mat();
     Color pixel;
+    Scalar lowHSV;
+    Scalar highHSV;
+    Scalar lowHSV1;
+    Scalar highHSV1;
 
     public enum BarcodePosition {
         LEFT,
@@ -30,20 +41,20 @@ public class BarCodeDetection extends OpenCvPipeline {
 
     private BarcodePosition barcodePosition = BarcodePosition.NOT_FOUND;
 
-    static final Rect LEFT_ROW = new Rect(
-            new Point( 40, 0 ),
-            new Point( 166, 116 )
+     static final Rect LEFT_ROW = new Rect(
+            new Point( 50, 120 ),
+            new Point( 0, 210 )
     );
     static final Rect MIDDLE_ROW = new Rect(
-            new Point( 270, 0 ),
-            new Point( 402, 115 )
+            new Point( 120, 120 ),
+            new Point( 150, 170 )
     );
-    static final Rect RIGHT_ROW = new Rect(
-            new Point( 475, 0 ),
-            new Point( 620, 120 )
+     static final Rect RIGHT_ROW = new Rect(
+            new Point( 430, 135 ),
+            new Point( 390, 200 )
     );
 
-    static double PERCENT_COLOR_THRESHOLD = 0.20;
+    static double PERCENT_COLOR_THRESHOLD = 0.07;
 
     public BarCodeDetection(Telemetry t, Color color) {
         telemetry = t;
@@ -52,22 +63,23 @@ public class BarCodeDetection extends OpenCvPipeline {
 
     public Mat processFrame( Mat input, String type ) {
         Imgproc.cvtColor(input, mat, Imgproc.COLOR_RGB2HSV);
-        Scalar lowHSV;
-        Scalar highHSV;
-        Scalar lowHSV1;
-        Scalar highHSV1;
 
         if( pixel == Color.RED ) {
             lowHSV = new Scalar(0, 50, 100);
-            highHSV = new Scalar(4, 255, 255);
+            highHSV = new Scalar(179, 255, 255);
 
-            lowHSV1 = new Scalar(120, 50, 100);
+            lowHSV1 = new Scalar(357, 95, 42);
             highHSV1 = new Scalar(179, 255, 255);
 
             Core.inRange(mat, lowHSV1, highHSV1, mat1);
         } else {
-            lowHSV = new Scalar(100, 50, 100);
-            highHSV = new Scalar(130, 255, 255);
+            lowHSV = new Scalar(110, 50, 50);
+            highHSV = new Scalar(120, 255, 255);
+
+            lowHSV1 = new Scalar(209, 93, 68);
+            highHSV1 = new Scalar(235, 91, 90);
+
+            Core.inRange(mat, lowHSV1, highHSV1, mat1);
         }
 
         Core.inRange(mat, lowHSV, highHSV, mat);

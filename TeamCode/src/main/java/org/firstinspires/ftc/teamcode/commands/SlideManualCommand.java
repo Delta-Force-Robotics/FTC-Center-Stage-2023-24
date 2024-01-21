@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.commands;
 
 import com.arcrobotics.ftclib.command.CommandBase;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.constants.Constants;
 import org.firstinspires.ftc.teamcode.subsystems.SlideSubsystem;
 
@@ -30,6 +31,9 @@ public class SlideManualCommand extends CommandBase {
 
             slideSubsystem.setMotorPower(slidePower);
             slideSubsystem.slideState.setId(slideSubsystem.getSlideExtensionMeters());
+
+            //telemetry.addData("slidePower", slidePower);
+            //telemetry.update();
         }
     }
 }

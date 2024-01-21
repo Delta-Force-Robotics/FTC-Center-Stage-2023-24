@@ -17,9 +17,9 @@ import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.Consumer;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.commands.ClimbManualCommand;
 import org.firstinspires.ftc.teamcode.commands.DriveCommand;
 import org.firstinspires.ftc.teamcode.commands.SlideManualCommand;
-import org.firstinspires.ftc.teamcode.commands.TouchSensorCommand;
 import org.firstinspires.ftc.teamcode.constants.Constants;
 import org.firstinspires.ftc.teamcode.constants.HardwareConstants;
 import org.firstinspires.ftc.teamcode.subsystems.ClimbSubsystem;
@@ -27,9 +27,13 @@ import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.IntakeSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.ScoreSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.SlideSubsystem;
+import org.firstinspires.ftc.teamcode.threads.BackupThread;
+import org.firstinspires.ftc.teamcode.threads.ClimbThread;
 import org.firstinspires.ftc.teamcode.threads.IntakeThread;
+import org.firstinspires.ftc.teamcode.threads.OutakeThread;
 import org.firstinspires.ftc.teamcode.threads.ScoreReleaseThread;
 import org.firstinspires.ftc.teamcode.threads.ScoreThread;
+import org.firstinspires.ftc.teamcode.threads.StopIntakeThread;
 
 @TeleOp
 public class TeleOpMain extends CommandOpMode {
@@ -43,18 +47,12 @@ public class TeleOpMain extends CommandOpMode {
     private Motor intakeMotor;
     private Motor climbMotor;
 
-    private Servo clawServo;
     private Servo intakeServo;
-    private Servo pivotServo;
     private Servo rotateServo;
     private Servo armServoLeft;
     private Servo armServoRight;
+    private Servo blockServo;
     private Servo droneServo;
-    private Servo climbServoLeft;
-    private Servo climbServoRight;
-
-    private DigitalChannel touchSensorLeft;
-    private DigitalChannel touchSensorRight;
 
     private DriveSubsystem driveSubsystem;
     private ScoreSubsystem scoreSubsystem;
@@ -64,22 +62,20 @@ public class TeleOpMain extends CommandOpMode {
 
     private DriveCommand driveCommand;
     private SlideManualCommand slideManualCommand;
-    private TouchSensorCommand touchSensorCommand;
+    private ClimbManualCommand climbManualCommand;
 
     private IntakeThread intakeThread;
     private ScoreThread scoreThread;
     private ScoreReleaseThread scoreReleaseThread;
+    private OutakeThread outakeThread;
+    private BackupThread backupThread;
+    private StopIntakeThread stopIntakeThread;
+    private ClimbThread climbThread;
 
-    private InstantCommand useClaw;
-    private InstantCommand closeClaw;
     private InstantCommand changeLevelUp;
     private InstantCommand changeLevelDown;
     private InstantCommand droneInstantCommand;
-    private InstantCommand climbUpInstantCommand;
-    private InstantCommand climbDownInstantCommand;
-    private InstantCommand climbServoInstantCommand;
     private InstantCommand stopIntakeInstantCommand;
-    private InstantCommand descoreInstantCommand;
     private InstantCommand rotate180;
     private InstantCommand rotate45;
 
@@ -87,15 +83,17 @@ public class TeleOpMain extends CommandOpMode {
     private GamepadEx driver2;
 
     private Consumer<Double> scoreThreadExecutor;
+    private Consumer<Double> climbThreadExecutor;
     private Consumer<Double> scoreReleaseThreadExecutor;
 
     private boolean clawBool;
-    public int currLevel = 0;
+    public int currLevel = 1;
 
     @Override
     public void initialize() {
 
         Constants.SLIDE_INPUT_STATE = Constants.InputState.MANUAL_CONTROL;
+        Constants.CLIMB_INPUT_STATE = Constants.InputState.MANUAL_CONTROL;
 
         driveLeftFront = new Motor(hardwareMap, HardwareConstants.ID_LEFT_FRONT_MOTOR);
         driveLeftBack = new Motor(hardwareMap, HardwareConstants.ID_LEFT_BACK_MOTOR);
@@ -105,52 +103,63 @@ public class TeleOpMain extends CommandOpMode {
         slideMotorLeft = new Motor(hardwareMap, HardwareConstants.ID_SLIDE_MOTOR_LEFT);
         slideMotorRight = new Motor(hardwareMap, HardwareConstants.ID_SLIDE_MOTOR_RIGHT);
 
-        intakeMotor = new Motor(hardwareMap, HardwareConstants.ID_INTSKE_MOTOR);
+        intakeMotor = new Motor(hardwareMap, HardwareConstants.ID_INTAKE_MOTOR);
         climbMotor = new Motor(hardwareMap, HardwareConstants.ID_CLIMB_MOTOR);
 
         armServoLeft = hardwareMap.get(Servo.class, HardwareConstants.ID_ARM_SERVO_LEFT);
         armServoRight = hardwareMap.get(Servo.class, HardwareConstants.ID_ARM_SERVO_RIGHT);
-        clawServo = hardwareMap.get(Servo.class, HardwareConstants.ID_CLAW_SERVO);
         intakeServo = hardwareMap.get(Servo.class, HardwareConstants.ID_INTAKE_SERVO);
-        pivotServo = hardwareMap.get(Servo.class, HardwareConstants.ID_PIVOT_CLAW_SERVO);
         rotateServo = hardwareMap.get(Servo.class, HardwareConstants.ID_FLIP_SERVO);
+        blockServo = hardwareMap.get(Servo.class, HardwareConstants.ID_BLOCK_SERVO);
         droneServo = hardwareMap.get(Servo.class, HardwareConstants.ID_DRONE_SERVO);
-        climbServoLeft = hardwareMap.get(Servo.class, HardwareConstants.ID_LEFT_CLIMB_SERVO);
-        climbServoRight = hardwareMap.get(Servo.class, HardwareConstants.ID_RIGHT_CLIMB_SERVO);
 
-        //   touchSensorLeft = hardwareMap.get(DigitalChannel.class, "touchSensorLeft");
-        //  touchSensorRight = hardwareMap.get(DigitalChannel.class, "touchSensorRight");
+       /* BNO055IMUNew.Parameters parameters = new BNO055IMUNew.Parameters(new RevHubOrientationOnRobot(RevHubOrientationOnRobot.LogoFacingDirection.UP, RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD));
+        parameters.calibrationDataFile = "BNO055IMUCalibration.json";
+        imu = hardwareMap.get(IMU.class,"imu");
+        imu.initialize(parameters);*/
 
         driveSubsystem = new DriveSubsystem(driveLeftFront, driveLeftBack, driveRightFront, driveRightBack);
         intakeSubsystem = new IntakeSubsystem(intakeMotor, intakeServo);
-        scoreSubsystem = new ScoreSubsystem(clawServo, pivotServo, armServoLeft, armServoRight, rotateServo, droneServo, touchSensorLeft, touchSensorRight, false);
+        scoreSubsystem = new ScoreSubsystem(armServoLeft, armServoRight, rotateServo, blockServo, droneServo, false);
         slideSubsystem = new SlideSubsystem(slideMotorLeft, slideMotorRight, FtcDashboard.getInstance().getTelemetry(), true, false);
-        climbSubsystem = new ClimbSubsystem(climbMotor, climbServoLeft, climbServoRight);
+        climbSubsystem = new ClimbSubsystem(climbMotor, telemetry, true);
 
         driver1 = new GamepadEx(gamepad1);
         driver2 = new GamepadEx(gamepad2);
-        BNO055IMUNew.Parameters parameters = new BNO055IMUNew.Parameters(new RevHubOrientationOnRobot(RevHubOrientationOnRobot.LogoFacingDirection.UP, RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD));
-        parameters.calibrationDataFile = "BNO055IMUCalibration.json";
-        imu = hardwareMap.get(IMU.class, "imu");
-        imu.initialize(parameters);
 
-        driveCommand = new DriveCommand(driveSubsystem, driver1::getLeftY, driver1::getRightX);
+        driveCommand = new DriveCommand(driveSubsystem, driver1::getLeftX, driver1::getLeftY, driver1::getRightX);
         slideManualCommand = new SlideManualCommand(slideSubsystem, () -> driver1.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER), () -> driver1.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER));
+        climbManualCommand = new ClimbManualCommand(climbSubsystem, () -> driver2.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER), () -> driver2.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER));
         // touchSensorCommand = new TouchSensorCommand(scoreSubsystem, intakeSubsystem);
 
-        intakeThread = new IntakeThread(intakeSubsystem, false);
+        intakeThread = new IntakeThread(intakeSubsystem, scoreSubsystem, false);
         scoreThread = new ScoreThread(slideSubsystem, scoreSubsystem);
-        scoreReleaseThread = new ScoreReleaseThread(scoreSubsystem, slideSubsystem);
 
-        Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
+        climbThread = new ClimbThread(climbSubsystem);
+
+        scoreReleaseThread = new ScoreReleaseThread(slideSubsystem, scoreSubsystem);
+        outakeThread = new OutakeThread(intakeSubsystem, scoreSubsystem);
+        backupThread = new BackupThread(scoreSubsystem);
+        stopIntakeThread = new StopIntakeThread(intakeSubsystem, scoreSubsystem);
+
         intakeThread.setPriority(Thread.MIN_PRIORITY);
+        outakeThread.setPriority(Thread.MIN_PRIORITY);
         scoreThread.setPriority(Thread.MIN_PRIORITY);
-        scoreReleaseThread.setPriority(Thread.MIN_PRIORITY);
+        climbThread.setPriority(Thread.MIN_PRIORITY);
+        backupThread.setPriority(Thread.MIN_PRIORITY);
+        stopIntakeThread.setPriority(Thread.MIN_PRIORITY);
+        Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
 
         scoreThreadExecutor = (Double levelForSlides) -> {
             scoreThread.slideLevel = levelForSlides;
             scoreThread.interrupt();
             scoreThread.start();
+        };
+
+        climbThreadExecutor = (Double positionForClimb) -> {
+            climbThread.position = positionForClimb;
+            climbThread.interrupt();
+            climbThread.start();
         };
 
         scoreReleaseThreadExecutor = (Double levelForSlides) -> {
@@ -159,104 +168,63 @@ public class TeleOpMain extends CommandOpMode {
             scoreReleaseThread.start();
         };
 
-        clawBool = false;
-        useClaw = new InstantCommand(() -> {
-            /*if (clawBool == false) {
-                scoreSubsystem.useClaw(Constants.OPEN_CLAW);
-                clawBool = true;
-            } else {
-                scoreSubsystem.useClaw(Constants.CLOSE_CLAW_TELEOP);
-                clawBool = false;
-            }*/
-            scoreSubsystem.useClaw(Constants.OPEN_CLAW);
-        });
-
-        closeClaw = new InstantCommand(() -> {
-            scoreSubsystem.useClaw(Constants.CLOSE_CLAW_TELEOP);
-        });
-
         changeLevelUp = new InstantCommand(() -> {
-            currLevel++;
             // slideSubsystem.setLevel(0.2);
-            if (currLevel >= 0 && currLevel < 10) {
+            if (currLevel > 0 && currLevel < 6) {
+                currLevel++;
                 telemetry.addData("CURRENT LEVEL", currLevel);
                 telemetry.update();
             }
         });
 
         changeLevelDown = new InstantCommand(() -> {
-            slideSubsystem.setCurrentLevel(slideSubsystem.getCurrLevel() - 1);
-            currLevel--;
             //slideSubsystem.setLevel(0);
-            if (currLevel > 0 && currLevel < 10) {
+            if (currLevel > 0 && currLevel < 6) {
+                currLevel--;
                 telemetry.addData("CURRENT LEVEL", currLevel);
                 telemetry.update();
             }
-        });
-
-        stopIntakeInstantCommand = new InstantCommand(() -> {
-            intakeSubsystem.setIntakePower(0);
-            scoreSubsystem.useArm(Constants.ARM_SERVO_INTAKE_POS);
-            sleep(500);
-
-            scoreSubsystem.useClaw(Constants.CLOSE_CLAW_TELEOP);
-            sleep(500);
-
-            scoreSubsystem.useArm(Constants.ARM_SERVO_PIVOT_30);
-
-            intakeSubsystem.setIntakePos(Constants.INTAKE_SERVO_INIT_POS);
-            intakeSubsystem.setIntakePower(-1);
-            sleep(1000);
-            intakeSubsystem.setIntakePower(0);
-        });
-
-        descoreInstantCommand = new InstantCommand(() -> {
-            scoreSubsystem.useClaw(Constants.CLOSE_CLAW_TELEOP);
         });
 
         droneInstantCommand = new InstantCommand(() -> {
             scoreSubsystem.setDroneServoPos(Constants.DRONE_SERVO_SCORE_POS);
         });
 
-        climbUpInstantCommand = new InstantCommand(() -> {
-            climbSubsystem.setClimbPos(Constants.CLIMB_MOTOR_CLIMB_POS);
+        rotate45 = new InstantCommand(() -> {
+            scoreThread.selectRotate = false;
+            backupThread.selectRotate = false;
         });
 
-        climbDownInstantCommand = new InstantCommand(() -> {
-            climbSubsystem.setClimbPos(Constants.CLIMB_MOTOR_INIT_POS);
-        });
-
-        climbServoInstantCommand = new InstantCommand(() -> {
-            climbSubsystem.setClimbServoPos(Constants.CLIMB_SERVO_CLIMB_POS);
+        rotate180 = new InstantCommand(() -> {
+           scoreThread.selectRotate = true;
+            backupThread.selectRotate = true;
         });
 
         new GamepadButton(driver1, GamepadKeys.Button.RIGHT_BUMPER).whenPressed(() -> scoreReleaseThreadExecutor.accept(Constants.SLIDE_INTAKE));
-        new GamepadButton(driver1, GamepadKeys.Button.LEFT_BUMPER).whenPressed(descoreInstantCommand);
-
-        new GamepadButton(driver1, GamepadKeys.Button.DPAD_UP).whenPressed(climbUpInstantCommand);
-        new GamepadButton(driver1, GamepadKeys.Button.DPAD_DOWN).whenPressed(climbDownInstantCommand);
-        new GamepadButton(driver1, GamepadKeys.Button.DPAD_LEFT).whenPressed(climbServoInstantCommand);
 
         new GamepadButton(driver1, GamepadKeys.Button.Y).whenPressed(droneInstantCommand);
+        new GamepadButton(driver1, GamepadKeys.Button.B).whenPressed(() -> outakeThread.start());
+
+        //new GamepadButton(driver2, GamepadKeys.Button.DPAD_RIGHT).whenPressed(() -> backupThread.start());
 
         new GamepadButton(driver2, GamepadKeys.Button.RIGHT_BUMPER).whenPressed(() -> scoreThreadExecutor.accept(Constants.SLIDE_POSITIONS[currLevel-1]));
+        new GamepadButton(driver2, GamepadKeys.Button.LEFT_BUMPER).whenPressed(() -> intakeSubsystem.setIntakePos(Constants.INTAKE_SERVO_INIT_POS));
 
         new GamepadButton(driver2, GamepadKeys.Button.DPAD_UP).whenPressed(changeLevelUp);
         new GamepadButton(driver2, GamepadKeys.Button.DPAD_DOWN).whenPressed(changeLevelDown);
 
-        new GamepadButton(driver2, GamepadKeys.Button.DPAD_LEFT).whenPressed(rotate180);
-        new GamepadButton(driver2, GamepadKeys.Button.DPAD_RIGHT).whenPressed(rotate45);
+        //new GamepadButton(driver2, GamepadKeys.Button.DPAD_LEFT).whenPressed(rotate45);
+        //new GamepadButton(driver2, GamepadKeys.Button.DPAD_RIGHT).whenPressed(rotate180);
+        new GamepadButton(driver2, GamepadKeys.Button.DPAD_LEFT).whenPressed(() -> climbThreadExecutor.accept(Constants.CLIMB_MOTOR_CLIMB_POS_METERS));
+        new GamepadButton(driver2, GamepadKeys.Button.DPAD_RIGHT).whenPressed(() -> climbThreadExecutor.accept(Constants.CLIMB_MOTOR_INIT_POS_METERS));
 
         new GamepadButton(driver2, GamepadKeys.Button.A).whenPressed(() -> intakeThread.start());
-        new GamepadButton(driver2, GamepadKeys.Button.B).whenPressed(stopIntakeInstantCommand);
-        new GamepadButton(driver2, GamepadKeys.Button.X).whenPressed(useClaw);
-        new GamepadButton(driver2, GamepadKeys.Button.Y).whenPressed(closeClaw);
+        new GamepadButton(driver2, GamepadKeys.Button.B).whenPressed(() -> stopIntakeThread.start());
         driveSubsystem.setDefaultCommand(driveCommand);
         slideSubsystem.setDefaultCommand(slideManualCommand);
-        // scoreSubsystem.setDefaultCommand(touchSensorCommand);
+        climbSubsystem.setDefaultCommand(climbManualCommand);
 
         telemetry.addData("CURRENT LEVEL", currLevel);
         telemetry.update();
-
     }
 }

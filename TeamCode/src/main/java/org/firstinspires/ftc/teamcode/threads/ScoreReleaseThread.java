@@ -4,33 +4,41 @@ import org.firstinspires.ftc.teamcode.constants.Constants;
 import org.firstinspires.ftc.teamcode.subsystems.ScoreSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.SlideSubsystem;
 
-public class ScoreReleaseThread extends Thread{
+public class ScoreReleaseThread extends Thread {
+    public SlideSubsystem slideSubsystem;
     private ScoreSubsystem scoreSubsystem;
-    private SlideSubsystem slideSubsystem;
     public double slideLevel = 0;
 
-    public ScoreReleaseThread(ScoreSubsystem scoreSubsystem, SlideSubsystem slideSubsystem) {
-        this.scoreSubsystem = scoreSubsystem;
+    public boolean selectRotate = false;
+
+    public ScoreReleaseThread(SlideSubsystem slideSubsystem, ScoreSubsystem scoreSubsystem) {
         this.slideSubsystem = slideSubsystem;
+        this.scoreSubsystem = scoreSubsystem;
+        this.slideSubsystem.isInterrupted = this::isInterrupted;
     }
 
     @Override
     public void run() {
-        scoreSubsystem.useClaw(Constants.OPEN_CLAW);
+        scoreSubsystem.useBlock(Constants.BLOCK_SERVO_SCORE_POS);
         try {
-            sleep(800);
+            sleep(400);
         } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
+/*
+        scoreSubsystem.rotateClaw(Constants.ROTATE_SERVO_INIT_POSITION);
+        try {
+            sleep(200);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }*/
 
-        scoreSubsystem.pivotClaw(0);
-        scoreSubsystem.rotateClaw(0.5);
-        scoreSubsystem.useArm(Constants.ARM_SERVO_PIVOT_30);
+        scoreSubsystem.useArm(Constants.ARM_SERVO_INIT_POSITION);
 
         try {
-            sleep(1000);
+            sleep(250);
         } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
 
         slideSubsystem.setLevel(slideLevel);
