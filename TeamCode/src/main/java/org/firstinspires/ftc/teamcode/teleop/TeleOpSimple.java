@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.teleop;
 
 import com.arcrobotics.ftclib.hardware.motors.Motor;
+import com.arcrobotics.ftclib.hardware.motors.MotorEx;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -35,6 +36,7 @@ public class TeleOpSimple extends LinearOpMode {
 
     private Encoder leftFwEncoder;
     private Encoder rightFwEncoder;
+    private Encoder strafeFwEncoder;
 
     double lfPower;
     double rfPower;
@@ -50,13 +52,16 @@ public class TeleOpSimple extends LinearOpMode {
         rb = hardwareMap.get(DcMotor.class, HardwareConstants.ID_RIGHT_BACK_MOTOR);
         slideMotorLeft = new Motor(hardwareMap, HardwareConstants.ID_SLIDE_MOTOR_LEFT);
         slideMotorRight = new Motor(hardwareMap, HardwareConstants.ID_SLIDE_MOTOR_RIGHT);
+
         rightFwEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, HardwareConstants.ID_RIGHT_ENCODER));
         leftFwEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, HardwareConstants.ID_LEFT_ENCODER));
+        strafeFwEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, HardwareConstants.ID_STRAFE_ENCODER));
 
         climbMotor = new Motor(hardwareMap, HardwareConstants.ID_CLIMB_MOTOR);
         intakeMotor = new Motor(hardwareMap, HardwareConstants.ID_INTAKE_MOTOR);
 
         leftFwEncoder.setDirection(Encoder.Direction.REVERSE);
+        strafeFwEncoder.setDirection(Encoder.Direction.REVERSE);
 
         intakeServo = hardwareMap.get(Servo.class, HardwareConstants.ID_INTAKE_SERVO);
         rotateServo = hardwareMap.get(Servo.class, HardwareConstants.ID_FLIP_SERVO);
@@ -102,6 +107,8 @@ public class TeleOpSimple extends LinearOpMode {
         slideMotorLeft.resetEncoder();
         slideMotorRight.resetEncoder();
 
+
+
         climbMotor.resetEncoder();
         waitForStart();
 
@@ -132,11 +139,11 @@ public class TeleOpSimple extends LinearOpMode {
             }
 
             if (gamepad2.b) {
-                droneServo.setPosition(droneServo.getPosition() + 0.01);
+                intakeServo.setPosition(0.315);
                 sleep(200);
             }
             else if (gamepad2.x) {
-                droneServo.setPosition(droneServo.getPosition() - 0.01);
+                intakeServo.setPosition(0);
                 sleep(200);
             }
 
@@ -179,7 +186,7 @@ public class TeleOpSimple extends LinearOpMode {
             }*/
 
            if (gamepad1.dpad_right) {
-               intakeMotor.set(0.7);
+               intakeMotor.set(0.8);
             }
             if (gamepad1.dpad_left) {
                 intakeMotor.set(0);
@@ -205,6 +212,7 @@ public class TeleOpSimple extends LinearOpMode {
             telemetry.addData("Drone Servo", droneServo.getPosition());
             telemetry.addData("Right Encoder", rightFwEncoder.getCurrentPosition());
             telemetry.addData("Left Encoder", leftFwEncoder.getCurrentPosition());
+            telemetry.addData("Strafe Encoder", strafeFwEncoder.getCurrentPosition());
             telemetry.addData("Preload Servo", preloadServo.getPosition());
             telemetry.addData("Climb Motor", climbMotor.getCurrentPosition());
             //telemetry.addData("Climb Motor METERS", ticksToMeters(climbMotor.getCurrentPosition()));

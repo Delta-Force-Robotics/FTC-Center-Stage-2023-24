@@ -296,7 +296,7 @@ public class StackAutoRed extends LinearOpMode {
     }
 
     private void CaseC() {
-        drive.setPoseEstimate(new Pose2d(-36, 63.5, Math.toRadians(270)));
+        drive.setPoseEstimate(new Pose2d(-36, 61.5, Math.toRadians(270)));
 
         drive.followTrajectorySequence(trajPreloadCaseC);
 

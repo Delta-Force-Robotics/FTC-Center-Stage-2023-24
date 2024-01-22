@@ -29,8 +29,10 @@ public class HardwareConstants {
     public static final String ID_SERVO_1 = "servo1";
 
     //dead wheels
-    public static final String ID_LEFT_ENCODER = "rf";
-    public static final String ID_RIGHT_ENCODER = "intakeMotor";
+    public static final String ID_LEFT_ENCODER = "lf";
+    public static final String ID_RIGHT_ENCODER = "rf";
+
+    public static final String ID_STRAFE_ENCODER = "lb";
 
    public static final String ID_PRELOAD_SERVO = "preloadServo";
 }

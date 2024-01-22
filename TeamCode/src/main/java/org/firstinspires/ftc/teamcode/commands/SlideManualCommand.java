@@ -26,7 +26,7 @@ public class SlideManualCommand extends CommandBase {
     public void execute() {
         if(Constants.SLIDE_INPUT_STATE == Constants.InputState.MANUAL_CONTROL) {
             double rightTriggerOutput = (slideSubsystem.getSlideExtensionMeters() > Constants.SLIDE_MANUAL_CONTROL_MAX) ? slideSubsystem.getPassivePower() : Math.max(slideSubsystem.getPassivePower(), rightTrigger.getAsDouble());
-            double leftTriggerOutput = leftTrigger.getAsDouble() * (slideSubsystem.getPassivePower() + 0.15);
+            double leftTriggerOutput = leftTrigger.getAsDouble() * (slideSubsystem.getPassivePower() + 0.5);
             double slidePower = rightTriggerOutput - leftTriggerOutput;
 
             slideSubsystem.setMotorPower(slidePower);

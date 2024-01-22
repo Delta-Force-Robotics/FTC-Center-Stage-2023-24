@@ -151,7 +151,7 @@ public class StackAutoBlue extends LinearOpMode {
         };
 
         drive = new SampleMecanumDrive(hardwareMap);
-        drive.setPoseEstimate(new Pose2d(-36, 63.5, Math.toRadians(90)));
+        drive.setPoseEstimate(new Pose2d(-36, 61.5, Math.toRadians(90)));
 
 
         trajPreloadCaseA = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
@@ -183,12 +183,12 @@ public class StackAutoBlue extends LinearOpMode {
 
         trajToScoreCaseA = drive.trajectorySequenceBuilder(trajToIntakeCaseA.end())
                 .setTangent(Math.toRadians(330))
-                .splineToLinearHeading(new Pose2d(40,41.5,Math.toRadians(180)), Math.toRadians(80))
+                .splineToLinearHeading(new Pose2d(49,41.5,Math.toRadians(180)), Math.toRadians(80))
                 .build();
 
         trajToScoreCaseB = drive.trajectorySequenceBuilder(trajToIntakeCaseB.end())
                 .setTangent(Math.toRadians(260))
-                .splineToLinearHeading(new Pose2d(42,35, Math.toRadians(180)), Math.toRadians(90))
+                .splineToLinearHeading(new Pose2d(49,35, Math.toRadians(180)), Math.toRadians(90))
                 .build();
 
         trajToScoreCaseC = drive.trajectorySequenceBuilder(trajToIntakeCaseC.end())
@@ -197,12 +197,14 @@ public class StackAutoBlue extends LinearOpMode {
                 .build();
 
         parkSpotA = drive.trajectorySequenceBuilder(trajToScoreCaseA.end())
-                .setTangent(Math.toRadians(270))
+                .lineTo(new Vector2d(44,41.5))
+                .setTangent(Math.toRadians(260))
                 .splineToLinearHeading(new Pose2d(60,10, Math.toRadians(180)),Math.toRadians(0))
                 .build();
 
         parkSpotB = drive.trajectorySequenceBuilder(trajToScoreCaseB.end())
-                .setTangent(Math.toRadians(270))
+                .lineTo(new Vector2d(44,35))
+                .setTangent(Math.toRadians(260))
                 .splineToLinearHeading(new Pose2d(60,10, Math.toRadians(180)),Math.toRadians(0))
                 .build();
 

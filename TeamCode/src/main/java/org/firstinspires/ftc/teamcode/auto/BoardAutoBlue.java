@@ -148,7 +148,7 @@ public class BoardAutoBlue extends LinearOpMode {
         };
 
         drive = new SampleMecanumDrive(hardwareMap);
-        drive.setPoseEstimate(new Pose2d(11.6, 63.5, Math.toRadians(270)));
+        drive.setPoseEstimate(new Pose2d(11.6, 61.5, Math.toRadians(90)));
 
         trajPreloadCaseA = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
                .setTangent(Math.toRadians(270))
@@ -167,31 +167,34 @@ public class BoardAutoBlue extends LinearOpMode {
         trajPreloadScoreCaseA = drive.trajectorySequenceBuilder(trajPreloadCaseA.end())
                 .lineTo(new Vector2d(23,60))
                 .setTangent(Math.toRadians(270))
-                .splineToLinearHeading(new Pose2d(44.5, 40.5, Math.toRadians(180)), Math.toRadians(270))
-                .lineTo(new Vector2d(45.5, 40.5))
+                .splineToLinearHeading(new Pose2d(49, 40.5, Math.toRadians(180)), Math.toRadians(270))
                 .build();
 
         trajPreloadScoreCaseB = drive.trajectorySequenceBuilder(trajPreloadCaseB.end())
                 .setTangent(Math.toRadians(90))
-                .splineToLinearHeading(new Pose2d(42, 35, Math.toRadians(180)), Math.toRadians(270))
+                .splineToLinearHeading(new Pose2d(49, 35, Math.toRadians(180)), Math.toRadians(0))
+
                 .build();
 
         trajPreloadScoreCaseC = drive.trajectorySequenceBuilder(trajPreloadCaseC.end())
                 .setTangent(Math.toRadians(0))
-                .splineToLinearHeading(new Pose2d(42, 28.5, Math.toRadians(180)), Math.toRadians(270))
+                .splineToLinearHeading(new Pose2d(49, 28.5, Math.toRadians(180)), Math.toRadians(300))
                 .build();
 
         parkSpotA = drive.trajectorySequenceBuilder(trajPreloadScoreCaseA.end())
-                .setTangent(Math.toRadians(90))
+                .lineTo(new Vector2d(45.5, 40.5))
+                .setTangent(Math.toRadians(95))
                 .splineToLinearHeading(new Pose2d(57.5,59, Math.toRadians(180)), Math.toRadians(350))
                 .build();
 
         parkSpotB = drive.trajectorySequenceBuilder(trajPreloadScoreCaseB.end())
+                .lineTo(new Vector2d(44,35))
                 .setTangent(Math.toRadians(90))
                 .splineToLinearHeading(new Pose2d(57.5,59, Math.toRadians(180)), Math.toRadians(350))
                 .build();
 
         parkSpotC = drive.trajectorySequenceBuilder(trajPreloadScoreCaseC.end())
+                .lineTo(new Vector2d(44,28.5))
                 .setTangent(Math.toRadians(90))
                 .splineToLinearHeading(new Pose2d(57.5,59, Math.toRadians(180)), Math.toRadians(350))
                 .build();

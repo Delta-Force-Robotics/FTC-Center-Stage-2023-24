@@ -1,5 +1,6 @@
 package com.example.meepmeeptesting;
 
+
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
@@ -12,7 +13,7 @@ import com.noahbres.meepmeep.roadrunner.entity.RoadRunnerBotEntity;
 import java.util.Vector;
 
 public class MeepMeepTesting {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
         MeepMeep meepMeep = new MeepMeep(800);
         Trajectory traj2;
 
@@ -20,19 +21,18 @@ public class MeepMeepTesting {
                 // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
                 .followTrajectorySequence(drive ->
-                        drive.trajectorySequenceBuilder(new Pose2d(-36, -61.5, Math.toRadians(270)))
+                        drive.trajectorySequenceBuilder(new Pose2d(-36, 61.5, Math.toRadians(90)))
 
-                                .setTangent(Math.toRadians(95))
-                                .splineToLinearHeading(new Pose2d(-30,-35, Math.toRadians(180)), Math.toRadians(0))
+                                .lineTo(new Vector2d(-35,31))
 
-                                .setTangent(Math.toRadians(180))
-                                .splineToLinearHeading(new Pose2d(-55,-11, Math.toRadians(180)), Math.toRadians(90))
+                                .splineToLinearHeading(new Pose2d(-54,35, Math.toRadians(180)), Math.toRadians(180))
 
-                                .setTangent(Math.toRadians(10))
-                                .splineToLinearHeading(new Pose2d(42,-43.5, Math.toRadians(180)),Math.toRadians(260))
+                                .setTangent(Math.toRadians(260))
+                                .splineToLinearHeading(new Pose2d(49,35, Math.toRadians(180)), Math.toRadians(90))
 
-                                .setTangent(Math.toRadians(100))
-                                .splineToLinearHeading(new Pose2d(60,-10, Math.toRadians(180)),Math.toRadians(0))
+                                .lineTo(new Vector2d(44,35))
+                                .setTangent(Math.toRadians(260))
+                                .splineToLinearHeading(new Pose2d(60,10, Math.toRadians(180)),Math.toRadians(0))
 
                                 .build());
 
