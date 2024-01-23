@@ -19,16 +19,15 @@ public class BackupThread extends Thread {
         scoreSubsystem.useArm(Constants.ARM_SERVO_PIVOT_POSITION);
 
         try {
-            sleep(500);
+            sleep(300);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
 
-        scoreSubsystem.rotateClaw(Constants.ROTATE_SERVO_INIT_POSITION);
-        /*  if (selectRotate == false)
-        scoreSubsystem.rotateClaw(Constants.ROTATE_SERVO_45);
+        if (selectRotate == false)
+            scoreSubsystem.rotateClaw(Constants.ROTATE_SERVO_INIT_POSITION);
         else
-            scoreSubsystem.rotateClaw(Constants.ROTATE_SERVO_180);*/
+            scoreSubsystem.rotateClaw(Constants.ROTATE_SERVO_45);
     }
 
     public void interrupt() {

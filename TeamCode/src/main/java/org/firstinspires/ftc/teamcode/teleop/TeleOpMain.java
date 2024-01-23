@@ -7,6 +7,7 @@ import com.arcrobotics.ftclib.command.button.GamepadButton;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
+import com.qualcomm.hardware.bosch.BNO055IMUNew;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -27,7 +28,6 @@ import org.firstinspires.ftc.teamcode.threads.IntakeThread;
 import org.firstinspires.ftc.teamcode.threads.OutakeThread;
 import org.firstinspires.ftc.teamcode.threads.ScoreReleaseThread;
 import org.firstinspires.ftc.teamcode.threads.ScoreThread;
-import org.firstinspires.ftc.teamcode.threads.StopIntakeThread;
 
 @TeleOp
 public class TeleOpMain extends CommandOpMode {
@@ -63,14 +63,13 @@ public class TeleOpMain extends CommandOpMode {
     private ScoreReleaseThread scoreReleaseThread;
     private OutakeThread outakeThread;
     private BackupThread backupThread;
-    private StopIntakeThread stopIntakeThread;
 
     private InstantCommand changeLevelUp;
     private InstantCommand changeLevelDown;
     private InstantCommand droneInstantCommand;
     private InstantCommand stopIntakeInstantCommand;
-    private InstantCommand rotate180;
     private InstantCommand rotate45;
+    private InstantCommand rotateInit;
 
     private GamepadEx driver1;
     private GamepadEx driver2;
@@ -131,13 +130,11 @@ public class TeleOpMain extends CommandOpMode {
         scoreReleaseThread = new ScoreReleaseThread(slideSubsystem, scoreSubsystem);
         outakeThread = new OutakeThread(intakeSubsystem, scoreSubsystem);
         backupThread = new BackupThread(scoreSubsystem);
-        stopIntakeThread = new StopIntakeThread(intakeSubsystem, scoreSubsystem);
 
         intakeThread.setPriority(Thread.MIN_PRIORITY);
         outakeThread.setPriority(Thread.MIN_PRIORITY);
         scoreThread.setPriority(Thread.MIN_PRIORITY);
         backupThread.setPriority(Thread.MIN_PRIORITY);
-        stopIntakeThread.setPriority(Thread.MIN_PRIORITY);
         Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
 
         scoreThreadExecutor = (Double levelForSlides) -> {
@@ -174,12 +171,12 @@ public class TeleOpMain extends CommandOpMode {
             scoreSubsystem.setDroneServoPos(Constants.DRONE_SERVO_SCORE_POS);
         });
 
-        rotate45 = new InstantCommand(() -> {
+        rotateInit = new InstantCommand(() -> {
             scoreThread.selectRotate = false;
             backupThread.selectRotate = false;
         });
 
-        rotate180 = new InstantCommand(() -> {
+        rotate45 = new InstantCommand(() -> {
            scoreThread.selectRotate = true;
             backupThread.selectRotate = true;
         });
@@ -187,23 +184,21 @@ public class TeleOpMain extends CommandOpMode {
         new GamepadButton(driver1, GamepadKeys.Button.RIGHT_BUMPER).whenPressed(() -> scoreReleaseThreadExecutor.accept(Constants.SLIDE_INTAKE));
 
         new GamepadButton(driver1, GamepadKeys.Button.Y).whenPressed(droneInstantCommand);
-        new GamepadButton(driver1, GamepadKeys.Button.B).whenPressed(() -> outakeThread.start());
 
-        //new GamepadButton(driver2, GamepadKeys.Button.DPAD_RIGHT).whenPressed(() -> backupThread.start());
+        new GamepadButton(driver2, GamepadKeys.Button.DPAD_RIGHT).whenPressed(() -> backupThread.start());
 
         new GamepadButton(driver2, GamepadKeys.Button.RIGHT_BUMPER).whenPressed(() -> scoreThreadExecutor.accept(Constants.SLIDE_POSITIONS[currLevel-1]));
-        new GamepadButton(driver2, GamepadKeys.Button.LEFT_BUMPER).whenPressed(() -> intakeSubsystem.setIntakePos(Constants.INTAKE_SERVO_INIT_POS));
 
         new GamepadButton(driver2, GamepadKeys.Button.DPAD_UP).whenPressed(changeLevelUp);
         new GamepadButton(driver2, GamepadKeys.Button.DPAD_DOWN).whenPressed(changeLevelDown);
 
-        //new GamepadButton(driver2, GamepadKeys.Button.DPAD_LEFT).whenPressed(rotate45);
-        //new GamepadButton(driver2, GamepadKeys.Button.DPAD_RIGHT).whenPressed(rotate180);
-        new GamepadButton(driver2, GamepadKeys.Button.DPAD_LEFT).whenPressed(() -> climbSubsystem.setClimbPos(Constants.CLIMB_MOTOR_CLIMB_POS));
-        new GamepadButton(driver2, GamepadKeys.Button.DPAD_RIGHT).whenPressed(() -> climbSubsystem.setClimbPos(Constants.CLIMB_MOTOR_INIT_POS));
+        new GamepadButton(driver2, GamepadKeys.Button.DPAD_LEFT).whenPressed(rotateInit);
+        new GamepadButton(driver2, GamepadKeys.Button.DPAD_RIGHT).whenPressed(rotate45);
+        new GamepadButton(driver2, GamepadKeys.Button.Y).whenPressed(() -> climbSubsystem.setClimbPos(Constants.CLIMB_MOTOR_CLIMB_POS));
+        new GamepadButton(driver2, GamepadKeys.Button.X).whenPressed(() -> climbSubsystem.setClimbPos(Constants.CLIMB_MOTOR_INIT_POS));
 
         new GamepadButton(driver2, GamepadKeys.Button.A).whenPressed(() -> intakeThread.start());
-        new GamepadButton(driver2, GamepadKeys.Button.B).whenPressed(() -> stopIntakeThread.start());
+        new GamepadButton(driver2, GamepadKeys.Button.B).whenPressed(() -> outakeThread.start());
         driveSubsystem.setDefaultCommand(driveCommand);
         slideSubsystem.setDefaultCommand(slideManualCommand);
         climbSubsystem.setDefaultCommand(climbManualCommand);

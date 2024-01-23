@@ -22,10 +22,10 @@ public class BarCodeDetection extends OpenCvPipeline {
     Mat mat1 = new Mat();
     Mat mat2 = new Mat();
     Color pixel;
-    Scalar lowHSV;
-    Scalar highHSV;
-    Scalar lowHSV1;
-    Scalar highHSV1;
+    public Scalar lowHSV;
+    public Scalar highHSV;
+    public Scalar lowHSV1;
+    public Scalar highHSV1;
 
     public enum BarcodePosition {
         LEFT,
@@ -42,19 +42,19 @@ public class BarCodeDetection extends OpenCvPipeline {
     private BarcodePosition barcodePosition = BarcodePosition.NOT_FOUND;
 
      static final Rect LEFT_ROW = new Rect(
-            new Point( 50, 120 ),
-            new Point( 0, 210 )
+            new Point( 80, 225 ),
+            new Point( 125, 290 )
     );
     static final Rect MIDDLE_ROW = new Rect(
-            new Point( 120, 120 ),
-            new Point( 150, 170 )
+            new Point( 300, 220 ),
+            new Point( 345, 270 )
     );
      static final Rect RIGHT_ROW = new Rect(
-            new Point( 430, 135 ),
-            new Point( 390, 200 )
+            new Point( 540, 225 ),
+            new Point( 580, 285 )
     );
 
-    static double PERCENT_COLOR_THRESHOLD = 0.07;
+    static double PERCENT_COLOR_THRESHOLD = 0.3;
 
     public BarCodeDetection(Telemetry t, Color color) {
         telemetry = t;
@@ -65,15 +65,15 @@ public class BarCodeDetection extends OpenCvPipeline {
         Imgproc.cvtColor(input, mat, Imgproc.COLOR_RGB2HSV);
 
         if( pixel == Color.RED ) {
-            lowHSV = new Scalar(0, 50, 100);
-            highHSV = new Scalar(179, 255, 255);
+            lowHSV = new Scalar(160, 50, 40);
+            highHSV = new Scalar(180, 255, 255);
 
             lowHSV1 = new Scalar(357, 95, 42);
             highHSV1 = new Scalar(179, 255, 255);
 
             Core.inRange(mat, lowHSV1, highHSV1, mat1);
         } else {
-            lowHSV = new Scalar(110, 50, 50);
+            lowHSV = new Scalar(100, 80, 30);
             highHSV = new Scalar(120, 255, 255);
 
             lowHSV1 = new Scalar(209, 93, 68);

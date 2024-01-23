@@ -55,9 +55,15 @@ public class StackAutoBlue extends LinearOpMode {
     private TrajectorySequence trajToIntakeCaseA;
     private TrajectorySequence trajToIntakeCaseB;
     private TrajectorySequence trajToIntakeCaseC;
+    private TrajectorySequence trajToIntake2CaseA;
+    private TrajectorySequence trajToIntake2CaseB;
+    private TrajectorySequence trajToIntake2CaseC;
     private TrajectorySequence trajToScoreCaseA;
     private TrajectorySequence trajToScoreCaseB;
     private TrajectorySequence trajToScoreCaseC;
+    private TrajectorySequence trajToScore2CaseA;
+    private TrajectorySequence trajToScore2CaseB;
+    private TrajectorySequence trajToScore2CaseC;
 
     private TrajectorySequence parkSpotA;
     private TrajectorySequence parkSpotB;
@@ -79,9 +85,6 @@ public class StackAutoBlue extends LinearOpMode {
     private IntakeThread intakeThread;
     private ScoreThread scoreThread;
     private IntakeAutoThread intakeAutoThread;
-
-    private Consumer<Double> intakeThreadExecutor;
-    private Consumer<Double> scoreThreadExecutor;
 
     private IMU imu;
 
@@ -116,15 +119,9 @@ public class StackAutoBlue extends LinearOpMode {
         scoreSubsystem = new ScoreSubsystem(armServoLeft, armServoRight, rotateServo, blockServo, droneServo, true);
         intakeSubsystem = new IntakeSubsystem(intakeMotor, intakeServo);
 
-        scoreThread = new ScoreThread(slideSubsystem, scoreSubsystem);
-
-        preloadThread = new Thread(() -> {
-            preloadServo.setPosition(Constants.PRELOAD_SERVO_SCORE_POS);
-        });
-
         scoreAutoThread = new Thread(() -> {
-            slideSubsystem.setLevel(Constants.SLIDE_POSITIONS[1]);
-            sleep(100);
+            slideSubsystem.setLevel(Constants.SLIDE_POSITIONS[3]);
+            sleep(150);
 
             scoreSubsystem.useArm(Constants.ARM_SERVO_PIVOT_POSITION);
             scoreSubsystem.rotateClaw(Constants.ROTATE_SERVO_45);
@@ -132,86 +129,15 @@ public class StackAutoBlue extends LinearOpMode {
 
         retractThread = new Thread(() -> {
             scoreSubsystem.rotateClaw(Constants.ROTATE_SERVO_INIT_POSITION);
+            sleep(100);
             scoreSubsystem.useArm(Constants.ARM_SERVO_INIT_POSITION);
-            sleep(500);
+            sleep(300);
 
             slideSubsystem.setLevel(Constants.SLIDE_INTAKE);
         });
 
-        intakeThreadExecutor = (Double intakeLevel) -> {
-            intakeAutoThread.intakeLevel = intakeLevel;
-            intakeAutoThread.interrupt();
-            intakeAutoThread.start();
-        };
-
-        scoreThreadExecutor = (Double levelForSlides) -> {
-            scoreThread.slideLevel = levelForSlides;
-            scoreThread.interrupt();
-            scoreThread.start();
-        };
-
         drive = new SampleMecanumDrive(hardwareMap);
         drive.setPoseEstimate(new Pose2d(-36, 61.5, Math.toRadians(90)));
-
-
-        trajPreloadCaseA = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
-                .setTangent(Math.toRadians(240))
-                .splineToLinearHeading(new Pose2d(-30, 35.5, Math.toRadians(180)), Math.toRadians(0))
-                .build();
-
-        trajPreloadCaseB = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
-                .lineTo(new Vector2d(-35,31))
-                .build();
-
-        trajPreloadCaseC = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
-                .setTangent(Math.toRadians(270))
-                .splineToLinearHeading(new Pose2d(-42,32,Math.toRadians(0)), Math.toRadians(260))
-                .build();
-
-        trajToIntakeCaseA = drive.trajectorySequenceBuilder(trajPreloadCaseA.end())
-                .lineTo(new Vector2d(-53.3,23))
-                .build();
-
-        trajToIntakeCaseB = drive.trajectorySequenceBuilder(trajPreloadCaseB.end())
-                .splineToLinearHeading(new Pose2d(-54,35, Math.toRadians(180)), Math.toRadians(180))
-                .build();
-
-        trajToIntakeCaseC = drive.trajectorySequenceBuilder(trajPreloadCaseC.end())
-                .lineTo(new Vector2d(-36,32))
-                .splineToLinearHeading(new Pose2d(-55,11, Math.toRadians(181)), Math.toRadians(180))
-                .build();
-
-        trajToScoreCaseA = drive.trajectorySequenceBuilder(trajToIntakeCaseA.end())
-                .setTangent(Math.toRadians(330))
-                .splineToLinearHeading(new Pose2d(49,41.5,Math.toRadians(180)), Math.toRadians(80))
-                .build();
-
-        trajToScoreCaseB = drive.trajectorySequenceBuilder(trajToIntakeCaseB.end())
-                .setTangent(Math.toRadians(260))
-                .splineToLinearHeading(new Pose2d(49,35, Math.toRadians(180)), Math.toRadians(90))
-                .build();
-
-        trajToScoreCaseC = drive.trajectorySequenceBuilder(trajToIntakeCaseC.end())
-                .setTangent(Math.toRadians(0))
-                .splineToLinearHeading(new Pose2d(42,29, Math.toRadians(180)),Math.toRadians(40))
-                .build();
-
-        parkSpotA = drive.trajectorySequenceBuilder(trajToScoreCaseA.end())
-                .lineTo(new Vector2d(44,41.5))
-                .setTangent(Math.toRadians(260))
-                .splineToLinearHeading(new Pose2d(60,10, Math.toRadians(180)),Math.toRadians(0))
-                .build();
-
-        parkSpotB = drive.trajectorySequenceBuilder(trajToScoreCaseB.end())
-                .lineTo(new Vector2d(44,35))
-                .setTangent(Math.toRadians(260))
-                .splineToLinearHeading(new Pose2d(60,10, Math.toRadians(180)),Math.toRadians(0))
-                .build();
-
-        parkSpotC = drive.trajectorySequenceBuilder(trajToScoreCaseC.end())
-                .setTangent(Math.toRadians(270))
-                .splineToLinearHeading(new Pose2d(60,10, Math.toRadians(180)),Math.toRadians(0))
-                .build();
 
         while (!isStarted() && !isStopRequested()) {
             telemetry.addData("Element position", webcam.getBarcodePosition());
@@ -223,122 +149,181 @@ public class StackAutoBlue extends LinearOpMode {
 
         waitForStart();
 
-        if(barcodePosition == BarCodeDetection.BarcodePosition.RIGHT) {
+        if (barcodePosition == BarCodeDetection.BarcodePosition.RIGHT) {
             CaseC();
-        } else if(barcodePosition == BarCodeDetection.BarcodePosition.MIDDLE) {
+        } else if (barcodePosition == BarCodeDetection.BarcodePosition.MIDDLE) {
             CaseB();
-        }   else {
-            CaseA();
-        }
-            sleep(3000);
+        } else CaseA();
+
+        sleep(3000);
     }
 
     private void CaseA() {
-        drive.setPoseEstimate(new Pose2d(-36, -63.5, Math.toRadians(90)));
+        // Declare the trajectories
+
+        trajPreloadCaseA = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
+                .setTangent(Math.toRadians(240))
+                .splineToLinearHeading(new Pose2d(-30, 35.5, Math.toRadians(180)), Math.toRadians(0))
+                .build();
+
+        trajToIntakeCaseA = drive.trajectorySequenceBuilder(trajPreloadCaseA.end())
+                .lineTo(new Vector2d(-53.3,23))
+                .build();
+
+        trajToScoreCaseA = drive.trajectorySequenceBuilder(trajToIntakeCaseA.end())
+                .setTangent(Math.toRadians(330))
+                .splineToLinearHeading(new Pose2d(49,41.5,Math.toRadians(180)), Math.toRadians(80))
+                .build();
+
+        trajToIntake2CaseA = drive.trajectorySequenceBuilder(trajToScoreCaseA.end())
+                .setTangent(Math.toRadians(260))
+                .splineToLinearHeading(new Pose2d(-54,11,Math.toRadians(180)), Math.toRadians(180))
+                .build();
+
+        trajToScore2CaseA = drive.trajectorySequenceBuilder(trajToIntake2CaseA.end())
+                .setTangent(Math.toRadians(0))
+                .splineToLinearHeading(new Pose2d(49,29,Math.toRadians(180)), Math.toRadians(45))
+                .build();
+
+        parkSpotA = drive.trajectorySequenceBuilder(trajToScore2CaseA.end())
+                .lineTo(new Vector2d(44,29))
+                .setTangent(Math.toRadians(250))
+                .splineToLinearHeading(new Pose2d(60,10, Math.toRadians(180)),Math.toRadians(0))
+                .build();
+
 
         drive.followTrajectorySequence(trajPreloadCaseA);
 
         preloadServo.setPosition(Constants.PRELOAD_SERVO_SCORE_POS);
-        sleep(600);
+        sleep(300);
 
-        /*drive.followTrajectorySequence(trajToIntakePreloadCaseA);
+        drive.followTrajectorySequence(trajToIntakePreloadCaseA);
         intakeRoutine(Constants.INTAKE_SERVO_FIRST_PIXEL_POS_AUTO);
 
-        drive.followTrajectorySequence(trajToScoreCaseA);
+        drive.followTrajectorySequence(trajToScore2CaseA);
         scoreAutoThread.start();
         retractThread.start();
-
-        drive.followTrajectorySequence(trajToIntakeCaseA);
-        intakeRoutine(Constants.INTAKE_SERVO_UP_POS_AUTO);
-
-        drive.followTrajectorySequence(trajToScoreCaseA);
-        scoreAutoThread.start();
-        retractThread.start();
-
-        drive.followTrajectorySequence(trajToIntakeCaseA);
-        intakeRoutine(Constants.INTAKE_SERVO_LOW_POS_AUTO);
-
-        drive.followTrajectorySequence(trajToScoreCaseA);
-        scoreAutoThread.start();
-        retractThread.start();*/
 
         drive.followTrajectorySequence(parkSpotA);
     }
 
     private void CaseB() {
-        drive.setPoseEstimate(new Pose2d(-36, -63.5, Math.toRadians(90)));
+        //Declare the trajectories
 
+        trajPreloadCaseB = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
+                .lineTo(new Vector2d(-35,31))
+                .build();
+
+        trajToIntakeCaseB = drive.trajectorySequenceBuilder(trajPreloadCaseB.end())
+                .splineToLinearHeading(new Pose2d(-54,35, Math.toRadians(180)), Math.toRadians(180))
+                .build();
+
+        trajToScoreCaseB = drive.trajectorySequenceBuilder(trajToIntakeCaseB.end())
+                .setTangent(Math.toRadians(260))
+                .splineToLinearHeading(new Pose2d(49,35, Math.toRadians(180)), Math.toRadians(60))
+                .build();
+
+        trajToIntake2CaseB = drive.trajectorySequenceBuilder(trajToScoreCaseB.end())
+                .setTangent(Math.toRadians(240))
+                .splineToLinearHeading(new Pose2d(-54,11,Math.toRadians(180)), Math.toRadians(180))
+                .build();
+
+        trajToScore2CaseB = drive.trajectorySequenceBuilder(trajToIntake2CaseB.end())
+                .setTangent(Math.toRadians(0))
+                .splineToLinearHeading(new Pose2d(49,29, Math.toRadians(180)), Math.toRadians(45))
+                .build();
+
+        parkSpotB = drive.trajectorySequenceBuilder(trajToScore2CaseB.end())
+                .lineTo(new Vector2d(44,29))
+                .setTangent(Math.toRadians(260))
+                .splineToLinearHeading(new Pose2d(60,10, Math.toRadians(180)),Math.toRadians(0))
+                .build();
+
+        // Follow the trajectories
         drive.followTrajectorySequence(trajPreloadCaseB);
 
         preloadServo.setPosition(Constants.PRELOAD_SERVO_SCORE_POS);
-        sleep(600);
+        sleep(300);
 
-       /* drive.followTrajectorySequence(trajToIntakePreloadCaseB);
+        drive.followTrajectorySequence(trajToIntakePreloadCaseB);
         intakeRoutine(Constants.INTAKE_SERVO_FIRST_PIXEL_POS_AUTO);
 
         drive.followTrajectorySequence(trajToScoreCaseB);
         scoreAutoThread.start();
         retractThread.start();
 
-        drive.followTrajectorySequence(trajToIntakeCaseB);
-        intakeRoutine(Constants.INTAKE_SERVO_UP_POS_AUTO);
-
-        drive.followTrajectorySequence(trajToScoreCaseB);
+        drive.followTrajectorySequence(trajToScore2CaseB);
         scoreAutoThread.start();
         retractThread.start();
-
-        drive.followTrajectorySequence(trajToIntakeCaseB);
-        intakeRoutine(Constants.INTAKE_SERVO_LOW_POS_AUTO);
-
-        drive.followTrajectorySequence(trajToScoreCaseB);
-        scoreAutoThread.start();
-        retractThread.start();*/
 
         drive.followTrajectorySequence(parkSpotB);
     }
 
     private void CaseC() {
-        drive.setPoseEstimate(new Pose2d(-36, -63.5, Math.toRadians(90)));
+        // Declare the trajectories
 
+        trajPreloadCaseC = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
+                .setTangent(Math.toRadians(270))
+                .splineToLinearHeading(new Pose2d(-42,32,Math.toRadians(0)), Math.toRadians(260))
+                .build();
+
+        trajToIntakeCaseC = drive.trajectorySequenceBuilder(trajPreloadCaseC.end())
+                .lineTo(new Vector2d(-36,32))
+                .splineToLinearHeading(new Pose2d(-55,11, Math.toRadians(181)), Math.toRadians(180))
+                .build();
+
+        trajToScoreCaseC = drive.trajectorySequenceBuilder(trajToIntakeCaseC.end())
+                .setTangent(Math.toRadians(0))
+                .splineToLinearHeading(new Pose2d(42,29, Math.toRadians(180)),Math.toRadians(40))
+                .build();
+
+        trajToIntake2CaseC = drive.trajectorySequenceBuilder(trajToScoreCaseC.end())
+                .setTangent(Math.toRadians(220))
+                .splineToLinearHeading(new Pose2d(-54,11,Math.toRadians(180)), Math.toRadians(180))
+                .build();
+
+        trajToScore2CaseC = drive.trajectorySequenceBuilder(trajToIntake2CaseC.end())
+                .setTangent(Math.toRadians(0))
+                .splineToLinearHeading(new Pose2d(49,29, Math.toRadians(180)), Math.toRadians(40))
+                .build();
+
+        parkSpotC = drive.trajectorySequenceBuilder(trajToScore2CaseC.end())
+                .lineTo(new Vector2d(44,29))
+                .setTangent(Math.toRadians(270))
+                .splineToLinearHeading(new Pose2d(60,10, Math.toRadians(180)),Math.toRadians(0))
+                .build();
+
+        // Follow the trajectories
         drive.followTrajectorySequence(trajPreloadCaseC);
 
         preloadServo.setPosition(Constants.PRELOAD_SERVO_SCORE_POS);
         sleep(600);
 
-       /* drive.followTrajectorySequence(trajToIntakePreloadCaseC);
+        drive.followTrajectorySequence(trajToIntakePreloadCaseC);
         intakeRoutine(Constants.INTAKE_SERVO_FIRST_PIXEL_POS_AUTO);
 
         drive.followTrajectorySequence(trajToScoreCaseC);
         scoreAutoThread.start();
         retractThread.start();
 
-        drive.followTrajectorySequence(trajToIntakeCaseC);
-        intakeRoutine(Constants.INTAKE_SERVO_UP_POS_AUTO);
+        drive.followTrajectorySequence(trajToIntakeCaseA);
+        intakeRoutine(Constants.INTAKE_SERVO_MID_POS);
 
-        drive.followTrajectorySequence(trajToScoreCaseC);
+        drive.followTrajectorySequence(trajToScore2CaseC);
         scoreAutoThread.start();
         retractThread.start();
-
-        drive.followTrajectorySequence(trajToIntakeCaseC);
-        intakeRoutine(Constants.INTAKE_SERVO_LOW_POS_AUTO);
-
-        drive.followTrajectorySequence(trajToScoreCaseC);
-        scoreAutoThread.start();
-        retractThread.start();*/
 
         drive.followTrajectorySequence(parkSpotC);
     }
 
     public void intakeRoutine(double intakeLevel) {
-        intakeThreadExecutor.accept(intakeLevel);
+        intakeServo.setPosition(intakeLevel);
+        intakeSubsystem.setIntakePower(0.8);
         sleep(1000);
 
         intakeSubsystem.setIntakePower(0);
         scoreSubsystem.useBlock(Constants.BLOCK_SERVO_BLOCK_POS);
         intakeSubsystem.setIntakePos(Constants.INTAKE_SERVO_INIT_POS);
-        sleep(300);
-
-        scoreSubsystem.useArm(Constants.ARM_SERVO_PIVOT_30);
     }
 }
 

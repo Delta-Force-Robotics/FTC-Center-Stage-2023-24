@@ -25,18 +25,18 @@ public class ScoreReleaseThread extends Thread {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-/*
+
         scoreSubsystem.rotateClaw(Constants.ROTATE_SERVO_INIT_POSITION);
         try {
-            sleep(200);
+            sleep(100);
         } catch (InterruptedException e) {
             e.printStackTrace();
-        }*/
+        }
 
         scoreSubsystem.useArm(Constants.ARM_SERVO_INIT_POSITION);
 
         try {
-            sleep(550);
+            sleep(300);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

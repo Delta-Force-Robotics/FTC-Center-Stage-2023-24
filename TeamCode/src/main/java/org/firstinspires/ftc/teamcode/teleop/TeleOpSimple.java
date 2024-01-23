@@ -2,15 +2,20 @@ package org.firstinspires.ftc.teamcode.teleop;
 
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.arcrobotics.ftclib.hardware.motors.MotorEx;
+import com.qualcomm.hardware.bosch.BNO055IMUNew;
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.Const;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 import org.firstinspires.ftc.teamcode.constants.Constants;
 import org.firstinspires.ftc.teamcode.constants.HardwareConstants;
 import org.firstinspires.ftc.teamcode.util.Encoder;
@@ -42,6 +47,10 @@ public class TeleOpSimple extends LinearOpMode {
     double rfPower;
     double lbPower;
     double rbPower;
+
+    YawPitchRollAngles orientation;
+
+    IMU imu;
 
     @Override
     public void runOpMode() {
@@ -107,7 +116,12 @@ public class TeleOpSimple extends LinearOpMode {
         slideMotorLeft.resetEncoder();
         slideMotorRight.resetEncoder();
 
+        BNO055IMUNew.Parameters parameters = new BNO055IMUNew.Parameters(new RevHubOrientationOnRobot(RevHubOrientationOnRobot.LogoFacingDirection.UP, RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD));
+        parameters.calibrationDataFile = "BNO055IMUCalibration.json";
+        imu = hardwareMap.get(IMU.class,"imu");
+        imu.initialize(parameters);
 
+        orientation = imu.getRobotYawPitchRollAngles();
 
         climbMotor.resetEncoder();
         waitForStart();
@@ -217,6 +231,10 @@ public class TeleOpSimple extends LinearOpMode {
             telemetry.addData("Climb Motor", climbMotor.getCurrentPosition());
             //telemetry.addData("Climb Motor METERS", ticksToMeters(climbMotor.getCurrentPosition()));
             telemetry.addData("BLock Servo", blockServo.getPosition());
+            telemetry.addData("IMU", imu.getRobotYawPitchRollAngles());
+            telemetry.addData("YAW", orientation.getYaw(AngleUnit.DEGREES));
+            telemetry.addData("ROLL", orientation.getRoll(AngleUnit.DEGREES));
+            telemetry.addData("PITCH", orientation.getPitch(AngleUnit.DEGREES));
             telemetry.update();
         }
     }

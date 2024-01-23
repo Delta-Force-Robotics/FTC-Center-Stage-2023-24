@@ -37,16 +37,15 @@ public class ScoreThread extends Thread {
 
         scoreSubsystem.useArm(Constants.ARM_SERVO_PIVOT_POSITION);
         try {
-            sleep(200);
+            sleep(100);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
 
-        //scoreSubsystem.rotateClaw(Constants.ROTATE_SERVO_INIT_POSITION);
-      /*  if (selectRotate == false)
-        scoreSubsystem.rotateClaw(Constants.ROTATE_SERVO_45);
+        if (selectRotate == false)
+            scoreSubsystem.rotateClaw(Constants.ROTATE_SERVO_INIT_POSITION);
         else
-            scoreSubsystem.rotateClaw(Constants.ROTATE_SERVO_180);*/
+            scoreSubsystem.rotateClaw(Constants.ROTATE_SERVO_45);
     }
 
     public void interrupt() {

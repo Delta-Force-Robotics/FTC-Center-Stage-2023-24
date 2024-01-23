@@ -16,13 +16,13 @@ public class OutakeThread extends Thread {
     @Override
     public void run() {
         scoreSubsystem.useBlock(Constants.BLOCK_SERVO_BLOCK_POS);
+        intakeSubsystem.setIntakePos(Constants.INTAKE_SERVO_INIT_POS);
         intakeSubsystem.setIntakePower(-1);
         try {
-            sleep(1000);
+            sleep(2000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        intakeSubsystem.setIntakePos(Constants.INTAKE_SERVO_INIT_POS);
 
         intakeSubsystem.setIntakePower(0);
     }
