@@ -116,13 +116,6 @@ public class TeleOpSimple extends LinearOpMode {
         slideMotorLeft.resetEncoder();
         slideMotorRight.resetEncoder();
 
-        BNO055IMUNew.Parameters parameters = new BNO055IMUNew.Parameters(new RevHubOrientationOnRobot(RevHubOrientationOnRobot.LogoFacingDirection.UP, RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD));
-        parameters.calibrationDataFile = "BNO055IMUCalibration.json";
-        imu = hardwareMap.get(IMU.class,"imu");
-        imu.initialize(parameters);
-
-        orientation = imu.getRobotYawPitchRollAngles();
-
         climbMotor.resetEncoder();
         waitForStart();
 
@@ -182,11 +175,11 @@ public class TeleOpSimple extends LinearOpMode {
             }
 
             if (gamepad2.a) {
-                intakeServo.setPosition(intakeServo.getPosition() + 0.01);
+                intakeServo.setPosition(intakeServo.getPosition() + 0.001);
                 sleep(200);
             }
             else if (gamepad2.y) {
-                intakeServo.setPosition(intakeServo.getPosition() - 0.01);
+                intakeServo.setPosition(intakeServo.getPosition() - 0.001);
                 sleep(200);
             }
 
@@ -231,10 +224,6 @@ public class TeleOpSimple extends LinearOpMode {
             telemetry.addData("Climb Motor", climbMotor.getCurrentPosition());
             //telemetry.addData("Climb Motor METERS", ticksToMeters(climbMotor.getCurrentPosition()));
             telemetry.addData("BLock Servo", blockServo.getPosition());
-            telemetry.addData("IMU", imu.getRobotYawPitchRollAngles());
-            telemetry.addData("YAW", orientation.getYaw(AngleUnit.DEGREES));
-            telemetry.addData("ROLL", orientation.getRoll(AngleUnit.DEGREES));
-            telemetry.addData("PITCH", orientation.getPitch(AngleUnit.DEGREES));
             telemetry.update();
         }
     }

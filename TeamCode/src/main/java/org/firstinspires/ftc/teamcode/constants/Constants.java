@@ -35,16 +35,16 @@ public class Constants {
     public static double SLIDE_MAX_ERROR_INTEGRATION = 0.1;
     public static double[] SLIDE_POSITIONS_R = {0.26, 0.31, 0.37, 0.42, 0.51, 0.57, 0.65, 0.67};
     public static double[] SLIDE_POSITIONS = {0.28, 0.35, 0.43, 0.51, 0.60, 0.67};
-    public static PIDFCoefficients SLIDE_RETRACT_PIDF_COEFF = new PIDFCoefficients(4.56, 0, 0, 0);
-    public static PIDFCoefficients SLIDE_EXTEND_PIDF_COEFF = new PIDFCoefficients(7.8, 0, 0, 0);
+    public static PIDFCoefficients SLIDE_RETRACT_PIDF_COEFF = new PIDFCoefficients(4.65, 0.1, 0, 0);
+    public static PIDFCoefficients SLIDE_EXTEND_PIDF_COEFF = new PIDFCoefficients(8.6, 0.12, 0, 0);
 
-    public static final double INTAKE_SERVO_INIT_POS = 0;
-    public static final double INTAKE_SERVO_INTAKE_POS = 0.42;
+    public static final double INTAKE_SERVO_INIT_POS = 0.14;
+    public static final double INTAKE_SERVO_INTAKE_POS = 0.44;
     public static final double INTAKE_SERVO_FIRST_PIXEL_POS = 0.29;
     public static final double INTAKE_SERVO_SECOND_PIXEL_POS = 0.32;
     public static final double INTAKE_SERVO_THIRD_PIXEL_POS = 0.37;
     public static final double INTAKE_SERVO_FOURTH_PIXEL_POS = 0.38;
-    public static final double INTAKE_SERVO_UP_POS = 0.318;
+    public static final double INTAKE_SERVO_UP_POS = 0.358;
     public static final double INTAKE_SERVO_MID_POS = 0.38;
     public static final double INTAKE_SERVO_LOW_POS = 0.41;
 

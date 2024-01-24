@@ -14,6 +14,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.constants.Constants;
 import org.firstinspires.ftc.teamcode.constants.HardwareConstants;
+import org.firstinspires.ftc.teamcode.drive.DriveConstants;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.subsystems.IntakeSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.ScoreSubsystem;
@@ -153,22 +154,30 @@ public class BoardAutoRed extends LinearOpMode {
     private void CaseA() {
         trajPreloadCaseA = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
                 .setTangent(Math.toRadians(80))
-                .splineToLinearHeading(new Pose2d(5.5, -35, Math.toRadians(0)), Math.toRadians(200))
+                .splineToLinearHeading(new Pose2d(5.5, -35, Math.toRadians(0)), Math.toRadians(200),
+                        SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
 
 
 
         trajPreloadScoreCaseA = drive.trajectorySequenceBuilder(trajPreloadCaseA.end())
                 .setTangent(Math.toRadians(0))
-                .splineToLinearHeading(new Pose2d(49, -28.5, Math.toRadians(180)), Math.toRadians(45))
+                .splineToLinearHeading(new Pose2d(49, -28.5, Math.toRadians(180)), Math.toRadians(45),
+                        SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
 
 
 
         parkSpotA = drive.trajectorySequenceBuilder(trajPreloadScoreCaseA.end())
-                .lineTo(new Vector2d(42,-28.5))
+                .lineTo(new Vector2d(42,-28.5),
+                        SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .setTangent(Math.toRadians(270))
-                .splineToLinearHeading(new Pose2d(57.5,-59, Math.toRadians(180)), Math.toRadians(0))
+                .splineToLinearHeading(new Pose2d(57.5,-59, Math.toRadians(180)), Math.toRadians(0),
+                        SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
 
 
@@ -190,22 +199,30 @@ public class BoardAutoRed extends LinearOpMode {
 
 
         trajPreloadCaseB = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
-                .lineTo(new Vector2d(11.6, -30.5))
+                .lineTo(new Vector2d(11.6, -30.5),
+                        SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
 
 
 
         trajPreloadScoreCaseB = drive.trajectorySequenceBuilder(trajPreloadCaseB.end())
                 .setTangent(Math.toRadians(270))
-                .splineToLinearHeading(new Pose2d(49, -35, Math.toRadians(180)), Math.toRadians(0))
+                .splineToLinearHeading(new Pose2d(49, -35, Math.toRadians(180)), Math.toRadians(0),
+                        SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
 
 
 
         parkSpotB = drive.trajectorySequenceBuilder(trajPreloadScoreCaseB.end())
-                .lineTo(new Vector2d(46,-35))
+                .lineTo(new Vector2d(46,-35),
+                        SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .setTangent(Math.toRadians(245))
-                .splineToLinearHeading(new Pose2d(57.5,-59, Math.toRadians(180)), Math.toRadians(5))
+                .splineToLinearHeading(new Pose2d(57.5,-59, Math.toRadians(180)), Math.toRadians(5),
+                        SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
 
 
@@ -227,21 +244,31 @@ public class BoardAutoRed extends LinearOpMode {
 
         trajPreloadCaseC = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
                 .setTangent(Math.toRadians(80))
-                .splineToLinearHeading(new Pose2d(23, -37.5, Math.toRadians(270)), Math.toRadians(90))
+                .splineToLinearHeading(new Pose2d(23, -37.5, Math.toRadians(270)), Math.toRadians(90),
+                        SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
 
 
         trajPreloadScoreCaseC = drive.trajectorySequenceBuilder(trajPreloadCaseC.end())
-                .lineTo(new Vector2d(23,-55))
+                .lineTo(new Vector2d(23,-55),
+                        SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .setTangent(Math.toRadians(90))
-                .splineToLinearHeading(new Pose2d(49, -40.5, Math.toRadians(180)), Math.toRadians(90))
-                .lineTo(new Vector2d(45.5, -40.5))
+                .splineToLinearHeading(new Pose2d(49, -40.5, Math.toRadians(180)), Math.toRadians(90),
+                        SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .lineTo(new Vector2d(45.5, -40.5),
+                        SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
 
 
         parkSpotC = drive.trajectorySequenceBuilder(trajPreloadScoreCaseC.end())
                 .setTangent(Math.toRadians(250))
-                .splineToLinearHeading(new Pose2d(57.5,-59, Math.toRadians(180)), Math.toRadians(0))
+                .splineToLinearHeading(new Pose2d(57.5,-59, Math.toRadians(180)), Math.toRadians(0),
+                        SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
 
         drive.followTrajectorySequence(trajPreloadCaseC);

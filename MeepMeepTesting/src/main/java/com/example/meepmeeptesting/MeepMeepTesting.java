@@ -23,24 +23,19 @@ public class MeepMeepTesting {
                 .followTrajectorySequence(drive ->
                         drive.trajectorySequenceBuilder(new Pose2d(-36, -61.5, Math.toRadians(270)))
 
-                                .lineToLinearHeading(new Pose2d(-45, -24.5, Math.toRadians(180)))
-
-                                .lineTo(new Vector2d(-53,-11))
-                                //.setTangent(Math.toRadians(160))
-                                //.splineToLinearHeading(new Pose2d(-53,-11, Math.toRadians(180)), Math.toRadians(90))
-
-                                .setTangent(Math.toRadians(0))
-                                .splineToLinearHeading(new Pose2d(49,-35, Math.toRadians(180)),Math.toRadians(280))
-
-                                .setTangent(Math.toRadians(90))
-                                .splineToLinearHeading(new Pose2d(-55,-11,Math.toRadians(180)), Math.toRadians(180))
-
-                                .setTangent(Math.toRadians(0))
-                                .splineToLinearHeading(new Pose2d(49,-29, Math.toRadians(180)), Math.toRadians(300))
-
-                                .lineTo(new Vector2d(44,-29))
-                                .setTangent(Math.toRadians(100))
-                                .splineToLinearHeading(new Pose2d(60,-10, Math.toRadians(180)),Math.toRadians(0))
+                                .lineToLinearHeading(new Pose2d(-52,-18,Math.toRadians(135)))
+                                //
+                                .lineTo(new Vector2d(-54.5,-18))
+                                .lineToLinearHeading(new Pose2d(-55,-12,Math.toRadians(180)))
+                                //
+                                .lineTo(new Vector2d(32,-12))
+                                .lineTo(new Vector2d(49,-31))
+                                //
+                                .lineTo(new Vector2d(32,-12))
+                                .lineTo(new Vector2d(-57.5,-12.5))
+                                //
+                                .lineTo(new Vector2d(32,-12))
+                                .lineTo(new Vector2d(49,-31))
 
                                 .build());
 

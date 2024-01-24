@@ -105,11 +105,6 @@ public class TeleOpMain extends CommandOpMode {
         blockServo = hardwareMap.get(Servo.class, HardwareConstants.ID_BLOCK_SERVO);
         droneServo = hardwareMap.get(Servo.class, HardwareConstants.ID_DRONE_SERVO);
 
-       /* BNO055IMUNew.Parameters parameters = new BNO055IMUNew.Parameters(new RevHubOrientationOnRobot(RevHubOrientationOnRobot.LogoFacingDirection.UP, RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD));
-        parameters.calibrationDataFile = "BNO055IMUCalibration.json";
-        imu = hardwareMap.get(IMU.class,"imu");
-        imu.initialize(parameters);*/
-
         driveSubsystem = new DriveSubsystem(driveLeftFront, driveLeftBack, driveRightFront, driveRightBack);
         intakeSubsystem = new IntakeSubsystem(intakeMotor, intakeServo);
         scoreSubsystem = new ScoreSubsystem(armServoLeft, armServoRight, rotateServo, blockServo, droneServo, false);
@@ -160,7 +155,7 @@ public class TeleOpMain extends CommandOpMode {
 
         changeLevelDown = new InstantCommand(() -> {
             //slideSubsystem.setLevel(0);
-            if (currLevel > 0 && currLevel < 6) {
+            if (currLevel > 0 && currLevel <= 6) {
                 currLevel--;
                 telemetry.addData("CURRENT LEVEL", currLevel);
                 telemetry.update();
@@ -185,7 +180,7 @@ public class TeleOpMain extends CommandOpMode {
 
         new GamepadButton(driver1, GamepadKeys.Button.Y).whenPressed(droneInstantCommand);
 
-        new GamepadButton(driver2, GamepadKeys.Button.DPAD_RIGHT).whenPressed(() -> backupThread.start());
+    new GamepadButton(driver2, GamepadKeys.Button.LEFT_BUMPER).whenPressed(() -> backupThread.start());
 
         new GamepadButton(driver2, GamepadKeys.Button.RIGHT_BUMPER).whenPressed(() -> scoreThreadExecutor.accept(Constants.SLIDE_POSITIONS[currLevel-1]));
 
