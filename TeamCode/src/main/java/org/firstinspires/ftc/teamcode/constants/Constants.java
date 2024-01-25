@@ -38,15 +38,15 @@ public class Constants {
     public static PIDFCoefficients SLIDE_RETRACT_PIDF_COEFF = new PIDFCoefficients(4.65, 0.1, 0, 0);
     public static PIDFCoefficients SLIDE_EXTEND_PIDF_COEFF = new PIDFCoefficients(8.6, 0.12, 0, 0);
 
-    public static final double INTAKE_SERVO_INIT_POS = 0.14;
-    public static final double INTAKE_SERVO_INTAKE_POS = 0.44;
-    public static final double INTAKE_SERVO_FIRST_PIXEL_POS = 0.29;
-    public static final double INTAKE_SERVO_SECOND_PIXEL_POS = 0.32;
-    public static final double INTAKE_SERVO_THIRD_PIXEL_POS = 0.37;
-    public static final double INTAKE_SERVO_FOURTH_PIXEL_POS = 0.38;
-    public static final double INTAKE_SERVO_UP_POS = 0.358;
-    public static final double INTAKE_SERVO_MID_POS = 0.38;
-    public static final double INTAKE_SERVO_LOW_POS = 0.41;
+    public static final double INTAKE_SERVO_INIT_POS = 0.13;
+    public static final double INTAKE_SERVO_INTAKE_POS = 0.42;
+    public static final double INTAKE_SERVO_FIRST_PIXEL_POS = 0.27;
+    public static final double INTAKE_SERVO_SECOND_PIXEL_POS = 0.3;
+    public static final double INTAKE_SERVO_THIRD_PIXEL_POS = 0.35;
+    public static final double INTAKE_SERVO_FOURTH_PIXEL_POS = 0.36;
+    public static final double INTAKE_SERVO_UP_POS = 0.355;
+    public static final double INTAKE_SERVO_MID_POS = 0.35;
+    public static final double INTAKE_SERVO_LOW_POS = 0.39;
 
     public static final double INTAKE_SERVO_FIRST_PIXEL_POS_AUTO = 0;
     public static final double INTAKE_SERVO_UP_POS_AUTO = 0;
