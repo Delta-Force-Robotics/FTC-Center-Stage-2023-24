@@ -155,7 +155,7 @@ public class StackAutoBlue extends LinearOpMode {
     private void CaseC() {
         // Build the trajectories
         trajPreloadCaseA = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
-                .lineToLinearHeading(new Pose2d(-53,21,Math.toRadians(225)),
+                .lineToLinearHeading(new Pose2d(-53,20,Math.toRadians(225)),
                         SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
@@ -164,37 +164,37 @@ public class StackAutoBlue extends LinearOpMode {
                 .lineTo(new Vector2d(-57,21),
                         SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                .lineToLinearHeading(new Pose2d(-55,10, Math.toRadians(180)),
+                .lineToLinearHeading(new Pose2d(-55,7, Math.toRadians(180)),
                         SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
 
         trajToScoreCaseA = drive.trajectorySequenceBuilder(trajToIntakeCaseA.end())
-                .lineTo(new Vector2d(32,10),
+                .lineTo(new Vector2d(32,7),
                         SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                .lineTo(new Vector2d(50.5,26),
+                .lineTo(new Vector2d(50.5,25),
                         SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
 
         trajToIntake2CaseA = drive.trajectorySequenceBuilder(trajToScoreCaseA.end())
-                .lineTo(new Vector2d(32, 7),
+                .lineTo(new Vector2d(32, 6.5),
                         SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                .lineToSplineHeading(new Pose2d(-59.7,7, Math.toRadians(180)),
+                .lineToSplineHeading(new Pose2d(-59,6.5, Math.toRadians(180)),
                         SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
 
         TrajectorySequence trajToIntakeP = drive.trajectorySequenceBuilder(trajToIntake2CaseA.end())
-                .lineToLinearHeading(new Pose2d(-50, 7, Math.toRadians(180)),
+                .lineToLinearHeading(new Pose2d(-50, 6.5, Math.toRadians(180)),
                         SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
 
         TrajectorySequence trajToIntakeSA = drive.trajectorySequenceBuilder(trajToIntakeP.end())
-                .lineToLinearHeading(new Pose2d(32, 7, Math.toRadians(180)),
+                .lineToLinearHeading(new Pose2d(32, 6.5, Math.toRadians(180)),
                         SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
@@ -205,7 +205,7 @@ public class StackAutoBlue extends LinearOpMode {
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
 
-        trajToIntake2CycleCaseA = drive.trajectorySequenceBuilder(trajToScore2CaseA.end())
+       /* trajToIntake2CycleCaseA = drive.trajectorySequenceBuilder(trajToScore2CaseA.end())
                 .lineTo(new Vector2d(32,10),
                         SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
@@ -230,7 +230,7 @@ public class StackAutoBlue extends LinearOpMode {
                 .lineTo(new Vector2d(50,38),
                         SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                .build();
+                .build();*/
 
 
         // Follow the trajectories
@@ -246,15 +246,15 @@ public class StackAutoBlue extends LinearOpMode {
         sleep(850);
         retractThreadExecutor.accept(Constants.SLIDE_INTAKE);
         sleep(600);
-        intakeRoutine(Constants.INTAKE_SERVO_UP_POS + 0.01);
+        intakeRoutine(Constants.INTAKE_SERVO_UP_POS + 0.03);
 
         drive.followTrajectorySequence(trajToIntake2CaseA);
-        sleep(600);
+        sleep(1500);
 
         intakeRoutine(Constants.INTAKE_SERVO_INTAKE_POS);
         drive.followTrajectorySequence(trajToIntakeP);
+        sleep(1000);
         scoreSubsystem.useBlock(Constants.BLOCK_SERVO_BLOCK_POS);
-        sleep(400);
         intakeSubsystem.setIntakePower(-0.7);
 
         drive.followTrajectorySequence(trajToIntakeSA);
@@ -293,7 +293,7 @@ public class StackAutoBlue extends LinearOpMode {
     private void CaseB() {
         // Build the trajectories
         trajPreloadCaseB = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
-                .lineToLinearHeading(new Pose2d(-40, 24.5, Math.toRadians(180)),
+                .lineToLinearHeading(new Pose2d(-43, 24.5, Math.toRadians(180)),
                         SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
@@ -302,37 +302,37 @@ public class StackAutoBlue extends LinearOpMode {
                 .lineTo(new Vector2d(-53,24.5),
                         SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                .lineTo(new Vector2d(-53,10),
+                .lineTo(new Vector2d(-53,6.5),
                         SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
 
         trajToScoreCaseB = drive.trajectorySequenceBuilder(trajToIntakeCaseB.end())
-                .lineTo(new Vector2d(32,10),
+                .lineTo(new Vector2d(32,6.5),
                         SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                .lineTo(new Vector2d(49,40),
+                .lineTo(new Vector2d(50,33),
                         SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
 
         trajToIntake2CaseB = drive.trajectorySequenceBuilder(trajToScoreCaseB.end())
-                .lineTo(new Vector2d(32,10),
+                .lineTo(new Vector2d(32,6.5),
                         SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                .lineToSplineHeading(new Pose2d(-58.8,10, Math.toRadians(180)),
+                .lineToSplineHeading(new Pose2d(-58.6,6.7, Math.toRadians(180)),
                         SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
 
         TrajectorySequence trajToIntakePB = drive.trajectorySequenceBuilder(trajToIntake2CaseB.end())
-                .lineToLinearHeading(new Pose2d(-50, 10, Math.toRadians(180)),
+                .lineToLinearHeading(new Pose2d(-50, 6.7, Math.toRadians(180)),
                         SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
 
         TrajectorySequence trajToIntakeSB = drive.trajectorySequenceBuilder(trajToIntakePB.end())
-                .lineToLinearHeading(new Pose2d(32, 10, Math.toRadians(180)),
+                .lineToLinearHeading(new Pose2d(32, 6.7, Math.toRadians(180)),
                         SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
@@ -343,7 +343,7 @@ public class StackAutoBlue extends LinearOpMode {
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
 
-        trajToIntake2CycleCaseB = drive.trajectorySequenceBuilder(trajToScore2CaseB.end())
+       /* trajToIntake2CycleCaseB = drive.trajectorySequenceBuilder(trajToScore2CaseB.end())
                 .lineTo(new Vector2d(32,10),
                         SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
@@ -368,7 +368,7 @@ public class StackAutoBlue extends LinearOpMode {
                 .lineToLinearHeading(new Pose2d(50, 38, Math.toRadians(180)),
                         SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                .build();
+                .build();*/
 
 
         // Follow the trajectories
@@ -380,19 +380,19 @@ public class StackAutoBlue extends LinearOpMode {
         drive.followTrajectorySequence(trajToIntakeCaseB);
 
         drive.followTrajectorySequence(trajToScoreCaseB);
-        scoreThreadExecutor.accept(Constants.SLIDE_POSITIONS[0]- 0.05);
+        scoreThreadExecutor.accept(Constants.SLIDE_POSITIONS[0]);
         sleep(850);
         retractThreadExecutor.accept(Constants.SLIDE_INTAKE);
         sleep(600);
-        intakeRoutine(Constants.INTAKE_SERVO_UP_POS);
+        intakeRoutine(Constants.INTAKE_SERVO_UP_POS + 0.025);
 
         drive.followTrajectorySequence(trajToIntake2CaseB);
-        sleep(600);
+        sleep(1500);
 
         intakeRoutine(Constants.INTAKE_SERVO_INTAKE_POS);
         drive.followTrajectorySequence(trajToIntakePB);
         scoreSubsystem.useBlock(Constants.BLOCK_SERVO_BLOCK_POS);
-        sleep(400);
+        sleep(1000);
         intakeSubsystem.setIntakePower(-0.7);
 
         drive.followTrajectorySequence(trajToIntakeSB);
@@ -431,46 +431,49 @@ public class StackAutoBlue extends LinearOpMode {
     private void CaseA() {
         // Build the trajectories
         trajPreloadCaseC = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
-                .splineToLinearHeading(new Pose2d(-36,35, Math.toRadians(180)), Math.toRadians(290),
+                .lineToLinearHeading(new Pose2d(-40,33, Math.toRadians(180)),
+                        SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .lineTo(new Vector2d(-33, 35),
                         SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
 
         trajToIntakeCaseC = drive.trajectorySequenceBuilder(trajPreloadCaseC.end())
-                .lineTo(new Vector2d(-34,35),
+                .lineTo(new Vector2d(-36,33),
                         SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                .lineTo(new Vector2d(-52,10),
-                        SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                .lineTo(new Vector2d(-52,6.5),
+                        SampleMecanumDrive.getVelocityConstraint(35, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
 
         trajToScoreCaseC = drive.trajectorySequenceBuilder(trajToIntakeCaseC.end())
-                .lineTo(new Vector2d(32,10),
+                .lineTo(new Vector2d(32,6.5),
                         SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                .lineTo(new Vector2d(51,40),
+                .lineTo(new Vector2d(50.5,41.5),
                         SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
 
         trajToIntake2CaseC = drive.trajectorySequenceBuilder(trajToScoreCaseC.end())
-                .lineTo(new Vector2d(32,9),
+                .lineTo(new Vector2d(32,6.5),
                         SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                .lineToSplineHeading(new Pose2d(-58.8,9, Math.toRadians(180)),
+                .lineToSplineHeading(new Pose2d(-58.3,6.5, Math.toRadians(180)),
                         SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
 
         TrajectorySequence trajToIntakePC = drive.trajectorySequenceBuilder(trajToIntake2CaseC.end())
-                .lineToLinearHeading(new Pose2d(-50, 9, Math.toRadians(180)),
+                .lineToLinearHeading(new Pose2d(-50, 6, Math.toRadians(180)),
                         SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
 
         TrajectorySequence trajToIntakeSC = drive.trajectorySequenceBuilder(trajToIntakePC.end())
-                .lineToLinearHeading(new Pose2d(32, 9, Math.toRadians(180)),
+                .lineToLinearHeading(new Pose2d(32, 6, Math.toRadians(180)),
                         SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
@@ -481,7 +484,7 @@ public class StackAutoBlue extends LinearOpMode {
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
 
-        trajToIntake2CycleCaseC = drive.trajectorySequenceBuilder(trajToScore2CaseC.end())
+        /*trajToIntake2CycleCaseC = drive.trajectorySequenceBuilder(trajToScore2CaseC.end())
                 .lineTo(new Vector2d(32,10),
                         SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
@@ -506,7 +509,7 @@ public class StackAutoBlue extends LinearOpMode {
                 .lineToLinearHeading(new Pose2d(50, 38, Math.toRadians(180)),
                         SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                .build();
+                .build();*/
 
 
         // Follow the trajectories
@@ -518,19 +521,19 @@ public class StackAutoBlue extends LinearOpMode {
         drive.followTrajectorySequence(trajToIntakeCaseC);
 
         drive.followTrajectorySequence(trajToScoreCaseC);
-        scoreThreadExecutor.accept(Constants.SLIDE_POSITIONS[0]- 0.05);
+        scoreThreadExecutor.accept(Constants.SLIDE_POSITIONS[0]);
         sleep(850);
         retractThreadExecutor.accept(Constants.SLIDE_INTAKE);
         sleep(600);
-        intakeRoutine(Constants.INTAKE_SERVO_UP_POS);
+        intakeRoutine(Constants.INTAKE_SERVO_UP_POS + 0.03);
 
         drive.followTrajectorySequence(trajToIntake2CaseC);
-        sleep(600);
+        sleep(1500);
 
         intakeRoutine(Constants.INTAKE_SERVO_INTAKE_POS);
         drive.followTrajectorySequence(trajToIntakePC);
         scoreSubsystem.useBlock(Constants.BLOCK_SERVO_BLOCK_POS);
-        sleep(400);
+        sleep(1000);
         intakeSubsystem.setIntakePower(-0.7);
 
         drive.followTrajectorySequence(trajToIntakeSC);

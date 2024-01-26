@@ -22,11 +22,8 @@ public class MeepMeepTesting {
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
                 .followTrajectorySequence(drive ->
                         drive.trajectorySequenceBuilder(new Pose2d(-36, 61.5, Math.toRadians(90)))
-
-                                .lineToLinearHeading(new Pose2d(-51,21,Math.toRadians(225)))
-
-                .lineTo(new Vector2d(-57,21))
-                .lineToLinearHeading(new Pose2d(-55,12, Math.toRadians(180)))
+                                .lineToLinearHeading(new Pose2d(-35,36, Math.toRadians(180)))
+                                .lineTo(new Vector2d(-32, 36))
                 .build());
 
         meepMeep.setBackground(MeepMeep.Background.FIELD_CENTERSTAGE_JUICE_DARK)
