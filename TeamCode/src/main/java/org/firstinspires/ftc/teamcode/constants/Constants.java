@@ -39,7 +39,7 @@ public class Constants {
     public static PIDFCoefficients SLIDE_EXTEND_PIDF_COEFF = new PIDFCoefficients(8.6, 0.12, 0, 0);
 
     public static final double INTAKE_SERVO_INIT_POS = 0.13;
-    public static final double INTAKE_SERVO_INTAKE_POS = 0.42;
+    public static final double INTAKE_SERVO_INTAKE_POS = 0.45;
     public static final double INTAKE_SERVO_FIRST_PIXEL_POS = 0.335;
     public static final double INTAKE_SERVO_SECOND_PIXEL_POS = 0.355;
     public static final double INTAKE_SERVO_THIRD_PIXEL_POS = 0.35;

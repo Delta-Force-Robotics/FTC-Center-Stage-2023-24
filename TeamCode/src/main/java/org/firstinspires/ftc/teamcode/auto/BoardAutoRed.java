@@ -161,7 +161,7 @@ public class BoardAutoRed extends LinearOpMode {
 
         trajPreloadScoreCaseA = drive.trajectorySequenceBuilder(trajPreloadCaseA.end())
                 .setTangent(Math.toRadians(0))
-                .splineToLinearHeading(new Pose2d(49.7, -30, Math.toRadians(180)), Math.toRadians(45),
+                .splineToLinearHeading(new Pose2d(50, -30, Math.toRadians(180)), Math.toRadians(45),
                         SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
@@ -207,7 +207,7 @@ public class BoardAutoRed extends LinearOpMode {
 
         trajPreloadScoreCaseB = drive.trajectorySequenceBuilder(trajPreloadCaseB.end())
                 .setTangent(Math.toRadians(270))
-                .splineToLinearHeading(new Pose2d(49.6, -35.12, Math.toRadians(180)), Math.toRadians(0),
+                .splineToLinearHeading(new Pose2d(50, -35.3, Math.toRadians(180)), Math.toRadians(0),
                         SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
@@ -255,7 +255,7 @@ public class BoardAutoRed extends LinearOpMode {
                         SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .setTangent(Math.toRadians(90))
-                .splineToLinearHeading(new Pose2d(49.6, -43, Math.toRadians(180)), Math.toRadians(90),
+                .splineToLinearHeading(new Pose2d(50, -43, Math.toRadians(180)), Math.toRadians(90),
                         SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
