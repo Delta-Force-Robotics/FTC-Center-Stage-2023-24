@@ -21,6 +21,7 @@ import org.firstinspires.ftc.teamcode.subsystems.ScoreSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.SlideSubsystem;
 import org.firstinspires.ftc.teamcode.threads.IntakeAutoThread;
 import org.firstinspires.ftc.teamcode.threads.IntakeThread;
+import org.firstinspires.ftc.teamcode.threads.ScoreReleaseThread;
 import org.firstinspires.ftc.teamcode.threads.ScoreThread;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.vision.BarCodeDetection;
@@ -77,6 +78,10 @@ public class BoardAutoRed extends LinearOpMode {
     private IntakeThread intakeThread;
     private ScoreThread scoreThread;
     private IntakeAutoThread intakeAutoThread;
+    private ScoreReleaseThread scoreReleaseThread;
+
+    private Consumer<Double> scoreThreadExecutor;
+    private Consumer<Double> retractThreadExecutor;
 
     private IMU imu;
 
@@ -102,31 +107,24 @@ public class BoardAutoRed extends LinearOpMode {
         webcam = new BarcodeUtil(hardwareMap, "Webcam 1", telemetry, BarCodeDetection.Color.RED);
         webcam.init();
 
-        BNO055IMUNew.Parameters parameters = new BNO055IMUNew.Parameters(new RevHubOrientationOnRobot(RevHubOrientationOnRobot.LogoFacingDirection.UP, RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD));
-        parameters.calibrationDataFile = "BNO055IMUCalibration.json";
-        imu = hardwareMap.get(IMU.class,"imu");
-        imu.initialize(parameters);
-
         slideSubsystem = new SlideSubsystem(slideMotorLeft, slideMotorRight, FtcDashboard.getInstance().getTelemetry(), true, true);
         scoreSubsystem = new ScoreSubsystem(armServoLeft, armServoRight, rotateServo, blockServo, droneServo, true);
         intakeSubsystem = new IntakeSubsystem(intakeMotor, intakeServo);
 
-        scoreAutoThread = new Thread(() -> {
-            slideSubsystem.setLevel(Constants.SLIDE_POSITIONS[3]);
-            sleep(150);
+        scoreThread = new ScoreThread(slideSubsystem, scoreSubsystem);
+        scoreReleaseThread = new ScoreReleaseThread(slideSubsystem, scoreSubsystem);
 
-            scoreSubsystem.useArm(Constants.ARM_SERVO_PIVOT_POSITION);
-            scoreSubsystem.rotateClaw(Constants.ROTATE_SERVO_45);
-        });
+        scoreThreadExecutor = (Double levelForSlides) -> {
+            scoreThread.slideLevel = levelForSlides;
+            scoreThread.interrupt();
+            scoreThread.start();
+        };
 
-        retractThread = new Thread(() -> {
-            scoreSubsystem.rotateClaw(Constants.ROTATE_SERVO_INIT_POSITION);
-            sleep(100);
-            scoreSubsystem.useArm(Constants.ARM_SERVO_INIT_POSITION);
-            sleep(300);
-
-            slideSubsystem.setLevel(Constants.SLIDE_INTAKE);
-        });
+        retractThreadExecutor = (Double levelForSlides) -> {
+            scoreReleaseThread.slideLevel = levelForSlides;
+            scoreReleaseThread.interrupt();
+            scoreReleaseThread.start();
+        };
 
         drive = new SampleMecanumDrive(hardwareMap);
         drive.setPoseEstimate(new Pose2d(11.6, -61.5, Math.toRadians(270)));
@@ -141,12 +139,12 @@ public class BoardAutoRed extends LinearOpMode {
 
         waitForStart();
 
-        if(barcodePosition == BarCodeDetection.BarcodePosition.RIGHT) {
-            CaseC();
+        if(barcodePosition == BarCodeDetection.BarcodePosition.LEFT) {
+            CaseA();
         } else if(barcodePosition == BarCodeDetection.BarcodePosition.MIDDLE) {
             CaseB();
         }   else {
-            CaseA();
+            CaseC();
         }
         sleep(3000);
     }
@@ -154,7 +152,7 @@ public class BoardAutoRed extends LinearOpMode {
     private void CaseA() {
         trajPreloadCaseA = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
                 .setTangent(Math.toRadians(80))
-                .splineToLinearHeading(new Pose2d(5.5, -35, Math.toRadians(0)), Math.toRadians(200),
+                .splineToLinearHeading(new Pose2d(8, -33, Math.toRadians(0)), Math.toRadians(200),
                         SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
@@ -163,7 +161,7 @@ public class BoardAutoRed extends LinearOpMode {
 
         trajPreloadScoreCaseA = drive.trajectorySequenceBuilder(trajPreloadCaseA.end())
                 .setTangent(Math.toRadians(0))
-                .splineToLinearHeading(new Pose2d(49, -28.5, Math.toRadians(180)), Math.toRadians(45),
+                .splineToLinearHeading(new Pose2d(51, -26.6, Math.toRadians(180)), Math.toRadians(45),
                         SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
@@ -187,10 +185,12 @@ public class BoardAutoRed extends LinearOpMode {
         preloadServo.setPosition(Constants.PRELOAD_SERVO_SCORE_POS);
         sleep(600);
 
-        drive.followTrajectorySequence(trajToScoreCaseA);
+        drive.followTrajectorySequence(trajPreloadScoreCaseA);
 
-        scoreAutoThread.start();
-        retractThread.start();
+        scoreThreadExecutor.accept(Constants.SLIDE_POSITIONS[0] - 0.03);
+        sleep(1300);
+        retractThreadExecutor.accept(Constants.SLIDE_INTAKE);
+        sleep(800);
 
         drive.followTrajectorySequence(parkSpotA);
     }
@@ -199,20 +199,18 @@ public class BoardAutoRed extends LinearOpMode {
 
 
         trajPreloadCaseB = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
-                .lineTo(new Vector2d(11.6, -30.5),
+                .lineTo(new Vector2d(11.6, -32),
                         SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
-
 
 
         trajPreloadScoreCaseB = drive.trajectorySequenceBuilder(trajPreloadCaseB.end())
                 .setTangent(Math.toRadians(270))
-                .splineToLinearHeading(new Pose2d(49, -35, Math.toRadians(180)), Math.toRadians(0),
+                .splineToLinearHeading(new Pose2d(52, -35.08, Math.toRadians(180)), Math.toRadians(0),
                         SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
-
 
 
         parkSpotB = drive.trajectorySequenceBuilder(trajPreloadScoreCaseB.end())
@@ -232,9 +230,11 @@ public class BoardAutoRed extends LinearOpMode {
         preloadServo.setPosition(Constants.PRELOAD_SERVO_SCORE_POS);
         sleep(600);
 
-        drive.followTrajectorySequence(trajToScoreCaseB);
-        scoreAutoThread.start();
-        retractThread.start();
+        drive.followTrajectorySequence(trajPreloadScoreCaseB);
+        scoreThreadExecutor.accept(Constants.SLIDE_POSITIONS[0] - 0.05);
+        sleep(1300);
+        retractThreadExecutor.accept(Constants.SLIDE_INTAKE);
+        sleep(800);
 
         drive.followTrajectorySequence(parkSpotB);
     }
@@ -255,16 +255,16 @@ public class BoardAutoRed extends LinearOpMode {
                         SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .setTangent(Math.toRadians(90))
-                .splineToLinearHeading(new Pose2d(49, -40.5, Math.toRadians(180)), Math.toRadians(90),
-                        SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                .lineTo(new Vector2d(45.5, -40.5),
+                .splineToLinearHeading(new Pose2d(52, -43, Math.toRadians(180)), Math.toRadians(90),
                         SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
 
 
         parkSpotC = drive.trajectorySequenceBuilder(trajPreloadScoreCaseC.end())
+                .lineTo(new Vector2d(50 , -40.5),
+                    SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .setTangent(Math.toRadians(250))
                 .splineToLinearHeading(new Pose2d(57.5,-59, Math.toRadians(180)), Math.toRadians(0),
                         SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
@@ -276,9 +276,11 @@ public class BoardAutoRed extends LinearOpMode {
         preloadServo.setPosition(Constants.PRELOAD_SERVO_SCORE_POS);
         sleep(600);
 
-        drive.followTrajectorySequence(trajToScoreCaseC);
-        scoreAutoThread.start();
-        retractThread.start();
+        drive.followTrajectorySequence(trajPreloadScoreCaseC);
+        scoreThreadExecutor.accept(Constants.SLIDE_POSITIONS[0] - 0.03);
+        sleep(1300);
+        retractThreadExecutor.accept(Constants.SLIDE_INTAKE);
+        sleep(800);
 
         drive.followTrajectorySequence(parkSpotC);
     }

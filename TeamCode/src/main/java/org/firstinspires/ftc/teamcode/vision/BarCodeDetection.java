@@ -42,16 +42,16 @@ public class BarCodeDetection extends OpenCvPipeline {
     private BarcodePosition barcodePosition = BarcodePosition.NOT_FOUND;
 
      static final Rect LEFT_ROW = new Rect(
-            new Point( 80, 225 ),
-            new Point( 125, 290 )
+            new Point( 80, 200 ),
+            new Point( 125, 250 )
     );
     static final Rect MIDDLE_ROW = new Rect(
-            new Point( 300, 220 ),
-            new Point( 345, 270 )
+            new Point( 310, 195 ),
+            new Point( 360, 240 )
     );
      static final Rect RIGHT_ROW = new Rect(
-            new Point( 540, 225 ),
-            new Point( 580, 285 )
+            new Point( 540, 180 ),
+            new Point( 580, 240 )
     );
 
     static double PERCENT_COLOR_THRESHOLD = 0.2;
@@ -61,11 +61,12 @@ public class BarCodeDetection extends OpenCvPipeline {
         pixel = color;
     }
 
-    public Mat processFrame( Mat input, String type ) {
+    @Override
+    public Mat processFrame( Mat input ) {
         Imgproc.cvtColor(input, mat, Imgproc.COLOR_RGB2HSV);
 
         if( pixel == Color.RED ) {
-            lowHSV = new Scalar(160, 50, 40);
+            lowHSV = new Scalar(160, 80, 50);
             highHSV = new Scalar(180, 255, 255);
 
             lowHSV1 = new Scalar(357, 95, 42);
@@ -73,7 +74,7 @@ public class BarCodeDetection extends OpenCvPipeline {
 
             Core.inRange(mat, lowHSV1, highHSV1, mat1);
         } else {
-            lowHSV = new Scalar(100, 80, 30);
+            lowHSV = new Scalar(60, 85, 40);
             highHSV = new Scalar(120, 255, 255);
 
             lowHSV1 = new Scalar(209, 93, 68);
@@ -103,16 +104,16 @@ public class BarCodeDetection extends OpenCvPipeline {
 
         if( rightBool ) {
             barcodePosition = BarcodePosition.RIGHT;
-            telemetry.addData( "Location", type + " right" );
+            telemetry.addData( "Location",  " right" );
         } else if( leftBool ) {
             barcodePosition = BarcodePosition.LEFT;
-            telemetry.addData( "Location", type + " left" );
+            telemetry.addData( "Location",  " left" );
         } else if( middleBool ) {
             barcodePosition = BarcodePosition.MIDDLE;
-            telemetry.addData( "Location", type + " middle" );
+            telemetry.addData( "Location",  " middle" );
         } else {
             barcodePosition = BarcodePosition.NOT_FOUND;
-            telemetry.addData( "Location", type + " not found" );
+            telemetry.addData( "Location",  " not found" );
         }
         Imgproc.cvtColor( mat, mat, Imgproc.COLOR_GRAY2RGB );
 
@@ -123,19 +124,6 @@ public class BarCodeDetection extends OpenCvPipeline {
         Imgproc.rectangle( mat, RIGHT_ROW, barcodePosition == BarcodePosition.RIGHT ? notElement : elementColor );
         Imgproc.rectangle( mat, MIDDLE_ROW, barcodePosition == BarcodePosition.MIDDLE ? notElement : elementColor );
         return mat;
-    }
-
-    @Override
-    public Mat processFrame( Mat input ) {
-
-        Mat elementImage = processFrame( input, "element" );
-        Mat duckImage = processFrame( input, "duck" );
-        double elementValue = Core.sumElems( elementImage ).val[0] / (elementImage.rows( ) * elementImage.cols( )) / 255;
-        double duckValue = Core.sumElems( duckImage ).val[0] / (duckImage.rows( ) * duckImage.cols( )) / 255;
-        telemetry.update( );
-        if( elementValue < duckValue )
-            return duckImage;
-        return elementImage;
     }
 
     public BarcodePosition getBarcodePosition( ) {

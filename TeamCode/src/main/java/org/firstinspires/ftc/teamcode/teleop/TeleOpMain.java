@@ -24,6 +24,7 @@ import org.firstinspires.ftc.teamcode.subsystems.IntakeSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.ScoreSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.SlideSubsystem;
 import org.firstinspires.ftc.teamcode.threads.BackupThread;
+import org.firstinspires.ftc.teamcode.threads.ClimbThread;
 import org.firstinspires.ftc.teamcode.threads.IntakeThread;
 import org.firstinspires.ftc.teamcode.threads.OutakeThread;
 import org.firstinspires.ftc.teamcode.threads.ScoreReleaseThread;
@@ -59,6 +60,7 @@ public class TeleOpMain extends CommandOpMode {
     private ClimbManualCommand climbManualCommand;
 
     private IntakeThread intakeThread;
+    private ClimbThread climbThread;
     private ScoreThread scoreThread;
     private ScoreReleaseThread scoreReleaseThread;
     private OutakeThread outakeThread;
@@ -121,12 +123,14 @@ public class TeleOpMain extends CommandOpMode {
 
         intakeThread = new IntakeThread(intakeSubsystem, scoreSubsystem, false);
         scoreThread = new ScoreThread(slideSubsystem, scoreSubsystem);
+        climbThread = new ClimbThread(climbSubsystem);
 
         scoreReleaseThread = new ScoreReleaseThread(slideSubsystem, scoreSubsystem);
         outakeThread = new OutakeThread(intakeSubsystem, scoreSubsystem);
         backupThread = new BackupThread(scoreSubsystem);
 
         intakeThread.setPriority(Thread.MIN_PRIORITY);
+        climbThread.setPriority(Thread.MIN_PRIORITY);
         outakeThread.setPriority(Thread.MIN_PRIORITY);
         scoreThread.setPriority(Thread.MIN_PRIORITY);
         backupThread.setPriority(Thread.MIN_PRIORITY);
@@ -142,6 +146,12 @@ public class TeleOpMain extends CommandOpMode {
             scoreReleaseThread.slideLevel = levelForSlides;
             scoreReleaseThread.interrupt();
             scoreReleaseThread.start();
+        };
+
+        climbThreadExecutor = (Double climbPosition) -> {
+            climbThread.climbPos = climbPosition;
+            climbThread.interrupt();
+            climbThread.start();
         };
 
         changeLevelUp = new InstantCommand(() -> {
@@ -179,6 +189,7 @@ public class TeleOpMain extends CommandOpMode {
         new GamepadButton(driver1, GamepadKeys.Button.RIGHT_BUMPER).whenPressed(() -> scoreReleaseThreadExecutor.accept(Constants.SLIDE_INTAKE));
 
         new GamepadButton(driver1, GamepadKeys.Button.Y).whenPressed(droneInstantCommand);
+        new GamepadButton(driver1, GamepadKeys.Button.X).whenPressed(() -> scoreSubsystem.useBlock(Constants.BLOCK_SERVO_SCORE_POS));
 
     new GamepadButton(driver2, GamepadKeys.Button.LEFT_BUMPER).whenPressed(() -> backupThread.start());
 
@@ -189,8 +200,8 @@ public class TeleOpMain extends CommandOpMode {
 
         new GamepadButton(driver2, GamepadKeys.Button.DPAD_LEFT).whenPressed(rotateInit);
         new GamepadButton(driver2, GamepadKeys.Button.DPAD_RIGHT).whenPressed(rotate45);
-        new GamepadButton(driver2, GamepadKeys.Button.Y).whenPressed(() -> climbSubsystem.setClimbPos(Constants.CLIMB_MOTOR_CLIMB_POS));
-        new GamepadButton(driver2, GamepadKeys.Button.X).whenPressed(() -> climbSubsystem.setClimbPos(Constants.CLIMB_MOTOR_INIT_POS));
+        new GamepadButton(driver2, GamepadKeys.Button.Y).whenPressed(() -> climbThreadExecutor.accept((double)Constants.CLIMB_MOTOR_CLIMB_POS));
+        new GamepadButton(driver2, GamepadKeys.Button.X).whenPressed(() -> climbThreadExecutor.accept((double)Constants.CLIMB_MOTOR_INIT_POS));
 
         new GamepadButton(driver2, GamepadKeys.Button.A).whenPressed(() -> intakeThread.start());
         new GamepadButton(driver2, GamepadKeys.Button.B).whenPressed(() -> outakeThread.start());

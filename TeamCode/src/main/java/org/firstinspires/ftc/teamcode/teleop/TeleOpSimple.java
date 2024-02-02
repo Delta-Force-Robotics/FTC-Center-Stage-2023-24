@@ -148,6 +148,7 @@ public class TeleOpSimple extends LinearOpMode {
             if (gamepad2.b) {
                 intakeServo.setPosition(0.315);
                 sleep(200);
+
             }
             else if (gamepad2.x) {
                 intakeServo.setPosition(0);
@@ -175,11 +176,11 @@ public class TeleOpSimple extends LinearOpMode {
             }
 
             if (gamepad2.a) {
-                intakeServo.setPosition(intakeServo.getPosition() + 0.001);
+                intakeServo.setPosition(intakeServo.getPosition() + 0.01);
                 sleep(200);
             }
             else if (gamepad2.y) {
-                intakeServo.setPosition(intakeServo.getPosition() - 0.001);
+                intakeServo.setPosition(intakeServo.getPosition() - 0.01);
                 sleep(200);
             }
 
@@ -193,7 +194,7 @@ public class TeleOpSimple extends LinearOpMode {
             }*/
 
            if (gamepad1.dpad_right) {
-               intakeMotor.set(0.8);
+               intakeMotor.set(1);
             }
             if (gamepad1.dpad_left) {
                 intakeMotor.set(0);

@@ -40,12 +40,12 @@ public class Constants {
 
     public static final double INTAKE_SERVO_INIT_POS = 0.13;
     public static final double INTAKE_SERVO_INTAKE_POS = 0.42;
-    public static final double INTAKE_SERVO_FIRST_PIXEL_POS = 0.27;
-    public static final double INTAKE_SERVO_SECOND_PIXEL_POS = 0.3;
+    public static final double INTAKE_SERVO_FIRST_PIXEL_POS = 0.335;
+    public static final double INTAKE_SERVO_SECOND_PIXEL_POS = 0.355;
     public static final double INTAKE_SERVO_THIRD_PIXEL_POS = 0.35;
     public static final double INTAKE_SERVO_FOURTH_PIXEL_POS = 0.36;
-    public static final double INTAKE_SERVO_UP_POS = 0.355;
-    public static final double INTAKE_SERVO_MID_POS = 0.35;
+    public static final double INTAKE_SERVO_UP_POS = 0.335;
+    public static final double INTAKE_SERVO_MID_POS = 0.372;
     public static final double INTAKE_SERVO_LOW_POS = 0.39;
 
     public static final double INTAKE_SERVO_FIRST_PIXEL_POS_AUTO = 0;
@@ -66,7 +66,7 @@ public class Constants {
     public static final double BLOCK_SERVO_BLOCK_POS = 0;
 
     public static final double DRONE_SERVO_INIT_POS = 0;
-    public static final double DRONE_SERVO_SCORE_POS = 0.42;
+    public static final double DRONE_SERVO_SCORE_POS = 0.8;
 
     public static final int CLIMB_MOTOR_INIT_POS = 0;
     public static final int CLIMB_MOTOR_CLIMB_POS = -7000;

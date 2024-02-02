@@ -3,8 +3,11 @@ package org.firstinspires.ftc.teamcode.subsystems;
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 
+import java.util.function.BooleanSupplier;
+
 public class ClimbSubsystem extends SubsystemBase {
     private Motor climbMotor;
+    public BooleanSupplier isInterrupted;
 
     public ClimbSubsystem(Motor climbMotor) {
         this.climbMotor = climbMotor;
@@ -27,7 +30,7 @@ public class ClimbSubsystem extends SubsystemBase {
 
         climbMotor.setPositionTolerance(10);
 
-        while (!climbMotor.atTargetPosition()) {
+        while (!climbMotor.atTargetPosition() && !isInterrupted.getAsBoolean()) {
             climbMotor.set(1);
         }
 

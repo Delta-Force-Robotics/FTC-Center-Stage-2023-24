@@ -22,8 +22,43 @@ public class MeepMeepTesting {
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
                 .followTrajectorySequence(drive ->
                         drive.trajectorySequenceBuilder(new Pose2d(-36, 61.5, Math.toRadians(90)))
-                                .lineToLinearHeading(new Pose2d(-35,36, Math.toRadians(180)))
-                                .lineTo(new Vector2d(-32, 36))
+                                .lineToLinearHeading(new Pose2d(-55,20,Math.toRadians(225)))
+
+                .lineToLinearHeading(new Pose2d(-57,21, Math.toRadians(175)))
+
+                .lineToLinearHeading(new Pose2d(-55,8, Math.toRadians(175)))
+
+                .lineToLinearHeading(new Pose2d(32,8, Math.toRadians(175)))
+
+                .lineToLinearHeading(new Pose2d(47,15, Math.toRadians(175)))
+                .lineToLinearHeading(new Pose2d(32,8, Math.toRadians(175)))
+
+                .lineToLinearHeading(new Pose2d(-58.5,8, Math.toRadians(175)))
+
+                .lineToLinearHeading(new Pose2d(-50, 8, Math.toRadians(175)))
+
+                .lineToLinearHeading(new Pose2d(32, 8, Math.toRadians(175)))
+
+                .lineToLinearHeading(new Pose2d(48,20, Math.toRadians(175)))
+/*
+                                .lineToLinearHeading(new Pose2d(-54,-24,Math.toRadians(135)))
+
+                                .lineTo(new Vector2d(-57,-23))
+                                .lineToLinearHeading(new Pose2d(-55,-12, Math.toRadians(180)))
+
+                                .lineTo(new Vector2d(32,-12))
+                                .lineTo(new Vector2d(49,-30))
+
+                                .lineTo(new Vector2d(32,-15))
+                                .lineToSplineHeading(new Pose2d(-59,-15.5, Math.toRadians(190)))
+
+                                .lineToLinearHeading(new Pose2d(-50, -15.5, Math.toRadians(190)))
+
+                                .lineToLinearHeading(new Pose2d(32, -15.5, Math.toRadians(175)))
+
+                                .lineTo(new Vector2d(49.6,-40))
+
+*/
                 .build());
 
         meepMeep.setBackground(MeepMeep.Background.FIELD_CENTERSTAGE_JUICE_DARK)
