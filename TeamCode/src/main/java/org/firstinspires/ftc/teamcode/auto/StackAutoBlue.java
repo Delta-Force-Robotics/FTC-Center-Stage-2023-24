@@ -186,13 +186,13 @@ public class StackAutoBlue extends LinearOpMode {
                 .build();
 
         TrajectorySequence trajToIntakePA = drive.trajectorySequenceBuilder(trajToIntake1CycleCaseA.end())
-                .lineToLinearHeading(new Pose2d(-50, 7, Math.toRadians(175)),
+                .lineToLinearHeading(new Pose2d(-50, 5, Math.toRadians(175)),
                         SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
 
         TrajectorySequence trajToIntakeSA = drive.trajectorySequenceBuilder(trajToIntakePA.end())
-                .lineToLinearHeading(new Pose2d(32, 7, Math.toRadians(175)),
+                .lineToLinearHeading(new Pose2d(32, 5, Math.toRadians(175)),
                         SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
