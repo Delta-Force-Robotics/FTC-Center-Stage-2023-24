@@ -138,13 +138,12 @@ public class StackAutoRed extends LinearOpMode {
 
         waitForStart();
 
-        if(barcodePosition == BarCodeDetection.BarcodePosition.MIDDLE) {
+        if (barcodePosition == BarCodeDetection.BarcodePosition.MIDDLE) {
             CaseB();
-        } else if(barcodePosition == BarCodeDetection.BarcodePosition.RIGHT) {
+        } else if (barcodePosition == BarCodeDetection.BarcodePosition.RIGHT) {
             CaseC();
-        }   else {
-            CaseA();
-        }
+        } else CaseA();
+
         sleep(3000);
     }
 
