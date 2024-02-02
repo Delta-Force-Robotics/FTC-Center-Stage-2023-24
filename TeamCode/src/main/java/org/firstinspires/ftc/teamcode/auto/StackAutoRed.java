@@ -175,10 +175,10 @@ public class StackAutoRed extends LinearOpMode {
                 .build();
 
         trajToIntake1CycleCaseA = drive.trajectorySequenceBuilder(trajToScorePreloadCaseA.end())
-                .lineToLinearHeading(new Pose2d(30,-11, Math.toRadians(184)),
+                .lineToLinearHeading(new Pose2d(30,-10, Math.toRadians(184)),
                         SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                .lineToLinearHeading(new Pose2d(-61,-15.3, Math.toRadians(188)),
+                .lineToLinearHeading(new Pose2d(-61,-16.5, Math.toRadians(188)),
                         SampleMecanumDrive.getVelocityConstraint(35, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
@@ -307,7 +307,7 @@ public class StackAutoRed extends LinearOpMode {
                 .lineToLinearHeading(new Pose2d(32,-10, Math.toRadians(184)),
                         SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                .lineTo(new Vector2d(49,-25.6),
+                .lineTo(new Vector2d(49,-26),
                         SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
 
@@ -335,7 +335,7 @@ public class StackAutoRed extends LinearOpMode {
                 .build();
 
         trajToScoreCaseB = drive.trajectorySequenceBuilder(trajToIntakeSB.end())
-                .lineToLinearHeading(new Pose2d(48.2,-28, Math.toRadians(184)),
+                .lineToLinearHeading(new Pose2d(48.8,-28, Math.toRadians(184)),
                         SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
@@ -447,7 +447,7 @@ public class StackAutoRed extends LinearOpMode {
                 .lineToLinearHeading(new Pose2d(32,-11, Math.toRadians(184)),
                         SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                .lineToLinearHeading(new Pose2d(48,-36, Math.toRadians(184)),
+                .lineToLinearHeading(new Pose2d(48.8,-36, Math.toRadians(184)),
                         SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
@@ -456,26 +456,26 @@ public class StackAutoRed extends LinearOpMode {
                 .lineToLinearHeading(new Pose2d(30,-11, Math.toRadians(184)),
                         SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                .lineToLinearHeading(new Pose2d(-61,-16, Math.toRadians(186)),
+                .lineToLinearHeading(new Pose2d(-59.8,-16.4, Math.toRadians(186)),
                         SampleMecanumDrive.getVelocityConstraint(35, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
 
         TrajectorySequence trajToIntakePC = drive.trajectorySequenceBuilder(trajToIntake1CycleCaseC.end())
-                .lineToLinearHeading(new Pose2d(-50, -13, Math.toRadians(184)),
-                        SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                .lineToLinearHeading(new Pose2d(-50, -14, Math.toRadians(184)),
+                        SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
 
         TrajectorySequence trajToIntakeSC = drive.trajectorySequenceBuilder(trajToIntakePC.end())
-                .lineToLinearHeading(new Pose2d(32, -13, Math.toRadians(184)),
-                        SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                .lineToLinearHeading(new Pose2d(32, -14, Math.toRadians(184)),
+                        SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
 
         trajToScoreCaseC = drive.trajectorySequenceBuilder(trajToIntakeSC.end())
-                .lineTo(new Vector2d(48,-29),
-                        SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                .lineTo(new Vector2d(48.8,-30),
+                        SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
 
@@ -520,7 +520,7 @@ public class StackAutoRed extends LinearOpMode {
         sleep(850);
         retractThreadExecutor.accept(Constants.SLIDE_INTAKE);
         sleep(600);
-        intakeRoutine(Constants.INTAKE_SERVO_UP_POS);
+        intakeRoutine(Constants.INTAKE_SERVO_UP_POS + 0.03);
 
         drive.followTrajectorySequence(trajToIntake1CycleCaseC);
         sleep(1500);

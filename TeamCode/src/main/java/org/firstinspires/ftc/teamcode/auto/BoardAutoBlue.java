@@ -165,7 +165,7 @@ public class BoardAutoBlue extends LinearOpMode {
                         SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .setTangent(Math.toRadians(270))
-                .splineToLinearHeading(new Pose2d(49, 42, Math.toRadians(180)), Math.toRadians(270),
+                .splineToLinearHeading(new Pose2d(49, 42.5, Math.toRadians(180)), Math.toRadians(270),
                         SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
@@ -212,7 +212,7 @@ public class BoardAutoBlue extends LinearOpMode {
 
         trajPreloadScoreCaseB = drive.trajectorySequenceBuilder(trajPreloadCaseB.end())
                 .setTangent(Math.toRadians(90))
-                .splineToLinearHeading(new Pose2d(49.2, 36.9, Math.toRadians(180)), Math.toRadians(0),
+                .splineToLinearHeading(new Pose2d(49, 36.72, Math.toRadians(180)), Math.toRadians(0),
                         SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
 
@@ -259,7 +259,7 @@ public class BoardAutoBlue extends LinearOpMode {
 
         trajPreloadScoreCaseC = drive.trajectorySequenceBuilder(trajPreloadCaseC.end())
                 .setTangent(Math.toRadians(0))
-                .splineToLinearHeading(new Pose2d(49.5, 31, Math.toRadians(185)), Math.toRadians(300),
+                .splineToLinearHeading(new Pose2d(49.2, 30, Math.toRadians(182)), Math.toRadians(300),
                         SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
