@@ -168,7 +168,7 @@ public class StackAutoRed extends LinearOpMode {
                 .lineToLinearHeading(new Pose2d(32,-11, Math.toRadians(184)),
                         SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                .lineToLinearHeading(new Pose2d(47.6,-17.5, Math.toRadians(184)),
+                .lineToLinearHeading(new Pose2d(48.5,-17.5, Math.toRadians(184)),
                         SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
@@ -241,12 +241,13 @@ public class StackAutoRed extends LinearOpMode {
         sleep(850);
         retractThreadExecutor.accept(Constants.SLIDE_INTAKE);
         sleep(600);
-        intakeRoutine(Constants.INTAKE_SERVO_UP_POS + 0.01);
+        intakeRoutine(Constants.INTAKE_SERVO_UP_POS + 0.014);
 
         drive.followTrajectorySequence(trajToIntake1CycleCaseA);
         sleep(600);
 
         intakeRoutine(Constants.INTAKE_SERVO_INTAKE_POS);
+        sleep(150);
         drive.followTrajectorySequence(trajToIntakePA);
         scoreSubsystem.useBlock(Constants.BLOCK_SERVO_BLOCK_POS);
         sleep(400);
@@ -380,12 +381,13 @@ public class StackAutoRed extends LinearOpMode {
         sleep(850);
         retractThreadExecutor.accept(Constants.SLIDE_INTAKE);
         sleep(700);
-        intakeRoutine(Constants.INTAKE_SERVO_UP_POS + 0.05);
+        intakeRoutine(Constants.INTAKE_SERVO_UP_POS + 0.01);
 
         drive.followTrajectorySequence(trajToIntake1CycleCaseB);
         sleep(600);
 
         intakeRoutine(Constants.INTAKE_SERVO_INTAKE_POS);
+        sleep(150);
         drive.followTrajectorySequence(trajToIntakePB);
         scoreSubsystem.useBlock(Constants.BLOCK_SERVO_BLOCK_POS);
         sleep(400);
@@ -446,7 +448,7 @@ public class StackAutoRed extends LinearOpMode {
                 .lineToLinearHeading(new Pose2d(32,-11, Math.toRadians(184)),
                         SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                .lineToLinearHeading(new Pose2d(48.8,-35, Math.toRadians(184)),
+                .lineToLinearHeading(new Pose2d(40.2,-35, Math.toRadians(184)),
                         SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
@@ -519,12 +521,13 @@ public class StackAutoRed extends LinearOpMode {
         sleep(850);
         retractThreadExecutor.accept(Constants.SLIDE_INTAKE);
         sleep(600);
-        intakeRoutine(Constants.INTAKE_SERVO_UP_POS + 0.03);
+        intakeRoutine(Constants.INTAKE_SERVO_UP_POS + 0.032);
 
         drive.followTrajectorySequence(trajToIntake1CycleCaseC);
         sleep(1500);
 
         intakeRoutine(Constants.INTAKE_SERVO_INTAKE_POS);
+        sleep(150);
         drive.followTrajectorySequence(trajToIntakePC);
         scoreSubsystem.useBlock(Constants.BLOCK_SERVO_BLOCK_POS);
         sleep(1000);

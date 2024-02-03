@@ -171,7 +171,7 @@ public class StackAutoBlue extends LinearOpMode {
                 .lineToLinearHeading(new Pose2d(32,9, Math.toRadians(175)),
                         SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                .lineToLinearHeading(new Pose2d(48,29, Math.toRadians(175)),
+                .lineToLinearHeading(new Pose2d(48.8,29, Math.toRadians(175)),
                         SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
@@ -244,12 +244,13 @@ public class StackAutoBlue extends LinearOpMode {
         sleep(850);
         retractThreadExecutor.accept(Constants.SLIDE_INTAKE);
         sleep(600);
-        intakeRoutine(Constants.INTAKE_SERVO_UP_POS + 0.024);
+        intakeRoutine(Constants.INTAKE_SERVO_UP_POS + 0.028);
 
         drive.followTrajectorySequence(trajToIntake1CycleCaseA);
         sleep(1500);
 
         intakeRoutine(Constants.INTAKE_SERVO_INTAKE_POS);
+        sleep(150);
         drive.followTrajectorySequence(trajToIntakePA);
         sleep(1000);
         scoreSubsystem.useBlock(Constants.BLOCK_SERVO_BLOCK_POS);
@@ -310,13 +311,13 @@ public class StackAutoBlue extends LinearOpMode {
                 .lineToLinearHeading(new Pose2d(32,4, Math.toRadians(175)),
                         SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                .lineToLinearHeading(new Pose2d(48.4,20.5, Math.toRadians(175)),
+                .lineToLinearHeading(new Pose2d(48.8,20.5, Math.toRadians(175)),
                         SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
 
         trajToIntake1CycleCaseB = drive.trajectorySequenceBuilder(trajToScorePreloadCaseB.end())
-                .lineToLinearHeading(new Pose2d(32,2.2, Math.toRadians(175)),
+                .lineToLinearHeading(new Pose2d(32,1, Math.toRadians(175)),
                         SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .lineToLinearHeading(new Pose2d(-60.8,9 , Math.toRadians(175)),
@@ -383,12 +384,13 @@ public class StackAutoBlue extends LinearOpMode {
         sleep(850);
         retractThreadExecutor.accept(Constants.SLIDE_INTAKE);
         sleep(600);
-        intakeRoutine(Constants.INTAKE_SERVO_UP_POS + 0.02);
+        intakeRoutine(Constants.INTAKE_SERVO_UP_POS + 0.028);
 
         drive.followTrajectorySequence(trajToIntake1CycleCaseB);
         sleep(1500);
 
         intakeRoutine(Constants.INTAKE_SERVO_INTAKE_POS);
+        sleep(150);
         drive.followTrajectorySequence(trajToIntakePB);
         scoreSubsystem.useBlock(Constants.BLOCK_SERVO_BLOCK_POS);
         sleep(1200);
@@ -448,7 +450,7 @@ public class StackAutoBlue extends LinearOpMode {
                 .lineToLinearHeading(new Pose2d(32,2, Math.toRadians(175)),
                         SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                .lineToLinearHeading(new Pose2d(47,13, Math.toRadians(175)),
+                .lineToLinearHeading(new Pose2d(48.2,13, Math.toRadians(175)),
                         SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
@@ -521,12 +523,13 @@ public class StackAutoBlue extends LinearOpMode {
         sleep(850);
         retractThreadExecutor.accept(Constants.SLIDE_INTAKE);
         sleep(600);
-        intakeRoutine(Constants.INTAKE_SERVO_UP_POS + 0.01);
+        intakeRoutine(Constants.INTAKE_SERVO_UP_POS + 0.018);
 
         drive.followTrajectorySequence(trajToIntake1CycleCaseC);
         sleep(1500);
 
         intakeRoutine(Constants.INTAKE_SERVO_INTAKE_POS);
+        sleep(150);
         drive.followTrajectorySequence(trajToIntakePC);
         sleep(1000);
         scoreSubsystem.useBlock(Constants.BLOCK_SERVO_BLOCK_POS);
