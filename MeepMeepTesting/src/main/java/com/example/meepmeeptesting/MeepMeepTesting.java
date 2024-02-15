@@ -19,27 +19,53 @@ public class MeepMeepTesting {
 
         RoadRunnerBotEntity myBot = new DefaultBotBuilder(meepMeep)
                 // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
-                .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
+                .setConstraints(73, 40, Math.toRadians(180), Math.toRadians(180), 15)
                 .followTrajectorySequence(drive ->
-                        drive.trajectorySequenceBuilder(new Pose2d(-36, 61.5, Math.toRadians(90)))
+                        drive.trajectorySequenceBuilder(new Pose2d(-36, -61.5, Math.toRadians(90)))
 
-                                .lineToLinearHeading(new Pose2d(-40,33, Math.toRadians(180)))
-                            .lineToLinearHeading(new Pose2d(-34, 34, Math.toRadians(180)))
 
-                                .lineToLinearHeading(new Pose2d(-36,33, Math.toRadians(180)))
-                                .lineToLinearHeading(new Pose2d(-52,10, Math.toRadians(180)))
+                                .setTangent(Math.toRadians(90))
+                                .splineToLinearHeading(new Pose2d(-33,-34, Math.toRadians(180)),Math.toRadians(0))
 
-                                .lineToLinearHeading(new Pose2d(32,10, Math.toRadians(180)))
-                                .lineToLinearHeading(new Pose2d(48,29, Math.toRadians(180)))
+                                .setTangent(Math.toRadians(180))
+                                .splineToLinearHeading(new Pose2d(-59,-11.5,Math.toRadians(180)),Math.toRadians(180))
 
-                                .lineToLinearHeading(new Pose2d(32, 10, Math.toRadians(180)))
-                                .lineToSplineHeading(new Pose2d(-60.5,11, Math.toRadians(180)))
+                                .lineTo(new Vector2d(-47,-11.5))
 
-                                .lineToLinearHeading(new Pose2d(-50, 10, Math.toRadians(180)))
+                                .setTangent(Math.toRadians(0))
+                                .splineToLinearHeading(new Pose2d(24,-11.5,Math.toRadians(180)),Math.toRadians(0))
+                                .splineToLinearHeading(new Pose2d(49,-41.5,Math.toRadians(180)),Math.toRadians(0))
 
-                                .lineToLinearHeading(new Pose2d(32, 10, Math.toRadians(180)))
+                                .setTangent(Math.toRadians(180))
+                                .splineToLinearHeading(new Pose2d(24,-11.5,Math.toRadians(180)),Math.toRadians(180))
+                                .splineToLinearHeading(new Pose2d(-59,-11.5,Math.toRadians(180)),Math.toRadians(180))
 
-                                .lineTo(new Vector2d(49,29))
+                                .lineTo(new Vector2d(-47,-11.5))
+
+                                .setTangent(Math.toRadians(0))
+                                .splineToLinearHeading(new Pose2d(24,-11.5,Math.toRadians(180)),Math.toRadians(0))
+                                .splineToLinearHeading(new Pose2d(49,-28.5,Math.toRadians(180)),Math.toRadians(0))
+
+
+
+
+                                /*.lineToLinearHeading(new Pose2d(-53,24.5, Math.toRadians(180)))
+                                .lineToLinearHeading(new Pose2d(-53,9.6, Math.toRadians(180)))
+
+                                .lineToLinearHeading(new Pose2d(32,9.6, Math.toRadians(180)))
+                                .lineToLinearHeading(new Pose2d(48.8,35.5, Math.toRadians(180)))
+
+                                .lineToLinearHeading(new Pose2d(32,9.6, Math.toRadians(180)))
+                                .lineToLinearHeading(new Pose2d(-57,11.5, Math.toRadians(180)))
+
+                                .lineToLinearHeading(new Pose2d(-50, 9.6, Math.toRadians(180)))
+
+                                .lineToLinearHeading(new Pose2d(32, 9.6, Math.toRadians(180)))
+
+                                .lineTo(new Vector2d(48,28.5))*/
+
+
+
 
                 //.lineToLinearHeading(new Pose2d(32, 8, Math.toRadians(175)))
 

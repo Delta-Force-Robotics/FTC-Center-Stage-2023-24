@@ -141,10 +141,10 @@ public class BoardAutoRed extends LinearOpMode {
 
         if(barcodePosition == BarCodeDetection.BarcodePosition.LEFT) {
             CaseA();
-        } else if(barcodePosition == BarCodeDetection.BarcodePosition.MIDDLE) {
-            CaseB();
-        }   else {
+        } else if(barcodePosition == BarCodeDetection.BarcodePosition.RIGHT) {
             CaseC();
+        }   else {
+            CaseB();
         }
         sleep(3000);
     }
@@ -161,7 +161,7 @@ public class BoardAutoRed extends LinearOpMode {
 
         trajPreloadScoreCaseA = drive.trajectorySequenceBuilder(trajPreloadCaseA.end())
                 .setTangent(Math.toRadians(0))
-                .splineToLinearHeading(new Pose2d(50, -30, Math.toRadians(180)), Math.toRadians(45),
+                .splineToLinearHeading(new Pose2d(48, -30, Math.toRadians(180)), Math.toRadians(45),
                         SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
@@ -173,7 +173,7 @@ public class BoardAutoRed extends LinearOpMode {
                         SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .setTangent(Math.toRadians(270))
-                .splineToLinearHeading(new Pose2d(55,-62, Math.toRadians(180)), Math.toRadians(0),
+                .splineToLinearHeading(new Pose2d(55,-60, Math.toRadians(180)), Math.toRadians(0),
                         SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
@@ -207,14 +207,14 @@ public class BoardAutoRed extends LinearOpMode {
 
         trajPreloadScoreCaseB = drive.trajectorySequenceBuilder(trajPreloadCaseB.end())
                 .setTangent(Math.toRadians(270))
-                .splineToLinearHeading(new Pose2d(50, -35.3, Math.toRadians(180)), Math.toRadians(0),
+                .splineToLinearHeading(new Pose2d(48, -35.8, Math.toRadians(180)), Math.toRadians(0),
                         SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
 
 
         parkSpotB = drive.trajectorySequenceBuilder(trajPreloadScoreCaseB.end())
-                .lineTo(new Vector2d(46,-35.08),
+                .lineTo(new Vector2d(45,-35.8),
                         SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .setTangent(Math.toRadians(245))
@@ -255,18 +255,18 @@ public class BoardAutoRed extends LinearOpMode {
                         SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .setTangent(Math.toRadians(90))
-                .splineToLinearHeading(new Pose2d(50, -43, Math.toRadians(180)), Math.toRadians(90),
+                .splineToLinearHeading(new Pose2d(48, -43, Math.toRadians(180)), Math.toRadians(90),
                         SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
 
 
         parkSpotC = drive.trajectorySequenceBuilder(trajPreloadScoreCaseC.end())
-                .lineTo(new Vector2d(49.7 , -43),
+                .lineTo(new Vector2d(46.5 , -43),
                     SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .setTangent(Math.toRadians(250))
-                .splineToLinearHeading(new Pose2d(57.5,-59, Math.toRadians(180)), Math.toRadians(0),
+                .splineToLinearHeading(new Pose2d(57.5,-60, Math.toRadians(180)), Math.toRadians(0),
                         SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();

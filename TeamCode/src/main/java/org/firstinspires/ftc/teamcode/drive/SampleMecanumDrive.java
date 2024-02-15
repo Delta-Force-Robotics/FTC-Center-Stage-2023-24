@@ -55,10 +55,10 @@ import static org.firstinspires.ftc.teamcode.drive.DriveConstants.kV;
  */
 @Config
 public class SampleMecanumDrive extends MecanumDrive {
-    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(8, 0, 0.8);
-    public static PIDCoefficients HEADING_PID = new PIDCoefficients(8.5, 0.75, 0.8);
+    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(0, 0, 0);
+    public static PIDCoefficients HEADING_PID = new PIDCoefficients(0, 0, 0);
 
-    public static double LATERAL_MULTIPLIER = 1.89;
+    public static double LATERAL_MULTIPLIER = 1.77;
 
     public static double VX_WEIGHT = 1;
     public static double VY_WEIGHT = 1;
@@ -280,10 +280,10 @@ public class SampleMecanumDrive extends MecanumDrive {
 
     @Override
     public void setMotorPowers(double v, double v1, double v2, double v3) {
-        leftFront.setPower(v);
-        leftRear.setPower(v1);
-        rightRear.setPower(v2);
-        rightFront.setPower(v3);
+        leftFront.setPower(v * 12 / batteryVoltageSensor.getVoltage());
+        leftRear.setPower(v1 * 12 / batteryVoltageSensor.getVoltage());
+        rightRear.setPower(v2 * 12 / batteryVoltageSensor.getVoltage());
+        rightFront.setPower(v3 * 12 / batteryVoltageSensor.getVoltage());
     }
 
     @Override

@@ -7,7 +7,6 @@ import com.arcrobotics.ftclib.command.button.GamepadButton;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
-import com.qualcomm.hardware.bosch.BNO055IMUNew;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -26,7 +25,7 @@ import org.firstinspires.ftc.teamcode.subsystems.SlideSubsystem;
 import org.firstinspires.ftc.teamcode.threads.BackupThread;
 import org.firstinspires.ftc.teamcode.threads.ClimbThread;
 import org.firstinspires.ftc.teamcode.threads.IntakeThread;
-import org.firstinspires.ftc.teamcode.threads.OutakeThread;
+import org.firstinspires.ftc.teamcode.threads.OuttakeThread;
 import org.firstinspires.ftc.teamcode.threads.ScoreReleaseThread;
 import org.firstinspires.ftc.teamcode.threads.ScoreThread;
 
@@ -63,7 +62,7 @@ public class TeleOpMain extends CommandOpMode {
     private ClimbThread climbThread;
     private ScoreThread scoreThread;
     private ScoreReleaseThread scoreReleaseThread;
-    private OutakeThread outakeThread;
+    private OuttakeThread outtakeThread;
     private BackupThread backupThread;
 
     private InstantCommand changeLevelUp;
@@ -126,12 +125,12 @@ public class TeleOpMain extends CommandOpMode {
         climbThread = new ClimbThread(climbSubsystem);
 
         scoreReleaseThread = new ScoreReleaseThread(slideSubsystem, scoreSubsystem);
-        outakeThread = new OutakeThread(intakeSubsystem, scoreSubsystem);
+        outtakeThread = new OuttakeThread(intakeSubsystem, scoreSubsystem);
         backupThread = new BackupThread(scoreSubsystem);
 
         intakeThread.setPriority(Thread.MIN_PRIORITY);
         climbThread.setPriority(Thread.MIN_PRIORITY);
-        outakeThread.setPriority(Thread.MIN_PRIORITY);
+        outtakeThread.setPriority(Thread.MIN_PRIORITY);
         scoreThread.setPriority(Thread.MIN_PRIORITY);
         backupThread.setPriority(Thread.MIN_PRIORITY);
         Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
@@ -204,7 +203,7 @@ public class TeleOpMain extends CommandOpMode {
         new GamepadButton(driver2, GamepadKeys.Button.X).whenPressed(() -> climbThreadExecutor.accept((double)Constants.CLIMB_MOTOR_INIT_POS));
 
         new GamepadButton(driver2, GamepadKeys.Button.A).whenPressed(() -> intakeThread.start());
-        new GamepadButton(driver2, GamepadKeys.Button.B).whenPressed(() -> outakeThread.start());
+        new GamepadButton(driver2, GamepadKeys.Button.B).whenPressed(() -> outtakeThread.start());
         driveSubsystem.setDefaultCommand(driveCommand);
         slideSubsystem.setDefaultCommand(slideManualCommand);
         climbSubsystem.setDefaultCommand(climbManualCommand);

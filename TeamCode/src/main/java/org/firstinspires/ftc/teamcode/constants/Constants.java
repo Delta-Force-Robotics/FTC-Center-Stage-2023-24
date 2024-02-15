@@ -35,11 +35,11 @@ public class Constants {
     public static double SLIDE_MAX_ERROR_INTEGRATION = 0.1;
     public static double[] SLIDE_POSITIONS_R = {0.26, 0.31, 0.37, 0.42, 0.51, 0.57, 0.65, 0.67};
     public static double[] SLIDE_POSITIONS = {0.28, 0.35, 0.43, 0.51, 0.60, 0.67};
-    public static PIDFCoefficients SLIDE_RETRACT_PIDF_COEFF = new PIDFCoefficients(4.65, 0.1, 0, 0);
+    public static PIDFCoefficients SLIDE_RETRACT_PIDF_COEFF = new PIDFCoefficients(5.4, 0.1, 0, 0);
     public static PIDFCoefficients SLIDE_EXTEND_PIDF_COEFF = new PIDFCoefficients(8.6, 0.12, 0, 0);
 
-    public static final double INTAKE_SERVO_INIT_POS = 0.13;
-    public static final double INTAKE_SERVO_INTAKE_POS = 0.45;
+    public static final double INTAKE_SERVO_INIT_POS = 0.5;
+    public static final double INTAKE_SERVO_INTAKE_POS = 0.313;
     public static final double INTAKE_SERVO_FIRST_PIXEL_POS = 0.335;
     public static final double INTAKE_SERVO_SECOND_PIXEL_POS = 0.355;
     public static final double INTAKE_SERVO_THIRD_PIXEL_POS = 0.35;
@@ -53,8 +53,8 @@ public class Constants {
     public static final double INTAKE_SERVO_LOW_POS_AUTO = 0;
 
     public static final double ARM_SERVO_INIT_POSITION = 0;
-    public static final double ARM_SERVO_PIVOT_POSITION = 0.43;
-    public static final double ARM_SERVO_PIVOT_30 = -0;
+    public static final double ARM_SERVO_PIVOT_POSITION = 0.45;
+    public static final double ARM_SERVO_PIVOT_30 = 0;
     public static final double ARM_SERVO_INTAKE_POS = 0;
     public static final double ARM_SERVO_INIT_AUTO_POSITION = 0.0;
 
