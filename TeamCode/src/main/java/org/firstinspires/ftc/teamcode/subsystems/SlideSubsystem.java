@@ -72,12 +72,6 @@ public class SlideSubsystem extends SubsystemBase {
         Constants.SLIDE_INPUT_STATE = Constants.InputState.PRESET_POSITIONS;
         slideState.setId(level);
 
-        try {
-            sleep(50);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
         if(isAuto) {
             pidfCoefficientsExtend  = new double[]{Constants.SLIDE_EXTEND_PIDF_COEFF.p, Constants.SLIDE_EXTEND_PIDF_COEFF.i, Constants.SLIDE_EXTEND_PIDF_COEFF.d, Constants.SLIDE_EXTEND_PIDF_COEFF.f};
             pidfCoefficientsRetract = new double[]{Constants.SLIDE_RETRACT_PIDF_COEFF.p, Constants.SLIDE_RETRACT_PIDF_COEFF.i, Constants.SLIDE_RETRACT_PIDF_COEFF.d, Constants.SLIDE_RETRACT_PIDF_COEFF.f};
@@ -126,7 +120,7 @@ public class SlideSubsystem extends SubsystemBase {
             telemetry.update();
 
             try {
-                sleep(25);
+                sleep(10);
             } catch (InterruptedException e) {
                 Constants.SLIDE_INPUT_STATE = Constants.InputState.MANUAL_CONTROL;
                 slideMotorLeft.set(Constants.SLIDE_MOTOR_PASSIVE_POWER * (double)ticksToMeters(slideMotorLeft.getCurrentPosition())/(double)Constants.SLIDE_MAX_EXTENSION_METERS + 0.15);

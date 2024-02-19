@@ -29,6 +29,7 @@ import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.teamcode.constants.HardwareConstants;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceBuilder;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceRunner;
@@ -55,10 +56,10 @@ import static org.firstinspires.ftc.teamcode.drive.DriveConstants.kV;
  */
 @Config
 public class SampleMecanumDrive extends MecanumDrive {
-    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(0, 0, 0);
-    public static PIDCoefficients HEADING_PID = new PIDCoefficients(0, 0, 0);
+    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(6, 0, 3);
+    public static PIDCoefficients HEADING_PID = new PIDCoefficients(6, 0.2, 1.3);
 
-    public static double LATERAL_MULTIPLIER = 1.77;
+    public static double LATERAL_MULTIPLIER = 2.0324;
 
     public static double VX_WEIGHT = 1;
     public static double VY_WEIGHT = 1;
@@ -83,7 +84,7 @@ public class SampleMecanumDrive extends MecanumDrive {
         super(kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
 
         follower = new HolonomicPIDVAFollower(TRANSLATIONAL_PID, TRANSLATIONAL_PID, HEADING_PID,
-                new Pose2d(0.5, 0.5, Math.toRadians(5.0)), 0.1);
+                new Pose2d(0.5, 0.5, Math.toRadians(0.5)), 0.1);
 
         LynxModuleUtil.ensureMinimumFirmwareVersion(hardwareMap);
 
@@ -95,10 +96,10 @@ public class SampleMecanumDrive extends MecanumDrive {
 
         // TODO: adjust the names of the following hardware devices to match your configuration
 
-        leftFront = hardwareMap.get(DcMotorEx.class, "lf");
-        leftRear = hardwareMap.get(DcMotorEx.class, "lb");
-        rightRear = hardwareMap.get(DcMotorEx.class, "rb");
-        rightFront = hardwareMap.get(DcMotorEx.class, "rf");
+        leftFront = hardwareMap.get(DcMotorEx.class, HardwareConstants.ID_LEFT_FRONT_MOTOR);
+        leftRear = hardwareMap.get(DcMotorEx.class, HardwareConstants.ID_LEFT_BACK_MOTOR);
+        rightRear = hardwareMap.get(DcMotorEx.class, HardwareConstants.ID_RIGHT_BACK_MOTOR);
+        rightFront = hardwareMap.get(DcMotorEx.class, HardwareConstants.ID_RIGHT_FRONT_MOTOR);
 
         motors = Arrays.asList(leftFront, leftRear, rightRear, rightFront);
 
@@ -119,8 +120,8 @@ public class SampleMecanumDrive extends MecanumDrive {
         }
 
         // TODO: reverse any motors using DcMotor.setDirection()
-        leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
         leftRear.setDirection(DcMotorSimple.Direction.REVERSE);
+        leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
 
         List<Integer> lastTrackingEncPositions = new ArrayList<>();
         List<Integer> lastTrackingEncVels = new ArrayList<>();
@@ -280,10 +281,10 @@ public class SampleMecanumDrive extends MecanumDrive {
 
     @Override
     public void setMotorPowers(double v, double v1, double v2, double v3) {
-        leftFront.setPower(v * 12 / batteryVoltageSensor.getVoltage());
-        leftRear.setPower(v1 * 12 / batteryVoltageSensor.getVoltage());
-        rightRear.setPower(v2 * 12 / batteryVoltageSensor.getVoltage());
-        rightFront.setPower(v3 * 12 / batteryVoltageSensor.getVoltage());
+        leftFront.setPower(v);
+        leftRear.setPower(v1);
+        rightRear.setPower(v2);
+        rightFront.setPower(v3);
     }
 
     @Override

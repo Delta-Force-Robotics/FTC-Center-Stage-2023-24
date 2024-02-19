@@ -15,6 +15,9 @@ public class ScoreThread extends Thread {
         this.slideSubsystem = slideSubsystem;
         this.scoreSubsystem = scoreSubsystem;
         this.slideSubsystem.isInterrupted = this::isInterrupted;
+
+        this.setPriority(MIN_PRIORITY);
+        this.setDaemon(true);
     }
 
     @Override
@@ -42,7 +45,7 @@ public class ScoreThread extends Thread {
             e.printStackTrace();
         }
 
-        if (selectRotate == false)
+        if (!selectRotate)
             scoreSubsystem.rotateClaw(Constants.ROTATE_SERVO_INIT_POSITION);
         else
             scoreSubsystem.rotateClaw(Constants.ROTATE_SERVO_45);

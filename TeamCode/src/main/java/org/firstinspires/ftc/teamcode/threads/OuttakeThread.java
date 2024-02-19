@@ -16,7 +16,7 @@ public class OuttakeThread extends Thread {
     @Override
     public void run() {
         scoreSubsystem.useBlock(Constants.BLOCK_SERVO_BLOCK_POS);
-        intakeSubsystem.setIntakePos(0);
+        intakeSubsystem.setIntakePos(0.030);
         intakeSubsystem.setIntakePower(-1);
         try {
             sleep(2000);

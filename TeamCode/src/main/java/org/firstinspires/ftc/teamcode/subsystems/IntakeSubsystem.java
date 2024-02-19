@@ -14,13 +14,13 @@ public class IntakeSubsystem extends SubsystemBase {
         this.intakeMotor = intakeMotor;
         this.intakeServo = intakeServo;
 
+        this.intakeServo.setPosition(Constants.INTAKE_SERVO_INIT_POS);
 
         this.intakeMotor.setRunMode(Motor.RunMode.RawPower);
 
         this.intakeMotor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.FLOAT);
 
         this.intakeServo.setPosition(0);
-
     }
 
     public void setIntakePower(double power) { intakeMotor.set(power); }
