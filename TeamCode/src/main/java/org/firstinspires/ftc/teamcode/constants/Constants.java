@@ -69,7 +69,7 @@ public class Constants {
     public static final double DRONE_SERVO_SCORE_POS = 0.8;
 
     public static final int CLIMB_MOTOR_INIT_POS = 0;
-    public static final int CLIMB_MOTOR_CLIMB_POS = -7000;
+    public static final int CLIMB_MOTOR_CLIMB_POS = 7000;
     public static double CLIMB_MOTOR_MAX_EXTENSION = -8000;
 
     public static final double PRELOAD_SERVO_INIT_POS = 0.00;

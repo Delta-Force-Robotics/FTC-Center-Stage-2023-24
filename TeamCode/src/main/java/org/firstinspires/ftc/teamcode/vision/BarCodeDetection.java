@@ -69,11 +69,11 @@ public class BarCodeDetection extends OpenCvPipeline {
             //lowHSV = new Scalar(0, 80, 50);
             //highHSV = new Scalar(50, 255, 255);
 
-            lowHSV = new Scalar(150, 80, 50);
-            highHSV = new Scalar(180, 255, 255);
+            lowHSV = new Scalar(140, 80, 50);
+            highHSV = new Scalar(190, 255, 255);
 
-            lowHSV1 = new Scalar(357, 95, 42);
-            highHSV1 = new Scalar(179, 255, 255);
+            lowHSV1 = new Scalar(0, 95, 42);
+            highHSV1 = new Scalar(50, 255, 255);
 
             Core.inRange(mat, lowHSV1, highHSV1, mat1);
         } else {

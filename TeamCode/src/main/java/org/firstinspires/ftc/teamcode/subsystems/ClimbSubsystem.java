@@ -25,10 +25,10 @@ public class ClimbSubsystem extends SubsystemBase {
 
     public void setClimbPos(int pos) {
         climbMotor.setRunMode(Motor.RunMode.PositionControl);
-        climbMotor.setTargetPosition(pos);
         climbMotor.set(0);
+        climbMotor.setTargetPosition(pos);
 
-        climbMotor.setPositionTolerance(10);
+        climbMotor.setPositionTolerance(25);
 
         while (!climbMotor.atTargetPosition() && !isInterrupted.getAsBoolean()) {
             climbMotor.set(1);
