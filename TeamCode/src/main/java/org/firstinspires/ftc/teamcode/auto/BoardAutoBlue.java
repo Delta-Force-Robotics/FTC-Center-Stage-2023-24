@@ -206,7 +206,7 @@ public class BoardAutoBlue extends LinearOpMode {
 
         trajPreloadScoreCaseB = drive.trajectorySequenceBuilder(trajPreloadCaseB.end())
                 .setTangent(Math.toRadians(90))
-                .splineToLinearHeading(new Pose2d(51, 39, Math.toRadians(183)), Math.toRadians(0),
+                .splineToLinearHeading(new Pose2d(50.8, 39, Math.toRadians(183)), Math.toRadians(0),
                         SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
@@ -221,8 +221,6 @@ public class BoardAutoBlue extends LinearOpMode {
                         SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
-
-
 
         drive.followTrajectorySequence(trajPreloadCaseB);
 
@@ -254,7 +252,7 @@ public class BoardAutoBlue extends LinearOpMode {
                 .splineToLinearHeading(new Pose2d(48, 33, Math.toRadians(183)), Math.toRadians(300),
                         SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                .lineToLinearHeading(new Pose2d(51.5, 30, Math.toRadians(183)))
+                .lineToLinearHeading(new Pose2d(50.8, 30, Math.toRadians(183)))
                 .build();
 
 

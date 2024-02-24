@@ -14,6 +14,7 @@ public class IntakeSubsystem extends SubsystemBase {
         this.intakeMotor = intakeMotor;
         this.intakeServo = intakeServo;
 
+        this.intakeServo.setDirection(Servo.Direction.REVERSE);
         this.intakeServo.setPosition(Constants.INTAKE_SERVO_INIT_POS);
 
         this.intakeMotor.setRunMode(Motor.RunMode.RawPower);
