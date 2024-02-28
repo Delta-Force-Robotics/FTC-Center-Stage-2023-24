@@ -370,7 +370,7 @@ public class BoardAutoBlueSecret extends LinearOpMode {
     public void outtakeRoutine() {
         new Thread(() -> {
             scoreSubsystem.useBlock(Constants.BLOCK_SERVO_BLOCK_POS);
-            intakeSubsystem.setIntakePos(0.030);
+            intakeSubsystem.setIntakePos(Constants.INTAKE_SERVO_INIT_POS);
             intakeSubsystem.setIntakePower(-1);
             sleep(2000);
 

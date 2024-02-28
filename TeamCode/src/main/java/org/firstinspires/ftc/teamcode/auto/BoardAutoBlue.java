@@ -162,7 +162,7 @@ public class BoardAutoBlue extends LinearOpMode {
                         SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .setTangent(Math.toRadians(270))
-                .splineToLinearHeading(new Pose2d(51, 45, Math.toRadians(181)), Math.toRadians(270),
+                .splineToLinearHeading(new Pose2d(51.4, 44.6, Math.toRadians(181)), Math.toRadians(270),
                         SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
@@ -188,7 +188,7 @@ public class BoardAutoBlue extends LinearOpMode {
         sleep(600);
 
         drive.followTrajectorySequence(trajPreloadScoreCaseA);
-        scoreThreadExecutor.accept(Constants.SLIDE_POSITIONS[0] - 0.03);
+        scoreThreadExecutor.accept(Constants.SLIDE_POSITIONS[0] - 0.029);
         sleep(1300);
         scoreSubsystem.useBlock(Constants.BLOCK_SERVO_SCORE_POS);
         sleep(800);
@@ -206,7 +206,7 @@ public class BoardAutoBlue extends LinearOpMode {
 
         trajPreloadScoreCaseB = drive.trajectorySequenceBuilder(trajPreloadCaseB.end())
                 .setTangent(Math.toRadians(90))
-                .splineToLinearHeading(new Pose2d(50.8, 39, Math.toRadians(183)), Math.toRadians(0),
+                .splineToLinearHeading(new Pose2d(51, 39, Math.toRadians(183)), Math.toRadians(0),
                         SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
@@ -228,7 +228,7 @@ public class BoardAutoBlue extends LinearOpMode {
         sleep(600);
 
         drive.followTrajectorySequence(trajPreloadScoreCaseB);
-        scoreThreadExecutor.accept(Constants.SLIDE_POSITIONS[0] - 0.032);
+        scoreThreadExecutor.accept(Constants.SLIDE_POSITIONS[0] - 0.031);
         sleep(1500);
         scoreSubsystem.useBlock(Constants.BLOCK_SERVO_SCORE_POS);
         sleep(800);
@@ -252,7 +252,7 @@ public class BoardAutoBlue extends LinearOpMode {
                 .splineToLinearHeading(new Pose2d(48, 33, Math.toRadians(183)), Math.toRadians(300),
                         SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                .lineToLinearHeading(new Pose2d(50.8, 30, Math.toRadians(183)))
+                .lineToLinearHeading(new Pose2d(51, 30, Math.toRadians(183)))
                 .build();
 
 
@@ -273,7 +273,7 @@ public class BoardAutoBlue extends LinearOpMode {
         sleep(600);
 
         drive.followTrajectorySequence(trajPreloadScoreCaseC);
-        scoreThreadExecutor.accept(Constants.SLIDE_POSITIONS[0] - 0.028);
+        scoreThreadExecutor.accept(Constants.SLIDE_POSITIONS[0] - 0.025);
         sleep(1500);
         scoreSubsystem.useBlock(Constants.BLOCK_SERVO_SCORE_POS);
         sleep(800);

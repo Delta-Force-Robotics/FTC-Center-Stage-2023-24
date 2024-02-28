@@ -35,16 +35,16 @@ public class Constants {
     public static double SLIDE_MAX_ERROR_INTEGRATION = 0.1;
     public static double[] SLIDE_POSITIONS_R = {0.26, 0.31, 0.37, 0.42, 0.51, 0.57, 0.65, 0.67};
     public static double[] SLIDE_POSITIONS = {0.28, 0.35, 0.43, 0.51, 0.60, 0.67};
-    public static PIDFCoefficients SLIDE_RETRACT_PIDF_COEFF = new PIDFCoefficients(5.4, 0.1, 0, 0);
-    public static PIDFCoefficients SLIDE_EXTEND_PIDF_COEFF = new PIDFCoefficients(8.6, 0.12, 0, 0);
+    public static PIDFCoefficients SLIDE_RETRACT_PIDF_COEFF = new PIDFCoefficients(5, 0.1, 0, 0);
+    public static PIDFCoefficients SLIDE_EXTEND_PIDF_COEFF = new PIDFCoefficients(16, 0, 0, 0);
 
-    public static final double INTAKE_SERVO_INIT_POS = 0.035;
-    public static final double INTAKE_SERVO_INTAKE_POS = 0.5;
-    public static final double INTAKE_SERVO_FIRST_PIXEL_POS = 0.403;
+    public static final double INTAKE_SERVO_INIT_POS = 0.088;
+    public static final double INTAKE_SERVO_INTAKE_POS = 0.471;
+    public static final double INTAKE_SERVO_FIRST_PIXEL_POS = 0.37;
     public static final double INTAKE_SERVO_SECOND_PIXEL_POS = 0.355;
     public static final double INTAKE_SERVO_THIRD_PIXEL_POS = 0.35;
     public static final double INTAKE_SERVO_FOURTH_PIXEL_POS = 0.36;
-    public static final double INTAKE_SERVO_UP_POS = 0.445;
+    public static final double INTAKE_SERVO_UP_POS = 0.41;
     public static final double INTAKE_SERVO_MID_POS = 0.372;
     public static final double INTAKE_SERVO_LOW_POS = 0.39;
 
@@ -53,7 +53,7 @@ public class Constants {
     public static final double INTAKE_SERVO_LOW_POS_AUTO = 0;
 
     public static final double ARM_SERVO_INIT_POSITION = 0;
-    public static final double ARM_SERVO_PIVOT_POSITION = 0.45;
+    public static final double ARM_SERVO_PIVOT_POSITION = 0.46;
     public static final double ARM_SERVO_PIVOT_30 = 0;
     public static final double ARM_SERVO_INTAKE_POS = 0;
     public static final double ARM_SERVO_INIT_AUTO_POSITION = 0.0;
@@ -66,7 +66,7 @@ public class Constants {
     public static final double BLOCK_SERVO_BLOCK_POS = 0;
 
     public static final double DRONE_SERVO_INIT_POS = 0;
-    public static final double DRONE_SERVO_SCORE_POS = 0.8;
+    public static final double DRONE_SERVO_SCORE_POS = 0.4;
 
     public static final int CLIMB_MOTOR_INIT_POS = 0;
     public static final int CLIMB_MOTOR_CLIMB_POS = 7000;

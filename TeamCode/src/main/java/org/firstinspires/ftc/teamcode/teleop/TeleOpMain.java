@@ -188,9 +188,10 @@ public class TeleOpMain extends CommandOpMode {
         new GamepadButton(driver1, GamepadKeys.Button.RIGHT_BUMPER).whenPressed(() -> scoreReleaseThreadExecutor.accept(Constants.SLIDE_INTAKE));
 
         new GamepadButton(driver1, GamepadKeys.Button.Y).whenPressed(droneInstantCommand);
-        new GamepadButton(driver1, GamepadKeys.Button.X).whenPressed(() -> scoreSubsystem.useBlock(Constants.BLOCK_SERVO_SCORE_POS));
+        new GamepadButton(driver1, GamepadKeys.Button.X).toggleWhenPressed(() -> scoreSubsystem.useBlock(Constants.BLOCK_SERVO_SCORE_POS), () -> scoreSubsystem.useBlock(Constants.BLOCK_SERVO_BLOCK_POS));
 
     new GamepadButton(driver2, GamepadKeys.Button.LEFT_BUMPER).whenPressed(() -> backupThread.start());
+    new GamepadButton(driver1, GamepadKeys.Button.DPAD_RIGHT).whenPressed(() -> slideSubsystem.resetEnc());
 
         new GamepadButton(driver2, GamepadKeys.Button.RIGHT_BUMPER).whenPressed(() -> scoreThreadExecutor.accept(Constants.SLIDE_POSITIONS[currLevel-1]));
 

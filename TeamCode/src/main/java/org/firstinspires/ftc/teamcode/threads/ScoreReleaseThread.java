@@ -21,14 +21,14 @@ public class ScoreReleaseThread extends Thread {
     public void run() {
         scoreSubsystem.useBlock(Constants.BLOCK_SERVO_SCORE_POS);
         try {
-            sleep(550);
+            sleep(400);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
 
         scoreSubsystem.rotateClaw(Constants.ROTATE_SERVO_INIT_POSITION);
         try {
-            sleep(100);
+            sleep(50);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -36,7 +36,7 @@ public class ScoreReleaseThread extends Thread {
         scoreSubsystem.useArm(Constants.ARM_SERVO_INIT_POSITION);
 
         try {
-            sleep(300);
+            sleep(150);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

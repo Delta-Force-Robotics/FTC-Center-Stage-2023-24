@@ -80,15 +80,6 @@ public class SlideSubsystem extends SubsystemBase {
 
             pidfCoefficientsExtend  = new double[]{Constants.SLIDE_EXTEND_PIDF_COEFF.p, Constants.SLIDE_EXTEND_PIDF_COEFF.i, Constants.SLIDE_EXTEND_PIDF_COEFF.d, Constants.SLIDE_EXTEND_PIDF_COEFF.f};
             pidfCoefficientsRetract = new double[]{Constants.SLIDE_RETRACT_PIDF_COEFF.p, Constants.SLIDE_RETRACT_PIDF_COEFF.i, Constants.SLIDE_RETRACT_PIDF_COEFF.d, Constants.SLIDE_RETRACT_PIDF_COEFF.f};
-
-           /* if (level <=5) {
-                pidfCoefficientsExtend = new double[]{Constants.SLIDE_EXTEND_PIDF_COEFF_TELEOP_1_4.p, Constants.SLIDE_EXTEND_PIDF_COEFF_TELEOP_1_4.i, Constants.SLIDE_EXTEND_PIDF_COEFF_TELEOP_1_4.d, Constants.SLIDE_EXTEND_PIDF_COEFF_TELEOP_1_4.f};
-                pidfCoefficientsRetract = new double[]{Constants.SLIDE_RETRACT_PIDF_COEFF_TELEOP_1_4.p, Constants.SLIDE_RETRACT_PIDF_COEFF_TELEOP_1_4.i, Constants.SLIDE_RETRACT_PIDF_COEFF_TELEOP_1_4.d, Constants.SLIDE_RETRACT_PIDF_COEFF_TELEOP_1_4.f};
-            }
-            else {
-                pidfCoefficientsExtend = new double[]{Constants.SLIDE_EXTEND_PIDF_COEFF_TELEOP_5_9.p, Constants.SLIDE_EXTEND_PIDF_COEFF_TELEOP_5_9.i, Constants.SLIDE_EXTEND_PIDF_COEFF_TELEOP_5_9.d, Constants.SLIDE_EXTEND_PIDF_COEFF_TELEOP_5_9.f};
-                pidfCoefficientsRetract = new double[]{Constants.SLIDE_RETRACT_PIDF_COEFF_TELEOP_5_9.p, Constants.SLIDE_RETRACT_PIDF_COEFF_TELEOP_5_9.i, Constants.SLIDE_RETRACT_PIDF_COEFF_TELEOP_5_9.d, Constants.SLIDE_RETRACT_PIDF_COEFF_TELEOP_5_9.f};
-            }*/
         }
 
         if(Math.signum(Constants.SLIDE_POSITIONS[5])*(ticksToMeters(slideMotorLeft.getCurrentPosition()) - level) < 0) {
@@ -184,5 +175,10 @@ public class SlideSubsystem extends SubsystemBase {
 
     public int getCurrLevel() {
         return currLevel;
+    }
+
+    public void resetEnc() {
+        slideMotorLeft.resetEncoder();
+        slideMotorRight.resetEncoder();
     }
 }

@@ -21,12 +21,121 @@ public class MeepMeepTesting {
                 // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
                 .setConstraints(73, 40, Math.toRadians(180), Math.toRadians(180), 15)
                 .followTrajectorySequence(drive ->
-                        drive.trajectorySequenceBuilder(new Pose2d(-36, -61.5, Math.toRadians(90)))
+                        drive.trajectorySequenceBuilder(new Pose2d(-36, 61.5, Math.toRadians(90)))
 
-                                .setTangent(Math.toRadians(120))
-                                .splineToLinearHeading(new Pose2d(-53,-26.3,Math.toRadians(180)),Math.toRadians(85))
-                                .setTangent(Math.toRadians(200))
-                                .splineToLinearHeading(new Pose2d(-57 ,-9, Math.toRadians(184)),Math.toRadians(180))
+                                .setTangent(Math.toRadians(270))
+                                .splineToLinearHeading(new Pose2d(-31.5,34, Math.toRadians(180)),Math.toRadians(0))
+
+                                .setTangent(Math.toRadians(180))
+                                .splineToLinearHeading(new Pose2d(-36,60, Math.toRadians(180)), Math.toRadians(270))
+                                .lineToLinearHeading(new Pose2d(25,60,Math.toRadians(184)))
+
+                                .lineToLinearHeading(new Pose2d(60, 61,Math.toRadians(182)))
+                                .lineToLinearHeading(new Pose2d(-38,61,Math.toRadians(182)))
+                                .lineToLinearHeading(new Pose2d(-48,38.3, Math.toRadians(182)))
+                                .lineToLinearHeading(new Pose2d(-54.8,38.3, Math.toRadians(182)))
+
+                                .lineToLinearHeading(new Pose2d(-36,61,Math.toRadians(180)))
+                                .lineToLinearHeading(new Pose2d(24,61,Math.toRadians(180)))
+                                .lineToLinearHeading(new Pose2d(51.5,34,Math.toRadians(182)))
+
+                                .lineToLinearHeading(new Pose2d(48,43,Math.toRadians(184)))
+
+                                /*
+                                // CSH Blue vvv
+
+                                .setTangent(Math.toRadians(270))
+                                .splineToLinearHeading(new Pose2d(-31.5,34, Math.toRadians(180)),Math.toRadians(0))
+
+                                .setTangent(Math.toRadians(180))
+                                .splineToLinearHeading(new Pose2d(-36,59,Math.toRadians(184)),Math.toRadians(90))
+                                .setTangent(Math.toRadians(0))
+                                .splineToLinearHeading(new Pose2d(25,59,Math.toRadians(184)),Math.toRadians(0)) // line????
+                                .splineToLinearHeading(new Pose2d(49.5,41.5,Math.toRadians(184)),Math.toRadians(0))
+
+                                // ----- traj same vvv
+
+                                .setTangent(Math.toRadians(180))
+                                .splineToLinearHeading(new Pose2d(25,59,Math.toRadians(184)),Math.toRadians(180))
+                                .splineToLinearHeading(new Pose2d(-36,59,Math.toRadians(184)),Math.toRadians(180))
+                                .lineToLinearHeading(new Pose2d(-59.5,38,Math.toRadians(190)))
+
+                                .lineToLinearHeading(new Pose2d(-36,59,Math.toRadians(184)))
+                                .setTangent(Math.toRadians(0))
+                                .splineToLinearHeading(new Pose2d(24,59,Math.toRadians(184)),Math.toRadians(0)) // line????
+                                .splineToLinearHeading(new Pose2d(49.5,28.5,Math.toRadians(184)),Math.toRadians(0))
+
+                                // Case A ^ | Case B v
+
+                                .setTangent(Math.toRadians(180)) // same
+                                .splineToLinearHeading(new Pose2d(25,59,Math.toRadians(184)),Math.toRadians(180)) // same
+                                .splineToLinearHeading(new Pose2d(-36,59,Math.toRadians(184)),Math.toRadians(180)) // same
+                                .lineToLinearHeading(new Pose2d(-59.5,38,Math.toRadians(190))) // same
+
+                                .lineToLinearHeading(new Pose2d(-36,59,Math.toRadians(184))) // same
+                                .setTangent(Math.toRadians(0)) // same
+                                .splineToLinearHeading(new Pose2d(24,59,Math.toRadians(184)),Math.toRadians(0)) // line???? same
+                                .splineToLinearHeading(new Pose2d(49.5,28.5,Math.toRadians(184)),Math.toRadians(0)) // same
+
+                                // Case B ^ | Case C v
+
+                                .setTangent(Math.toRadians(180)) // same
+                                .splineToLinearHeading(new Pose2d(25,59,Math.toRadians(184)),Math.toRadians(180)) //  same
+                                .splineToLinearHeading(new Pose2d(-36,59,Math.toRadians(184)),Math.toRadians(180)) // same
+                                .lineToLinearHeading(new Pose2d(-59.5,38,Math.toRadians(190))) // same
+
+                                .lineToLinearHeading(new Pose2d(-36,59,Math.toRadians(184))) // same
+                                .setTangent(Math.toRadians(0)) // same
+                                .splineToLinearHeading(new Pose2d(24,59,Math.toRadians(184)),Math.toRadians(0)) // line???? same
+                                .splineToLinearHeading(new Pose2d(49.5,28.5,Math.toRadians(184)),Math.toRadians(0)) // same*/
+
+                                /* CSH Red vvv
+
+                                .lineToLinearHeading(new Pose2d(-40,-59,Math.toRadians(184)))
+                                .setTangent(Math.toRadians(0))
+                                .splineToLinearHeading(new Pose2d(25,-59,Math.toRadians(184)),Math.toRadians(0))
+                                .splineToLinearHeading(new Pose2d(49.5,-28.5,Math.toRadians(184)),Math.toRadians(0))
+                                // -------------------------
+                                .setTangent(Math.toRadians(180))
+                                .splineToLinearHeading(new Pose2d(25,-59,Math.toRadians(184)),Math.toRadians(180))
+                                .splineToLinearHeading(new Pose2d(-36,-59,Math.toRadians(184)),Math.toRadians(180))
+                                .lineToLinearHeading(new Pose2d(-59.5,-38,Math.toRadians(170))) //
+
+                                .lineToLinearHeading(new Pose2d(-36,-59,Math.toRadians(184)))
+                                .setTangent(Math.toRadians(0))
+                                .splineToLinearHeading(new Pose2d(24,-59,Math.toRadians(184)),Math.toRadians(0))
+                                .splineToLinearHeading(new Pose2d(49.5,-28.5,Math.toRadians(184)),Math.toRadians(0))
+
+                                // Case B v | Case A ^
+                                .setTangent(Math.toRadians(180)) // same
+                                .splineToLinearHeading(new Pose2d(25,-59,Math.toRadians(184)),Math.toRadians(180)) //  same
+                                .splineToLinearHeading(new Pose2d(-36,-59,Math.toRadians(184)),Math.toRadians(180)) // same
+                                .lineToLinearHeading(new Pose2d(-59.5,-38,Math.toRadians(170))) // same
+
+                                .lineToLinearHeading(new Pose2d(-36,-59,Math.toRadians(184))) // same
+                                .setTangent(Math.toRadians(0)) // same
+                                .splineToLinearHeading(new Pose2d(24,-59,Math.toRadians(184)),Math.toRadians(0)) // same
+                                .splineToLinearHeading(new Pose2d(49.5,-28.5,Math.toRadians(184)),Math.toRadians(0)) // same
+
+                                // Case C v | Case B ^
+
+                                .setTangent(Math.toRadians(180)) // same
+                                .splineToLinearHeading(new Pose2d(25,-59,Math.toRadians(184)),Math.toRadians(180)) //  same
+                                .splineToLinearHeading(new Pose2d(-36,-59,Math.toRadians(184)),Math.toRadians(180)) // same
+                                .lineToLinearHeading(new Pose2d(-59.5,-38,Math.toRadians(170))) // same
+
+                                .lineToLinearHeading(new Pose2d(-36,-59,Math.toRadians(184))) // same
+                                .setTangent(Math.toRadians(0)) // same
+                                .splineToLinearHeading(new Pose2d(24,-59,Math.toRadians(184)),Math.toRadians(0)) // same
+                                .splineToLinearHeading(new Pose2d(49.5,-28.5,Math.toRadians(184)),Math.toRadians(0)) // same
+
+                                */
+
+                               /* .lineToLinearHeading(new Pose2d(24,-5, Math.toRadians(177)))
+                                .setTangent(Math.toRadians(0))
+                                .splineToLinearHeading(new Pose2d(52,-30, Math.toRadians(177)),Math.toRadians(0))
+                                .setTangent(Math.toRadians(180))
+                                .splineToLinearHeading(new Pose2d(55,-11,Math.toRadians(184)),Math.toRadians(0)) */
                                 /*.splineToLinearHeading(new Pose2d(-54,-9, Math.toRadians(184)),Math.toRadians(180))
                                 .splineToLinearHeading(new Pose2d(-58,-12, Math.toRadians(184)),Math.toRadians(180))
                                 .splineToLinearHeading(new Pose2d(-56,-12, Math.toRadians(184)),Math.toRadians(180))
