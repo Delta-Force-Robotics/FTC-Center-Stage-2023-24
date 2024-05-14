@@ -6,7 +6,6 @@ import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.ControlSystem;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
 
@@ -28,7 +27,7 @@ import org.firstinspires.ftc.teamcode.vision.BarcodeUtil;
 import java.util.function.Consumer;
 
 @Autonomous
-public class BoardAutoRedSecret extends LinearOpMode {
+public class BoardAutoRed2Plus2 extends LinearOpMode {
 
     private BarcodeUtil webcam;
     private BarCodeDetection.BarcodePosition barcodePosition;
@@ -49,6 +48,23 @@ public class BoardAutoRedSecret extends LinearOpMode {
     private TrajectorySequence trajPreloadScoreCaseA;
     private TrajectorySequence trajPreloadScoreCaseB;
     private TrajectorySequence trajPreloadScoreCaseC;
+
+    private TrajectorySequence trajToIntakeCycle1CaseA;
+    private TrajectorySequence trajToIntakeCycle1CaseB;
+    private TrajectorySequence trajToIntakeCycle1CaseC;
+
+    private TrajectorySequence trajToScoreCycle1CaseA;
+    private TrajectorySequence trajToScoreCycle1CaseB;
+    private TrajectorySequence trajToScoreCycle1CaseC;
+
+    private TrajectorySequence trajToIntakeCycle2CaseA;
+    private TrajectorySequence trajToIntakeCycle2CaseB;
+    private TrajectorySequence trajToIntakeCycle2CaseC;
+
+    private TrajectorySequence trajToScoreCycle2CaseA;
+    private TrajectorySequence trajToScoreCycle2CaseB;
+    private TrajectorySequence trajToScoreCycle2CaseC;
+
     private TrajectorySequence trajToIntakeCaseA;
     private TrajectorySequence trajToIntakeCaseB;
     private TrajectorySequence trajToIntakeCaseC;
@@ -108,7 +124,6 @@ public class BoardAutoRedSecret extends LinearOpMode {
         slideSubsystem = new SlideSubsystem(slideMotorLeft, slideMotorRight, FtcDashboard.getInstance().getTelemetry(), true, true, hardwareMap);
         scoreSubsystem = new ScoreSubsystem(armServoLeft, armServoRight, rotateServo, blockServo, droneServo, true);
         intakeSubsystem = new IntakeSubsystem(intakeMotor, intakeServo);
-        scoreSubsystem.useBlock(Constants.BLOCK_SERVO_SCORE_POS);
 
         scoreThread = new ScoreThread(slideSubsystem, scoreSubsystem);
         scoreReleaseThread = new ScoreReleaseThread(slideSubsystem, scoreSubsystem);
@@ -138,17 +153,17 @@ public class BoardAutoRedSecret extends LinearOpMode {
 
         waitForStart();
 
-        if (barcodePosition == BarCodeDetection.BarcodePosition.LEFT) {
+        if(barcodePosition == BarCodeDetection.BarcodePosition.LEFT) {
             CaseA();
-        } else if (barcodePosition == BarCodeDetection.BarcodePosition.RIGHT) {
+        } else if(barcodePosition == BarCodeDetection.BarcodePosition.RIGHT) {
             CaseC();
-        } else CaseB();
-
+        }   else {
+            CaseB();
+        }
         sleep(3000);
     }
 
     private void CaseA() {
-
         trajPreloadCaseA = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
                 .setTangent(Math.toRadians(80))
                 .splineToLinearHeading(new Pose2d(7, -34, Math.toRadians(0)), Math.toRadians(200),
@@ -162,12 +177,12 @@ public class BoardAutoRedSecret extends LinearOpMode {
                         SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .setTangent(Math.toRadians(0))
-                .splineToLinearHeading(new Pose2d(36, -27, Math.toRadians(180)), Math.toRadians(45),
+                .splineToLinearHeading(new Pose2d(38, -27, Math.toRadians(180)), Math.toRadians(45),
                         SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .addDisplacementMarker(() -> {
                     scoreThread.selectRotate = false;
-                    scoreThreadExecutor.accept(Constants.SLIDE_POSITIONS[0] - 0.028);
+                    scoreThreadExecutor.accept(Constants.SLIDE_POSITIONS[0] - 0.025);
                 })
                 .splineToLinearHeading(new Pose2d(53.5, -26.8, Math.toRadians(182)), Math.toRadians(0),
                         SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
@@ -175,81 +190,103 @@ public class BoardAutoRedSecret extends LinearOpMode {
                 .addDisplacementMarker(() -> scoreSubsystem.useBlock(Constants.BLOCK_SERVO_SCORE_POS))
                 .build();
 
-        trajToIntakeCaseA = drive.trajectorySequenceBuilder(trajPreloadScoreCaseA.end())
+        trajToIntakeCycle1CaseA = drive.trajectorySequenceBuilder(trajPreloadScoreCaseA.end())
                 .addDisplacementMarker(() -> {
                     slideSubsystem.setLevel(Constants.SLIDE_POSITIONS[0] + 0.06);
                     retractThreadExecutor.accept(Constants.SLIDE_INTAKE);
                 })
                 .setTangent(Math.toRadians(180))
-                .splineToLinearHeading(new Pose2d(24, -59,Math.toRadians(179)), Math.toRadians(180))
-                .splineToLinearHeading(new Pose2d(-38,-57.3,Math.toRadians(179)), Math.toRadians(180),
+                .splineToLinearHeading(new Pose2d(24,-13.5, Math.toRadians(184)),Math.toRadians(180),
                         SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                .addDisplacementMarker(() -> {
-                    intakeRoutine(Constants.INTAKE_SERVO_FIRST_PIXEL_POS - 0.026);
-                })
-                .lineToLinearHeading(new Pose2d(-53,-38, Math.toRadians(160)),
-                        SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                .addDisplacementMarker(() -> intakeRoutine(Constants.INTAKE_SERVO_FIRST_PIXEL_POS - 0.012))
+                .splineToLinearHeading(new Pose2d(-57.3,-13.8, Math.toRadians(184)), Math.toRadians(180),
+                        SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                .addDisplacementMarker(() -> {
-                    intakeSubsystem.setIntakePos(Constants.INTAKE_SERVO_FIRST_PIXEL_POS - 0.01);
-                })
-                .lineToLinearHeading(new Pose2d(-53,-33, Math.toRadians(160)),
-                        SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                .addDisplacementMarker(() -> {
-                    intakeSubsystem.setIntakePos(Constants.INTAKE_SERVO_INTAKE_POS - 0.01);
-                })
-                .lineToLinearHeading(new Pose2d(-53,-39, Math.toRadians(160)),
-                        SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .addDisplacementMarker(() -> intakeSubsystem.setIntakePos(Constants.INTAKE_SERVO_FIRST_PIXEL_POS + 0.08))
+                .splineToLinearHeading(new Pose2d(-57, -17, Math.toRadians(195)), Math.toRadians(180))
+                .addDisplacementMarker(() -> intakeSubsystem.setIntakePos(Constants.INTAKE_SERVO_INTAKE_POS))
+                .splineToLinearHeading(new Pose2d(-57.5,-13.8, Math.toRadians(184)), Math.toRadians(180))
                 .build();
 
-        trajToScoreCaseA = drive.trajectorySequenceBuilder(trajToIntakeCaseA.end())
-                .addDisplacementMarker(this::outtakeRoutine)
-                .lineToLinearHeading(new Pose2d(-36,-57.3,Math.toRadians(177)),
+        trajToScoreCycle2CaseA = drive.trajectorySequenceBuilder(trajToIntakeCycle1CaseA.end())
+                .lineToLinearHeading(new Pose2d(-53,-14.3, Math.toRadians(182)),
                         SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .addDisplacementMarker(this::outtakeRoutine)
                 .setTangent(Math.toRadians(0))
-                .splineToLinearHeading(new Pose2d(24,-59,Math.toRadians(177)), Math.toRadians(0),
+                .splineToLinearHeading(new Pose2d(24,-15, Math.toRadians(182)), Math.toRadians(0),
                         SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .addDisplacementMarker(() -> {
                     scoreThread.selectRotate = false;
                     scoreThreadExecutor.accept(Constants.SLIDE_POSITIONS[1] - 0.03);
                 })
-                .splineToLinearHeading(new Pose2d(55.8,-41,Math.toRadians(180)), Math.toRadians(0),
+                .splineToLinearHeading(new Pose2d(53.7,-37, Math.toRadians(182)),Math.toRadians(0),
+                        SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .addDisplacementMarker(() -> scoreSubsystem.useBlock(Constants.BLOCK_SERVO_SCORE_POS))
+                .build();
+
+        /*trajToIntakeCycle2CaseA = drive.trajectorySequenceBuilder(trajToScoreCycle1CaseA.end())
+                .addDisplacementMarker(() -> {
+                    retractThreadExecutor.accept(Constants.SLIDE_INTAKE);
+                })
+                .setTangent(Math.toRadians(180))
+                .splineToLinearHeading(new Pose2d(24,-14, Math.toRadians(184)),Math.toRadians(180),
+                        SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .addDisplacementMarker(() -> intakeRoutine(Constants.INTAKE_SERVO_INTAKE_POS - 0.01))
+                .lineToLinearHeading(new Pose2d(-56.7,-19, Math.toRadians(184)),
+                        SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .build();
+
+        trajToScoreCycle2CaseA = drive.trajectorySequenceBuilder(trajToIntakeCycle2CaseA.end())
+                .addDisplacementMarker(() -> intakeSubsystem.setIntakePos(Constants.INTAKE_SERVO_INTAKE_POS))
+                .lineToLinearHeading(new Pose2d(-54,-17, Math.toRadians(184)),
+                        SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .addDisplacementMarker(this::outtakeRoutine)
+                .setTangent(Math.toRadians(0))
+                .lineToLinearHeading(new Pose2d(24,-18, Math.toRadians(184)),
                         SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .addDisplacementMarker(() -> {
-                    scoreSubsystem.useBlock(Constants.BLOCK_SERVO_SCORE_POS);
+                    scoreThread.selectRotate = false;
+                    scoreThreadExecutor.accept(Constants.SLIDE_POSITIONS[1]);
                 })
-                .build();
+                .splineToLinearHeading(new Pose2d(52.3,-34.5, Math.toRadians(184)),Math.toRadians(0),
+                        SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .addDisplacementMarker(() -> retractThreadExecutor.accept(Constants.SLIDE_INTAKE))
+                .build();*/
 
-        parkSpotA = drive.trajectorySequenceBuilder(trajToScoreCaseA.end())
+        parkSpotA = drive.trajectorySequenceBuilder(trajToScoreCycle2CaseA.end())
                 .addDisplacementMarker(() -> {
-                    slideSubsystem.setLevel(Constants.SLIDE_POSITIONS[1] + 0.04);
+                    slideSubsystem.setLevel(Constants.SLIDE_POSITIONS[1] + 0.06);
                     retractThreadExecutor.accept(Constants.SLIDE_INTAKE);
                 })
-                .lineTo(new Vector2d(48, -43))
-                .setTangent(Math.toRadians(270))
-                .splineToLinearHeading(new Pose2d(55, -60, Math.toRadians(180)), Math.toRadians(0),
+                .lineTo(new Vector2d(45,-36),
+                        SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .addDisplacementMarker(() -> retractThreadExecutor.accept(Constants.SLIDE_INTAKE))
+                .setTangent(Math.toRadians(245))
+                .splineToLinearHeading(new Pose2d(52.3,-60, Math.toRadians(180)), Math.toRadians(5),
                         SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
 
-
-
         drive.followTrajectorySequence(trajPreloadCaseA);
 
         drive.followTrajectorySequence(trajPreloadScoreCaseA);
-        sleep(150);
+        sleep(100);
 
-        drive.followTrajectorySequence(trajToIntakeCaseA);
+        drive.followTrajectorySequence(trajToIntakeCycle1CaseA);
         sleep(500);
 
-        drive.followTrajectorySequence(trajToScoreCaseA);
-        sleep(150);
+        drive.followTrajectorySequence(trajToScoreCycle2CaseA);
+        sleep(100);
 
         drive.followTrajectorySequence(parkSpotA);
     }
@@ -258,7 +295,7 @@ public class BoardAutoRedSecret extends LinearOpMode {
 
 
         trajPreloadCaseB = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
-                .lineTo(new Vector2d(11.6, -32.5),
+                .lineTo(new Vector2d(11.6, -32.4),
                         SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .addDisplacementMarker(() -> preloadServo.setPosition(Constants.PRELOAD_SERVO_SCORE_POS))
@@ -268,87 +305,114 @@ public class BoardAutoRedSecret extends LinearOpMode {
         trajPreloadScoreCaseB = drive.trajectorySequenceBuilder(trajPreloadCaseB.end())
                 .addDisplacementMarker(() -> {
                     scoreThread.selectRotate = false;
-                    scoreThreadExecutor.accept(Constants.SLIDE_POSITIONS[0] - 0.03);
+                    scoreThreadExecutor.accept(Constants.SLIDE_POSITIONS[0] - 0.04);
                 })
                 .setTangent(Math.toRadians(270))
-                .splineToLinearHeading(new Pose2d(54, -37.5, Math.toRadians(178)), Math.toRadians(0),
+                .splineToLinearHeading(new Pose2d(54, -38.53, Math.toRadians(178)), Math.toRadians(0),
                         SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .addDisplacementMarker(() -> scoreSubsystem.useBlock(Constants.BLOCK_SERVO_SCORE_POS))
                 .build();
 
-        trajToIntakeCaseB = drive.trajectorySequenceBuilder(trajPreloadScoreCaseB.end())
+        trajToIntakeCycle1CaseB = drive.trajectorySequenceBuilder(trajPreloadScoreCaseB.end())
                 .addDisplacementMarker(() -> {
-                    slideSubsystem.setLevel(Constants.SLIDE_POSITIONS[0] + 0.06);
                     retractThreadExecutor.accept(Constants.SLIDE_INTAKE);
                 })
                 .setTangent(Math.toRadians(180))
-                .splineToLinearHeading(new Pose2d(24, -59,Math.toRadians(176)), Math.toRadians(180))
-                .splineToLinearHeading(new Pose2d(-38,-56,Math.toRadians(176)), Math.toRadians(180),
+                .splineToLinearHeading(new Pose2d(24,-9, Math.toRadians(180)),Math.toRadians(180),
                         SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                .addDisplacementMarker(() -> {
-                    intakeRoutine(Constants.INTAKE_SERVO_FIRST_PIXEL_POS - 0.026);
-                })
-                .lineToLinearHeading(new Pose2d(-53.5,-32, Math.toRadians(160)),
-                        SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                .addDisplacementMarker(() -> intakeRoutine(Constants.INTAKE_SERVO_FIRST_PIXEL_POS - 0.012))
+                .splineToLinearHeading(new Pose2d(-55.6,-7.5, Math.toRadians(180)), Math.toRadians(180),
+                        SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                .addDisplacementMarker(() -> {
-                    intakeSubsystem.setIntakePos(Constants.INTAKE_SERVO_FIRST_PIXEL_POS - 0.01);
-                })
-                .lineToLinearHeading(new Pose2d(-53.5,-28, Math.toRadians(160)),
-                        SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                .addDisplacementMarker(() -> {
-                    intakeSubsystem.setIntakePos(Constants.INTAKE_SERVO_INTAKE_POS - 0.01);
-                })
-                .lineToLinearHeading(new Pose2d(-53.5,-34, Math.toRadians(160)),
-                        SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .addDisplacementMarker(() -> intakeSubsystem.setIntakePos(Constants.INTAKE_SERVO_FIRST_PIXEL_POS + 0.08))
+                .splineToLinearHeading(new Pose2d(-55, -12, Math.toRadians(190)), Math.toRadians(180))
+                .addDisplacementMarker(() -> intakeSubsystem.setIntakePos(Constants.INTAKE_SERVO_INTAKE_POS))
+                .splineToLinearHeading(new Pose2d(-55.6,-9, Math.toRadians(180)), Math.toRadians(180))
                 .build();
 
-        trajToScoreCaseB = drive.trajectorySequenceBuilder(trajToIntakeCaseB.end())
-                .addDisplacementMarker(this::outtakeRoutine)
-                .lineToLinearHeading(new Pose2d(-36,-57,Math.toRadians(175)),
+        trajToScoreCycle2CaseB = drive.trajectorySequenceBuilder(trajToIntakeCycle1CaseB.end())
+                .lineToLinearHeading(new Pose2d(-53,-13.5, Math.toRadians(180)),
                         SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .addDisplacementMarker(this::outtakeRoutine)
                 .setTangent(Math.toRadians(0))
-                .splineToLinearHeading(new Pose2d(24,-61,Math.toRadians(175)), Math.toRadians(0),
+                .splineToLinearHeading(new Pose2d(19,-14.5, Math.toRadians(180)), Math.toRadians(0),
                         SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .addDisplacementMarker(() -> {
                     scoreThread.selectRotate = false;
-                    scoreThreadExecutor.accept(Constants.SLIDE_POSITIONS[1] - 0.03);
+                    scoreThreadExecutor.accept(Constants.SLIDE_POSITIONS[1] - 0.04);
                 })
-                .splineToLinearHeading(new Pose2d(55,-42,Math.toRadians(180)), Math.toRadians(0),
+                .splineToLinearHeading(new Pose2d(55.3,-36.4, Math.toRadians(180)),Math.toRadians(0),
+                        SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .addDisplacementMarker(() -> scoreSubsystem.useBlock(Constants.BLOCK_SERVO_SCORE_POS))
+                .build();
+
+        /*trajToIntakeCycle2CaseA = drive.trajectorySequenceBuilder(trajToScoreCycle1CaseA.end())
+                .addDisplacementMarker(() -> {
+                    retractThreadExecutor.accept(Constants.SLIDE_INTAKE);
+                })
+                .setTangent(Math.toRadians(180))
+                .splineToLinearHeading(new Pose2d(24,-14, Math.toRadians(184)),Math.toRadians(180),
+                        SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .addDisplacementMarker(() -> intakeRoutine(Constants.INTAKE_SERVO_INTAKE_POS - 0.01))
+                .lineToLinearHeading(new Pose2d(-56.7,-19, Math.toRadians(184)),
+                        SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .build();
+
+        trajToScoreCycle2CaseA = drive.trajectorySequenceBuilder(trajToIntakeCycle2CaseA.end())
+                .addDisplacementMarker(() -> intakeSubsystem.setIntakePos(Constants.INTAKE_SERVO_INTAKE_POS))
+                .lineToLinearHeading(new Pose2d(-54,-17, Math.toRadians(184)),
+                        SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .addDisplacementMarker(this::outtakeRoutine)
+                .setTangent(Math.toRadians(0))
+                .lineToLinearHeading(new Pose2d(24,-18, Math.toRadians(184)),
                         SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .addDisplacementMarker(() -> {
-                    scoreSubsystem.useBlock(Constants.BLOCK_SERVO_SCORE_POS);
+                    scoreThread.selectRotate = false;
+                    scoreThreadExecutor.accept(Constants.SLIDE_POSITIONS[1]);
                 })
-                .build();
+                .splineToLinearHeading(new Pose2d(52.3,-34.5, Math.toRadians(184)),Math.toRadians(0),
+                        SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .addDisplacementMarker(() -> retractThreadExecutor.accept(Constants.SLIDE_INTAKE))
+                .build();*/
 
-        parkSpotB = drive.trajectorySequenceBuilder(trajToScoreCaseB.end())
+        parkSpotB = drive.trajectorySequenceBuilder(trajToScoreCycle2CaseB.end())
                 .addDisplacementMarker(() -> {
-                    slideSubsystem.setLevel(Constants.SLIDE_POSITIONS[1] + 0.04);
+                    slideSubsystem.setLevel(Constants.SLIDE_POSITIONS[1] + 0.02);
                     retractThreadExecutor.accept(Constants.SLIDE_INTAKE);
                 })
-                .lineTo(new Vector2d(47, -42))
-                .setTangent(Math.toRadians(270))
-                .splineToLinearHeading(new Pose2d(55, -60, Math.toRadians(180)), Math.toRadians(0))
+                .lineTo(new Vector2d(45,-36),
+                        SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .addDisplacementMarker(() -> retractThreadExecutor.accept(Constants.SLIDE_INTAKE))
+                .setTangent(Math.toRadians(245))
+                .splineToLinearHeading(new Pose2d(52.3,-60, Math.toRadians(180)), Math.toRadians(5),
+                        SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
+
+
 
 
         drive.followTrajectorySequence(trajPreloadCaseB);
 
         drive.followTrajectorySequence(trajPreloadScoreCaseB);
-        sleep(150);
+        sleep(100);
 
-        drive.followTrajectorySequence(trajToIntakeCaseB);
+        drive.followTrajectorySequence(trajToIntakeCycle1CaseB);
         sleep(500);
 
-        drive.followTrajectorySequence(trajToScoreCaseB);
-        sleep(150);
+        drive.followTrajectorySequence(trajToScoreCycle2CaseB);
+        sleep(100);
 
         drive.followTrajectorySequence(parkSpotB);
     }
@@ -368,87 +432,115 @@ public class BoardAutoRedSecret extends LinearOpMode {
         trajPreloadScoreCaseC = drive.trajectorySequenceBuilder(trajPreloadCaseC.end())
                 .addDisplacementMarker(() -> {
                     scoreThread.selectRotate = false;
-                    scoreThreadExecutor.accept(Constants.SLIDE_POSITIONS[0] - 0.018);
+                    scoreThreadExecutor.accept(Constants.SLIDE_POSITIONS[0] - 0.022);
                 })
                 .setTangent(Math.toRadians(270))
                 .splineToLinearHeading(new Pose2d(53.4, -47, Math.toRadians(178)), Math.toRadians(0),
-                        SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .addDisplacementMarker(() -> scoreSubsystem.useBlock(Constants.BLOCK_SERVO_SCORE_POS))
                 .build();
 
-        trajToIntakeCaseC = drive.trajectorySequenceBuilder(trajPreloadScoreCaseC.end())
+        trajToIntakeCycle1CaseC = drive.trajectorySequenceBuilder(trajPreloadScoreCaseC.end())
                 .addDisplacementMarker(() -> {
                     slideSubsystem.setLevel(Constants.SLIDE_POSITIONS[0] + 0.06);
                     retractThreadExecutor.accept(Constants.SLIDE_INTAKE);
                 })
                 .setTangent(Math.toRadians(180))
-                .splineToLinearHeading(new Pose2d(24, -59.4,Math.toRadians(176)), Math.toRadians(180))
-                .splineToLinearHeading(new Pose2d(-38,-55,Math.toRadians(176)), Math.toRadians(180),
+                .splineToLinearHeading(new Pose2d(24,-11, Math.toRadians(180)),Math.toRadians(180),
                         SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                .addDisplacementMarker(() -> {
-                    intakeRoutine(Constants.INTAKE_SERVO_FIRST_PIXEL_POS - 0.026);
-                })
-                .lineToLinearHeading(new Pose2d(-53,-32.5, Math.toRadians(160)),
-                        SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                .addDisplacementMarker(() -> intakeRoutine(Constants.INTAKE_SERVO_FIRST_PIXEL_POS - 0.012))
+                .splineToLinearHeading(new Pose2d(-56.7,-9, Math.toRadians(180)), Math.toRadians(180),
+                        SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                .addDisplacementMarker(() -> {
-                    intakeSubsystem.setIntakePos(Constants.INTAKE_SERVO_FIRST_PIXEL_POS - 0.01);
-                })
-                .lineToLinearHeading(new Pose2d(-53.2,-28, Math.toRadians(160)),
-                        SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                .addDisplacementMarker(() -> {
-                    intakeSubsystem.setIntakePos(Constants.INTAKE_SERVO_INTAKE_POS - 0.015);
-                })
-                .lineToLinearHeading(new Pose2d(-53,-33, Math.toRadians(160)),
-                        SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .addDisplacementMarker(() -> intakeSubsystem.setIntakePos(Constants.INTAKE_SERVO_FIRST_PIXEL_POS + 0.08))
+                .splineToLinearHeading(new Pose2d(-57.3, -14.5, Math.toRadians(195)), Math.toRadians(180))
+                .addDisplacementMarker(() -> intakeSubsystem.setIntakePos(Constants.INTAKE_SERVO_INTAKE_POS))
+                .splineToLinearHeading(new Pose2d(-57.3,-12, Math.toRadians(180)), Math.toRadians(180))
                 .build();
 
-        trajToScoreCaseC = drive.trajectorySequenceBuilder(trajToIntakeCaseC.end())
-                .addDisplacementMarker(this::outtakeRoutine)
-                .lineToLinearHeading(new Pose2d(-36,-55,Math.toRadians(175)),
+        trajToScoreCycle2CaseC = drive.trajectorySequenceBuilder(trajToIntakeCycle1CaseC.end())
+                .lineToLinearHeading(new Pose2d(-53,-13, Math.toRadians(180)),
                         SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .addDisplacementMarker(this::outtakeRoutine)
                 .setTangent(Math.toRadians(0))
-                .splineToLinearHeading(new Pose2d(24,-61,Math.toRadians(175)), Math.toRadians(0),
+                .splineToLinearHeading(new Pose2d(24,-13, Math.toRadians(180)), Math.toRadians(0),
                         SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .addDisplacementMarker(() -> {
                     scoreThread.selectRotate = false;
                     scoreThreadExecutor.accept(Constants.SLIDE_POSITIONS[1] - 0.03);
                 })
-                .splineToLinearHeading(new Pose2d(54.5,-42,Math.toRadians(180)), Math.toRadians(0),
+                .splineToLinearHeading(new Pose2d(53.7,-36, Math.toRadians(180)),Math.toRadians(0),
+                        SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .addDisplacementMarker(() -> scoreSubsystem.useBlock(Constants.BLOCK_SERVO_SCORE_POS))
+                .build();
+
+        /*trajToIntakeCycle2CaseA = drive.trajectorySequenceBuilder(trajToScoreCycle1CaseA.end())
+                .addDisplacementMarker(() -> {
+                    retractThreadExecutor.accept(Constants.SLIDE_INTAKE);
+                })
+                .setTangent(Math.toRadians(180))
+                .splineToLinearHeading(new Pose2d(24,-14, Math.toRadians(184)),Math.toRadians(180),
+                        SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .addDisplacementMarker(() -> intakeRoutine(Constants.INTAKE_SERVO_INTAKE_POS - 0.01))
+                .lineToLinearHeading(new Pose2d(-56.7,-19, Math.toRadians(184)),
+                        SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .build();
+
+        trajToScoreCycle2CaseA = drive.trajectorySequenceBuilder(trajToIntakeCycle2CaseA.end())
+                .addDisplacementMarker(() -> intakeSubsystem.setIntakePos(Constants.INTAKE_SERVO_INTAKE_POS))
+                .lineToLinearHeading(new Pose2d(-54,-17, Math.toRadians(184)),
+                        SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .addDisplacementMarker(this::outtakeRoutine)
+                .setTangent(Math.toRadians(0))
+                .lineToLinearHeading(new Pose2d(24,-18, Math.toRadians(184)),
                         SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .addDisplacementMarker(() -> {
-                    scoreSubsystem.useBlock(Constants.BLOCK_SERVO_SCORE_POS);
+                    scoreThread.selectRotate = false;
+                    scoreThreadExecutor.accept(Constants.SLIDE_POSITIONS[1]);
                 })
-                .build();
+                .splineToLinearHeading(new Pose2d(52.3,-34.5, Math.toRadians(184)),Math.toRadians(0),
+                        SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .addDisplacementMarker(() -> retractThreadExecutor.accept(Constants.SLIDE_INTAKE))
+                .build();*/
 
-        parkSpotC = drive.trajectorySequenceBuilder(trajToScoreCaseC.end())
+        parkSpotC = drive.trajectorySequenceBuilder(trajToScoreCycle2CaseC.end())
                 .addDisplacementMarker(() -> {
-                    slideSubsystem.setLevel(Constants.SLIDE_POSITIONS[1] + 0.04);
+                    slideSubsystem.setLevel(Constants.SLIDE_POSITIONS[1] + 0.06);
                     retractThreadExecutor.accept(Constants.SLIDE_INTAKE);
                 })
-                .lineTo(new Vector2d(49, -42))
-                .setTangent(Math.toRadians(270))
-                .splineToLinearHeading(new Pose2d(55, -60, Math.toRadians(180)), Math.toRadians(0))
+                .lineTo(new Vector2d(45,-36),
+                        SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .addDisplacementMarker(() -> retractThreadExecutor.accept(Constants.SLIDE_INTAKE))
+                .setTangent(Math.toRadians(245))
+                .splineToLinearHeading(new Pose2d(52.3,-60, Math.toRadians(180)), Math.toRadians(5),
+                        SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
+
+
 
 
         drive.followTrajectorySequence(trajPreloadCaseC);
 
         drive.followTrajectorySequence(trajPreloadScoreCaseC);
-        sleep(150);
+        sleep(100);
 
-        drive.followTrajectorySequence(trajToIntakeCaseC);
+        drive.followTrajectorySequence(trajToIntakeCycle1CaseC);
         sleep(500);
 
-        drive.followTrajectorySequence(trajToScoreCaseC);
-        sleep(150);
+        drive.followTrajectorySequence(trajToScoreCycle2CaseC);
+        sleep(100);
 
         drive.followTrajectorySequence(parkSpotC);
     }
@@ -464,7 +556,7 @@ public class BoardAutoRedSecret extends LinearOpMode {
             scoreSubsystem.useBlock(Constants.BLOCK_SERVO_BLOCK_POS);
             intakeSubsystem.setIntakePos(Constants.INTAKE_SERVO_INIT_POS);
             intakeSubsystem.setIntakePower(-1);
-            sleep(1800);
+            sleep(2000);
 
             intakeSubsystem.setIntakePower(0);
         }).start();

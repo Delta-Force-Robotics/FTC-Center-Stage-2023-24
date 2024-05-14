@@ -104,6 +104,7 @@ public class TeleOpSimple extends LinearOpMode {
 
         armServoLeft.setDirection(Servo.Direction.REVERSE);
         preloadServo.setDirection(Servo.Direction.REVERSE);
+        intakeServo.setDirection(Servo.Direction.REVERSE);
 
         intakeServo.setPosition(0);
         armServoLeft.setPosition(0);

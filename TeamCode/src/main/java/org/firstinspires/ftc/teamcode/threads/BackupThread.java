@@ -16,6 +16,7 @@ public class BackupThread extends Thread {
 
     @Override
     public void run() {
+        scoreSubsystem.useBlock(Constants.BLOCK_SERVO_BLOCK_POS);
         scoreSubsystem.useArm(Constants.ARM_SERVO_PIVOT_POSITION);
 
         try {

@@ -21,7 +21,7 @@ public class ScoreReleaseThread extends Thread {
     public void run() {
         scoreSubsystem.useBlock(Constants.BLOCK_SERVO_SCORE_POS);
         try {
-            sleep(400);
+            sleep(350);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

@@ -5,6 +5,8 @@ import static java.lang.Thread.sleep;
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.controller.PIDFController;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
+import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -24,11 +26,11 @@ public class SlideSubsystem extends SubsystemBase {
     public double calculateRight;
     private Telemetry telemetry;
     public boolean isAuto;
+    HardwareMap hardwareMap;
     public int currLevel = 1;
 
     public enum SlideState {
         INTAKE(Constants.SLIDE_INTAKE);
-
         private double id;
         SlideState(double slideLevel) {
             id = slideLevel;
@@ -43,9 +45,10 @@ public class SlideSubsystem extends SubsystemBase {
 
     public SlideState slideState = SlideState.INTAKE;
 
-    public SlideSubsystem(Motor slideMotorLeft, Motor slideMotorRight, Telemetry telemetry, boolean resetEncoders, boolean isAuto) {
+    public SlideSubsystem(Motor slideMotorLeft, Motor slideMotorRight, Telemetry telemetry, boolean resetEncoders, boolean isAuto, HardwareMap hardwareMap) {
         this.slideMotorLeft = slideMotorLeft;
         this.slideMotorRight = slideMotorRight;
+        this.hardwareMap = hardwareMap;
 
         this.slideMotorLeft.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
         this.slideMotorRight.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
@@ -77,7 +80,6 @@ public class SlideSubsystem extends SubsystemBase {
             pidfCoefficientsRetract = new double[]{Constants.SLIDE_RETRACT_PIDF_COEFF.p, Constants.SLIDE_RETRACT_PIDF_COEFF.i, Constants.SLIDE_RETRACT_PIDF_COEFF.d, Constants.SLIDE_RETRACT_PIDF_COEFF.f};
         }
         else {
-
             pidfCoefficientsExtend  = new double[]{Constants.SLIDE_EXTEND_PIDF_COEFF.p, Constants.SLIDE_EXTEND_PIDF_COEFF.i, Constants.SLIDE_EXTEND_PIDF_COEFF.d, Constants.SLIDE_EXTEND_PIDF_COEFF.f};
             pidfCoefficientsRetract = new double[]{Constants.SLIDE_RETRACT_PIDF_COEFF.p, Constants.SLIDE_RETRACT_PIDF_COEFF.i, Constants.SLIDE_RETRACT_PIDF_COEFF.d, Constants.SLIDE_RETRACT_PIDF_COEFF.f};
         }
@@ -99,6 +101,9 @@ public class SlideSubsystem extends SubsystemBase {
         pidfRightSlideMotor.setTolerance(Constants.SLIDE_ALLOWED_ERROR);
         pidfLeftSlideMotor.setTolerance(Constants.SLIDE_ALLOWED_ERROR);
 
+        pidfRightSlideMotor.setIntegrationBounds(-0.1, 0.1);
+        pidfLeftSlideMotor.setIntegrationBounds(-0.1, 0.1);
+
         while(!pidfLeftSlideMotor.atSetPoint() && !pidfRightSlideMotor.atSetPoint() && !isInterrupted.getAsBoolean()) {
             calculateRight = pidfRightSlideMotor.calculate(ticksToMeters(slideMotorRight.getCurrentPosition()));
             calculateLeft = pidfLeftSlideMotor.calculate(ticksToMeters(slideMotorLeft.getCurrentPosition()));
@@ -114,16 +119,16 @@ public class SlideSubsystem extends SubsystemBase {
                 sleep(10);
             } catch (InterruptedException e) {
                 Constants.SLIDE_INPUT_STATE = Constants.InputState.MANUAL_CONTROL;
-                slideMotorLeft.set(Constants.SLIDE_MOTOR_PASSIVE_POWER * (double)ticksToMeters(slideMotorLeft.getCurrentPosition())/(double)Constants.SLIDE_MAX_EXTENSION_METERS + 0.15);
-                slideMotorRight.set(Constants.SLIDE_MOTOR_PASSIVE_POWER * (double)ticksToMeters(slideMotorRight.getCurrentPosition())/(double)Constants.SLIDE_MAX_EXTENSION_METERS + 0.15);
+                slideMotorLeft.set(Constants.SLIDE_MOTOR_PASSIVE_POWER * (12 / hardwareMap.getAll(VoltageSensor.class).get(0).getVoltage()));
+                slideMotorRight.set(Constants.SLIDE_MOTOR_PASSIVE_POWER * (12 / hardwareMap.getAll(VoltageSensor.class).get(0).getVoltage()));
 
                 e.printStackTrace();
             }
         }
 
         if (level >= 0.05) {
-            slideMotorLeft.set(Constants.SLIDE_MOTOR_PASSIVE_POWER * (double) ticksToMeters(slideMotorLeft.getCurrentPosition())/(double)Constants.SLIDE_MAX_EXTENSION_METERS + 0.15);
-            slideMotorRight.set(Constants.SLIDE_MOTOR_PASSIVE_POWER * (double)ticksToMeters(slideMotorRight.getCurrentPosition())/(double)Constants.SLIDE_MAX_EXTENSION_METERS + 0.15);
+            slideMotorLeft.set(Constants.SLIDE_MOTOR_PASSIVE_POWER * (12 / hardwareMap.getAll(VoltageSensor.class).get(0).getVoltage()));
+            slideMotorRight.set(Constants.SLIDE_MOTOR_PASSIVE_POWER * (12 / hardwareMap.getAll(VoltageSensor.class).get(0).getVoltage()));
         } else {
             slideMotorLeft.set(0);
             slideMotorRight.set(0);

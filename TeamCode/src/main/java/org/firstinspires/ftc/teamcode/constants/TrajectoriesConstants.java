@@ -1,5 +1,9 @@
 package org.firstinspires.ftc.teamcode.constants;
 
+import com.qualcomm.robotcore.hardware.HardwareMap;
+
+import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
+
 public class TrajectoriesConstants {
 
     public static final class RedStackCaseA {
