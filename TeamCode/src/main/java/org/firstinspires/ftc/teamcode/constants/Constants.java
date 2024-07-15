@@ -38,18 +38,6 @@ public class Constants {
     public static double[] SLIDE_POSITIONS_AUTO = {0.0, 0.0, 0.0, 0.0};
     public static double[] SLIDE_POSITIONS_TELEOP = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 
-    //Extendo Subsystem
-    public static final int EXTENDO_INIT_POS = 0;
-    public static double EXTENDO_MANUAL_CONTROL_MAX = 1200;
-    public static int EXTENDO_MAX_EXTENSION_TICKS = 1200;
-    public static double EXTENDO_MAX_EXTENSION_METERS = 0.96;
-    public static double EXTENDO_MOTOR_PASSIVE_POWER = 0;
-    public static double EXTENDO_ALLOWED_ERROR = 0.03;
-    public static double[] EXTENDO_POSITIONS_AUTO = {0.0, 0.0, 0.0, 0.0};
-    public static double[] EXTENDO_POSITIONS_TELEOP = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
-    public static PIDFCoefficients EXTENDO_RETRACT_PIDF_COEFF = new PIDFCoefficients(8, 0, 0, 0);
-    public static PIDFCoefficients EXTENDO_EXTEND_PIDF_COEFF = new PIDFCoefficients(8, 0, 0, 0);
-
     public static final double INTAKE_SERVO_INIT_POS = 0.08;
     public static final double INTAKE_SERVO_INTAKE_POS = 0.44;
     public static final double INTAKE_SERVO_FIRST_PIXEL_POS =0.275;
