@@ -42,17 +42,17 @@ public class ScoreSubsystem extends SubsystemBase {
         this.armServoL.setPosition(Constants.ARM_SERVO_INIT_POSITION - 0.023);
         this.rotateServo.setPosition(Constants.ANGLE_INIT_POSITION);
         this.pivotServo.setPosition(Constants.PIVOT_SERVO_INIT_POSITION);
-        this.clawServoL.setPosition(Constants.CLAW_SERVO_CLOSE_POS + 0.06);
+        this.clawServoL.setPosition(Constants.CLAW_SERVO_CLOSE_POS + 0.09);
         this.clawServoR.setPosition(Constants.CLAW_SERVO_CLOSE_POS);
         this.droneServo.setPosition(Constants.DRONE_SERVO_INIT_POS);
     }
 
     public void useClaw(double pos, int clawP) {
         if (clawP == 0) {
-            clawServoL.setPosition(pos + 0.06);
+            clawServoL.setPosition(pos + 0.09);
             clawServoR.setPosition(pos);
         } else if (clawP == 1) {
-            clawServoL.setPosition(pos + 0.06);
+            clawServoL.setPosition(pos + 0.09);
         } else if (clawP == 2) {
             clawServoR.setPosition(pos);
         }

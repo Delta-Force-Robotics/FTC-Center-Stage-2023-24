@@ -41,7 +41,7 @@ public class Constants {
     public static final double INTAKE_SERVO_INIT_POS = 0.08;
     public static final double INTAKE_SERVO_INTAKE_POS = 0.44;
     public static final double INTAKE_SERVO_FIRST_PIXEL_POS =0.275;
-    public static final double INTAKE_SERVO_SECOND_PIXEL_POS =0.32;
+    public static final double INTAKE_SERVO_SECOND_PIXEL_POS =0.3;
     public static final double INTAKE_SERVO_THIRD_PIXEL_POS = 0.35;
     public static final double INTAKE_SERVO_FOURTH_PIXEL_POS =0.38;
 

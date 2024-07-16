@@ -137,7 +137,7 @@ public class BlueFar extends LinearOpMode {
                         SampleMecanumDrive.getVelocityConstraint(60, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .addDisplacementMarker(() -> score(1200, true))
-                .lineToLinearHeading(new Pose2d(90, 46.5, Math.toRadians(180)),
+                .lineToLinearHeading(new Pose2d(90, 48.7, Math.toRadians(180)),
                         SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .addDisplacementMarker(() -> scoreSubsystem.useClaw(Constants.CLAW_SERVO_OPEN_POS, Constants.CLAW_BOTH))
@@ -150,7 +150,7 @@ public class BlueFar extends LinearOpMode {
                         SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .addDisplacementMarker(this::intake)
-                .splineToSplineHeading(new Pose2d(-59.8, 16.8, Math.toRadians(175)), Math.toRadians(180),
+                .lineToLinearHeading(new Pose2d(-59.8, 16.8, Math.toRadians(180)),
                         SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
@@ -161,7 +161,7 @@ public class BlueFar extends LinearOpMode {
                         SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .addDisplacementMarker(() -> score3(2800, false))
-                .lineToLinearHeading(new Pose2d(91.5, 9, Math.toRadians(180)),
+                .lineToLinearHeading(new Pose2d(91.5, 11.5, Math.toRadians(180)),
                         SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .addDisplacementMarker(() -> scoreSubsystem.useClaw(Constants.CLAW_SERVO_OPEN_POS, Constants.CLAW_BOTH))
@@ -191,7 +191,7 @@ public class BlueFar extends LinearOpMode {
                         SampleMecanumDrive.getVelocityConstraint(60, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .addDisplacementMarker(() -> score(1100, true))
-                .lineToLinearHeading(new Pose2d(90.2, 46, Math.toRadians(180)),
+                .lineToLinearHeading(new Pose2d(90.2, 46.4, Math.toRadians(180)),
                         SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .addDisplacementMarker(() -> scoreSubsystem.useClaw(Constants.CLAW_SERVO_OPEN_POS, Constants.CLAW_BOTH))
@@ -204,14 +204,14 @@ public class BlueFar extends LinearOpMode {
                         SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .addDisplacementMarker(this::intake)
-                .splineToLinearHeading(new Pose2d(-59.2, 8, Math.toRadians(180)), Math.toRadians(180),
+                .lineToLinearHeading(new Pose2d(-59.2, 12, Math.toRadians(180)),
                         SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
 
         trajScoreB = drive.trajectorySequenceBuilder(trajIntakeB.end())
                 .addDisplacementMarker(this::catchThread)
-                .lineToSplineHeading(new Pose2d(60, 17, Math.toRadians(180)),
+                .lineToSplineHeading(new Pose2d(60, 16, Math.toRadians(180)),
                         SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .addDisplacementMarker(() -> score3(2800, false))
@@ -224,7 +224,7 @@ public class BlueFar extends LinearOpMode {
         trajParkB = drive.trajectorySequenceBuilder(trajScoreB.end())
                 .addDisplacementMarker(this::scoreRelease)
                 .forward(2)
-                .strafeRight(10)
+                .strafeRight(14)
                 .build();
 
 
@@ -249,7 +249,7 @@ public class BlueFar extends LinearOpMode {
                         SampleMecanumDrive.getVelocityConstraint(60, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .addDisplacementMarker(() -> score(1200, true))
-                .lineToLinearHeading(new Pose2d(90, 26.3, Math.toRadians(180)),
+                .lineToLinearHeading(new Pose2d(90, 26.6, Math.toRadians(180)),
                         SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .addDisplacementMarker(() -> scoreSubsystem.useClaw(Constants.CLAW_SERVO_OPEN_POS, Constants.CLAW_BOTH))
@@ -262,7 +262,7 @@ public class BlueFar extends LinearOpMode {
                         SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .addDisplacementMarker(this::intake)
-                .splineToSplineHeading(new Pose2d(-59.2, 14.8, Math.toRadians(180)), Math.toRadians(180),
+                .lineToLinearHeading(new Pose2d(-59.8, 14.8, Math.toRadians(180)),
                         SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
@@ -270,11 +270,11 @@ public class BlueFar extends LinearOpMode {
         trajScoreC = drive.trajectorySequenceBuilder(trajIntakeC.end())
                 .addDisplacementMarker(this::catchThread)
                 .lineToSplineHeading(new Pose2d(60, 8, Math.toRadians(180)),
-                        SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .addDisplacementMarker(() -> score3(2800, false))
                 .lineToLinearHeading(new Pose2d(92, 2, Math.toRadians(180)),
-                        SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getVelocityConstraint(50, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .addDisplacementMarker(() -> scoreSubsystem.useClaw(Constants.CLAW_SERVO_OPEN_POS, Constants.CLAW_BOTH))
                 .build();
@@ -282,7 +282,7 @@ public class BlueFar extends LinearOpMode {
         trajParkC = drive.trajectorySequenceBuilder(trajScoreC.end())
                 .addDisplacementMarker(this::scoreRelease)
                 .forward(2)
-                .strafeRight(10)
+                .strafeRight(14)
                 .build();
 
         while (!isStarted() && !isStopRequested()) {
@@ -309,7 +309,7 @@ public class BlueFar extends LinearOpMode {
         drive.followTrajectorySequence(trajYellowPixelA);
         drive.followTrajectorySequence(trajIntakeA);
         sleep(350);
-        intakeSubsystem.setIntakePos(Constants.INTAKE_SERVO_SECOND_PIXEL_POS + 0.02);
+        intakeSubsystem.setIntakePos(Constants.INTAKE_SERVO_SECOND_PIXEL_POS);
         sleep(1150);
         drive.followTrajectorySequence(trajScoreA);
         drive.followTrajectorySequence(trajParkA);
@@ -320,7 +320,7 @@ public class BlueFar extends LinearOpMode {
         drive.followTrajectorySequence(trajYellowPixelB);
         drive.followTrajectorySequence(trajIntakeB);
         sleep(350);
-        intakeSubsystem.setIntakePos(Constants.INTAKE_SERVO_SECOND_PIXEL_POS + 0.02);
+        intakeSubsystem.setIntakePos(Constants.INTAKE_SERVO_SECOND_PIXEL_POS);
         sleep(1500);
         drive.followTrajectorySequence(trajScoreB);
         drive.followTrajectorySequence(trajParkB);
@@ -331,7 +331,7 @@ public class BlueFar extends LinearOpMode {
         drive.followTrajectorySequence(trajYellowPixelC);
         drive.followTrajectorySequence(trajIntakeC);
         sleep(350);
-        intakeSubsystem.setIntakePos(Constants.INTAKE_SERVO_SECOND_PIXEL_POS + 0.02);
+        intakeSubsystem.setIntakePos(Constants.INTAKE_SERVO_SECOND_PIXEL_POS);
         sleep(1500);
         drive.followTrajectorySequence(trajScoreC);
         drive.followTrajectorySequence(trajParkC);

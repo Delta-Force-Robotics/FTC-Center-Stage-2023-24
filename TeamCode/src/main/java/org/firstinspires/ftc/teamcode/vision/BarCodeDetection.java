@@ -42,16 +42,17 @@ public class BarCodeDetection extends OpenCvPipeline {
     private BarcodePosition barcodePosition = BarcodePosition.NOT_FOUND;
 
      static final Rect LEFT_ROW = new Rect(
-            new Point( 80, 180 ),
-            new Point( 125, 230 )
+            new Point( 140, 200 ),
+            new Point( 190, 250 )
     );
+
     static final Rect MIDDLE_ROW = new Rect(
-            new Point( 310, 175 ),
-            new Point( 340, 210 )
+            new Point( 400, 210 ),
+            new Point( 450, 250 )
     );
      static final Rect RIGHT_ROW = new Rect(
-            new Point( 520, 170 ),
-            new Point( 560, 230 )
+            new Point( 520, 200 ),
+            new Point( 560, 240 )
     );
 
     static double PERCENT_COLOR_THRESHOLD = 0.2;

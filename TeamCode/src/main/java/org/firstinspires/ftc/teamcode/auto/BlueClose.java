@@ -113,7 +113,7 @@ public class BlueClose extends LinearOpMode {
 
         trajPurplePixelA = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
                 .addDisplacementMarker(this::purple)
-                .lineToLinearHeading(new Pose2d(11.6, 38, Math.toRadians(135)),
+                .lineToLinearHeading(new Pose2d(12.2, 42, Math.toRadians(135)),
                         SampleMecanumDrive.getVelocityConstraint(60, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .addDisplacementMarker(() -> scoreSubsystem.useClaw(Constants.CLAW_SERVO_OPEN_POS, Constants.CLAW_LEFT))
@@ -121,19 +121,19 @@ public class BlueClose extends LinearOpMode {
 
         trajYellowPixelA = drive.trajectorySequenceBuilder(trajPurplePixelA.end())
                 .lineToLinearHeading(new Pose2d(11.6, 45, Math.toRadians(135)))
-                .addDisplacementMarker(() -> score(650, false))
-                .lineToSplineHeading(new Pose2d(43, 42, Math.toRadians(180)),
+                .addDisplacementMarker(() -> score(800, false))
+                .lineToSplineHeading(new Pose2d(43.2, 42, Math.toRadians(180)),
                         SampleMecanumDrive.getVelocityConstraint(60, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .addDisplacementMarker(() -> scoreSubsystem.useClaw(Constants.CLAW_SERVO_OPEN_POS, Constants.CLAW_BOTH))
                 .build();
 
         parkA = drive.trajectorySequenceBuilder(trajYellowPixelA.end())
-                .setTangent(Math.toRadians(70))
-                .forward(5)
+                .forward(9)
                 .addDisplacementMarker(this::scoreRelease)
-                .splineToLinearHeading(new Pose2d(60, 60, Math.toRadians(180)), Math.toRadians(0),
-                        SampleMecanumDrive.getVelocityConstraint(60, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                .setTangent(Math.toRadians(90))
+                .splineToLinearHeading(new Pose2d(59, 62.2, Math.toRadians(180)), Math.toRadians(0),
+                        SampleMecanumDrive.getVelocityConstraint(80, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
 
@@ -149,19 +149,19 @@ public class BlueClose extends LinearOpMode {
                 .lineToSplineHeading(new Pose2d(11.6, 45, Math.toRadians(90)),
                         SampleMecanumDrive.getVelocityConstraint(60, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                .addDisplacementMarker(() -> score(650, false))
-                .lineToSplineHeading(new Pose2d(43, 32, Math.toRadians(180)),
+                .addDisplacementMarker(() -> score(800, false))
+                .lineToSplineHeading(new Pose2d(43, 33.5, Math.toRadians(180)),
                         SampleMecanumDrive.getVelocityConstraint(60, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .addDisplacementMarker(() -> scoreSubsystem.useClaw(Constants.CLAW_SERVO_OPEN_POS, Constants.CLAW_BOTH))
                 .build();
 
         parkB = drive.trajectorySequenceBuilder(trajYellowPixelB.end())
-                .forward(5)
+                .forward(9)
                 .addDisplacementMarker(this::scoreRelease)
                 .setTangent(Math.toRadians(90))
-                .splineToLinearHeading(new Pose2d(60, 60, Math.toRadians(180)), Math.toRadians(0),
-                        SampleMecanumDrive.getVelocityConstraint(60, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                .splineToLinearHeading(new Pose2d(60, 62, Math.toRadians(180)), Math.toRadians(0),
+                        SampleMecanumDrive.getVelocityConstraint(80, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
 
@@ -177,19 +177,19 @@ public class BlueClose extends LinearOpMode {
                 .lineToLinearHeading(new Pose2d(12.3,44.8,Math.toRadians(90)),
                         SampleMecanumDrive.getVelocityConstraint(60, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                .addDisplacementMarker(() -> score(750, true))
-                .lineToSplineHeading(new Pose2d(43, 25.5, Math.toRadians(180)),
+                .addDisplacementMarker(() -> score(800, true))
+                .lineToSplineHeading(new Pose2d(43, 27, Math.toRadians(180)),
                         SampleMecanumDrive.getVelocityConstraint(60, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .addDisplacementMarker(() -> scoreSubsystem.useClaw(Constants.CLAW_SERVO_OPEN_POS, Constants.CLAW_BOTH))
                 .build();
 
         parkC = drive.trajectorySequenceBuilder(trajYellowPixelC.end())
-                .setTangent(Math.toRadians(90))
-                .forward(5)
+                .forward(10)
                 .addDisplacementMarker(this::scoreRelease)
+                .setTangent(Math.toRadians(90))
                 .splineToLinearHeading(new Pose2d(60, 60, Math.toRadians(180)), Math.toRadians(0),
-                        SampleMecanumDrive.getVelocityConstraint(60, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getVelocityConstraint(80, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
 

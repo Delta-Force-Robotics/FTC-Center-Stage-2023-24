@@ -136,7 +136,7 @@ public class RedClose extends LinearOpMode {
                 .forward(5)
                 .addDisplacementMarker(this::scoreRelease)
                 .splineToLinearHeading(new Pose2d(60, -60, Math.toRadians(180)), Math.toRadians(0),
-                        SampleMecanumDrive.getVelocityConstraint(60, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getVelocityConstraint(80, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
 
@@ -165,14 +165,14 @@ public class RedClose extends LinearOpMode {
                 .addDisplacementMarker(this::scoreRelease)
                 .setTangent(Math.toRadians(290))
                 .splineToLinearHeading(new Pose2d(60, -60, Math.toRadians(180)), Math.toRadians(0),
-                        SampleMecanumDrive.getVelocityConstraint(60, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getVelocityConstraint(80, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
 
 
         trajPurplePixelC = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
                 .addDisplacementMarker(this::purple)
-                .lineToLinearHeading(new Pose2d(11,-38,Math.toRadians(210)),
+                .lineToLinearHeading(new Pose2d(11,-40,Math.toRadians(210)),
                         SampleMecanumDrive.getVelocityConstraint(60, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .addDisplacementMarker(() -> scoreSubsystem.useClaw(Constants.CLAW_SERVO_OPEN_POS, Constants.CLAW_LEFT))
@@ -180,12 +180,12 @@ public class RedClose extends LinearOpMode {
 
         trajYellowPixelC = drive.trajectorySequenceBuilder(trajPurplePixelC.end())
                 .addDisplacementMarker(this::retract)
-                .lineToSplineHeading(new Pose2d(12,-55, Math.toRadians(270)),
+                .lineToSplineHeading(new Pose2d(11,-55, Math.toRadians(180)),
                         SampleMecanumDrive.getVelocityConstraint(60, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .addDisplacementMarker(() -> score(1100, true))
                 .setTangent(Math.toRadians(90))
-                .splineToSplineHeading(new Pose2d(45.4, -40.5, Math.toRadians(180)), Math.toRadians(0),
+                .lineToLinearHeading(new Pose2d(45.4, -41, Math.toRadians(180)),
                         SampleMecanumDrive.getVelocityConstraint(60, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .addDisplacementMarker(() -> scoreSubsystem.useClaw(Constants.CLAW_SERVO_OPEN_POS, Constants.CLAW_BOTH))
@@ -196,7 +196,7 @@ public class RedClose extends LinearOpMode {
                 .addDisplacementMarker(this::scoreRelease)
                 .setTangent(Math.toRadians(290))
                 .splineToLinearHeading(new Pose2d(60, -60, Math.toRadians(180)), Math.toRadians(0),
-                        SampleMecanumDrive.getVelocityConstraint(60, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getVelocityConstraint(80, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
 

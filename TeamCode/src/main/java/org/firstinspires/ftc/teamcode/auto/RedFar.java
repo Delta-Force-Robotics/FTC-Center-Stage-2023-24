@@ -122,7 +122,7 @@ public class RedFar extends LinearOpMode {
 
         trajPurplePixelA = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
                 .addDisplacementMarker(this::purple)
-                .lineToLinearHeading(new Pose2d(-36, -39, Math.toRadians(320)),
+                .lineToLinearHeading(new Pose2d(-36, -42, Math.toRadians(320)),
                         SampleMecanumDrive.getVelocityConstraint(60, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .addDisplacementMarker(() -> scoreSubsystem.useClaw(Constants.CLAW_SERVO_OPEN_POS, Constants.CLAW_LEFT))
@@ -137,11 +137,11 @@ public class RedFar extends LinearOpMode {
                         SampleMecanumDrive.getVelocityConstraint(60, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .turn(Math.toRadians(-90))
-                .lineToSplineHeading(new Pose2d(54, -12, Math.toRadians(180)),
+                .lineToSplineHeading(new Pose2d(58, -12, Math.toRadians(180)),
                         SampleMecanumDrive.getVelocityConstraint(60, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .addDisplacementMarker(() -> score(1200, true))
-                .lineToLinearHeading(new Pose2d(92, -26.2, Math.toRadians(180)),
+                .lineToLinearHeading(new Pose2d(92, -25.3, Math.toRadians(180)),
                         SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .addDisplacementMarker(() -> scoreSubsystem.useClaw(Constants.CLAW_SERVO_OPEN_POS, Constants.CLAW_BOTH))
@@ -154,7 +154,7 @@ public class RedFar extends LinearOpMode {
                         SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .addDisplacementMarker(this::intake)
-                .splineToSplineHeading(new Pose2d(-58.2, -9.3, Math.toRadians(180)), Math.toRadians(180),
+                .lineToLinearHeading(new Pose2d(-58.2, -11, Math.toRadians(180)),
                         SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
@@ -165,7 +165,7 @@ public class RedFar extends LinearOpMode {
                         SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .addDisplacementMarker(() -> score3(2800, false))
-                .lineToLinearHeading(new Pose2d(94.5, -2.5, Math.toRadians(180)),
+                .lineToLinearHeading(new Pose2d(95, -2.5, Math.toRadians(180)),
                         SampleMecanumDrive.getVelocityConstraint(60, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .addDisplacementMarker(() -> scoreSubsystem.useClaw(Constants.CLAW_SERVO_OPEN_POS, Constants.CLAW_BOTH))
@@ -180,11 +180,11 @@ public class RedFar extends LinearOpMode {
 
         trajPurplePixelB = drive.trajectorySequenceBuilder(drive.getPoseEstimate())
                 .addDisplacementMarker(this::purple)
-                .lineToSplineHeading(new Pose2d(-48,-21, Math.toRadians(180)),
+                .lineToSplineHeading(new Pose2d(-52,-21, Math.toRadians(180)),
                         SampleMecanumDrive.getVelocityConstraint(60, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .addDisplacementMarker(() -> scoreSubsystem.useClaw(Constants.CLAW_SERVO_OPEN_POS, Constants.CLAW_LEFT))
-                .lineToSplineHeading(new Pose2d(-48,-13, Math.toRadians(180)),
+                .lineToSplineHeading(new Pose2d(-52,-13, Math.toRadians(180)),
                         SampleMecanumDrive.getVelocityConstraint(60, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
@@ -195,7 +195,7 @@ public class RedFar extends LinearOpMode {
                         SampleMecanumDrive.getVelocityConstraint(60, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .addDisplacementMarker(() -> score(1200, true))
-                .lineToLinearHeading(new Pose2d(92.6, -45.4, Math.toRadians(180)),
+                .lineToLinearHeading(new Pose2d(92.6, -43, Math.toRadians(180)),
                         SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .addDisplacementMarker(() -> scoreSubsystem.useClaw(Constants.CLAW_SERVO_OPEN_POS, Constants.CLAW_BOTH))
@@ -208,14 +208,14 @@ public class RedFar extends LinearOpMode {
                         SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .addDisplacementMarker(this::intake)
-                .splineToSplineHeading(new Pose2d(-56.3, -13.4, Math.toRadians(180)), Math.toRadians(180),
+                .splineToSplineHeading(new Pose2d(-56.4, -15.4, Math.toRadians(180)), Math.toRadians(180),
                         SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
 
         trajScoreB = drive.trajectorySequenceBuilder(trajIntakeB.end())
                 .addDisplacementMarker(this::catchThread)
-                .lineToSplineHeading(new Pose2d(56, -15, Math.toRadians(180)),
+                .lineToSplineHeading(new Pose2d(56, -16, Math.toRadians(180)),
                         SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .addDisplacementMarker(() -> score3(2800, false))
@@ -253,7 +253,7 @@ public class RedFar extends LinearOpMode {
                         SampleMecanumDrive.getVelocityConstraint(60, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .addDisplacementMarker(() -> score(1200, true))
-                .lineToLinearHeading(new Pose2d(92.3, -44.3, Math.toRadians(180)),
+                .lineToLinearHeading(new Pose2d(92.3, -39.7, Math.toRadians(180)),
                         SampleMecanumDrive.getVelocityConstraint(30, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .addDisplacementMarker(() -> scoreSubsystem.useClaw(Constants.CLAW_SERVO_OPEN_POS, Constants.CLAW_BOTH))
@@ -267,18 +267,18 @@ public class RedFar extends LinearOpMode {
                         SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .addDisplacementMarker(this::intake)
-                .splineToSplineHeading(new Pose2d(-57.3, -17.5, Math.toRadians(180)), Math.toRadians(180),
+                .splineToSplineHeading(new Pose2d(-57.1, -19.4, Math.toRadians(180)), Math.toRadians(180),
                         SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
 
         trajScoreC = drive.trajectorySequenceBuilder(trajIntakeC.end())
                 .addDisplacementMarker(this::catchThread)
-                .lineToSplineHeading(new Pose2d(50, -16, Math.toRadians(180)),
+                .lineToSplineHeading(new Pose2d(50, -14, Math.toRadians(180)),
                         SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .addDisplacementMarker(() -> score3(2800, false))
-                .lineToLinearHeading(new Pose2d(95, -8, Math.toRadians(180)),
+                .lineToLinearHeading(new Pose2d(95, -5.6, Math.toRadians(180)),
                         SampleMecanumDrive.getVelocityConstraint(40, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .addDisplacementMarker(() -> scoreSubsystem.useClaw(Constants.CLAW_SERVO_OPEN_POS, Constants.CLAW_BOTH))
