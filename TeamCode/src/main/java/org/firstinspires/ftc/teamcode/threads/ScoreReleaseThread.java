@@ -43,9 +43,4 @@ public class ScoreReleaseThread extends Thread {
 
         slideSubsystem.setLevel(slideLevel);
     }
-
-    public void interrupt() {
-        Constants.SLIDE_INPUT_STATE = Constants.InputState.MANUAL_CONTROL;
-        super.interrupt();
-    }
 }

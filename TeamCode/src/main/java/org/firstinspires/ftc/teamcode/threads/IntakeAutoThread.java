@@ -4,7 +4,7 @@ import org.firstinspires.ftc.teamcode.subsystems.IntakeSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.ScoreSubsystem;
 
 public class IntakeAutoThread extends Thread {
-    private IntakeSubsystem intakeSubsystem;
+    private final IntakeSubsystem intakeSubsystem;
     public double intakeLevel = 0;
 
     public IntakeAutoThread(IntakeSubsystem intakeSubsystem) {
@@ -15,9 +15,5 @@ public class IntakeAutoThread extends Thread {
     public void run() {
         intakeSubsystem.setIntakePower(1);
         intakeSubsystem.setIntakePos(intakeLevel);
-    }
-
-    public void interrupt() {
-        super.interrupt();
     }
 }

@@ -33,7 +33,6 @@ import org.firstinspires.ftc.teamcode.threads.ScoreThread;
 
 @TeleOp
 public class TeleOpMain extends CommandOpMode {
-    private IMU imu;
     private Motor driveLeftFront;
     private Motor driveLeftBack;
     private Motor driveRightFront;
@@ -67,14 +66,7 @@ public class TeleOpMain extends CommandOpMode {
     private ScoreReleaseThread scoreReleaseThread;
     private OuttakeThread outtakeThread;
     private BackupThread backupThread;
-
-    private InstantCommand changeLevelUp;
-    private InstantCommand changeLevelDown;
     private InstantCommand droneInstantCommand;
-    private InstantCommand stopIntakeInstantCommand;
-    private InstantCommand rotate45;
-    private InstantCommand rotateInit;
-
     private GamepadEx driver1;
     private GamepadEx driver2;
 
@@ -161,25 +153,18 @@ public class TeleOpMain extends CommandOpMode {
             scoreSubsystem.setDroneServoPos(Constants.DRONE_SERVO_SCORE_POS);
         });
 
-
+        //Driver 1 Buttons
         new GamepadButton(driver1, GamepadKeys.Button.RIGHT_BUMPER).whenPressed(() -> scoreReleaseThreadExecutor.accept(Constants.SLIDE_INTAKE));
-
         new GamepadButton(driver1, GamepadKeys.Button.Y).whenPressed(droneInstantCommand);
         new GamepadButton(driver1, GamepadKeys.Button.X).toggleWhenPressed(() -> scoreSubsystem.useBlock(Constants.BLOCK_SERVO_BLOCK_POS), () -> scoreSubsystem.useBlock(Constants.BLOCK_SERVO_SCORE_POS));
-
-        new GamepadButton(driver2, GamepadKeys.Button.LEFT_BUMPER).whenPressed(() -> backupThread.start());
         new GamepadButton(driver1, GamepadKeys.Button.DPAD_UP).whenPressed(() -> slideSubsystem.resetEnc());
 
+        //Driver 2 Buttons
         new GamepadButton(driver2, GamepadKeys.Button.RIGHT_BUMPER).whenPressed(() -> scoreThreadExecutor.accept(Constants.SLIDE_POSITIONS[currLevel-1]));
-
+        new GamepadButton(driver2, GamepadKeys.Button.LEFT_BUMPER).whenPressed(() -> backupThread.start());
         new GamepadButton(driver2, GamepadKeys.Button.DPAD_UP).whenPressed(() ->scoreSubsystem.useArm(Constants.ARM_SERVO_PIVOT_UP_POSITION));
-        //new GamepadButton(driver1, GamepadKeys.Button.DPAD_DOWN).whenPressed(() -> scoreSubsystem.rotateClaw(Constants.ROTATE_SERVO_INIT_POSITION));
-
-        //new GamepadButton(driver1, GamepadKeys.Button.DPAD_LEFT).whenPressed(() ->scoreSubsystem.rotateClaw(Constants.ROTATE_SERVO_180));
-        //new GamepadButton(driver1, GamepadKeys.Button.DPAD_RIGHT).whenPressed(() -> scoreSubsystem.rotateClaw(Constants.ROTATE_SERVO_45));
         new GamepadButton(driver2, GamepadKeys.Button.Y).whenPressed(() -> climbThreadExecutor.accept((double)Constants.CLIMB_MOTOR_CLIMB_POS));
         new GamepadButton(driver2, GamepadKeys.Button.X).whenPressed(() -> climbThreadExecutor.accept((double)Constants.CLIMB_MOTOR_INIT_POS));
-
         new GamepadButton(driver2, GamepadKeys.Button.A).whenPressed(() -> intakeThread.start());
         new GamepadButton(driver2, GamepadKeys.Button.B).whenPressed(() -> outtakeThread.start());
 

@@ -25,9 +25,6 @@ public class HardwareConstants {
     public static final String ID_BLOCK_SERVO = "blockServo";
     public static final String ID_DRONE_SERVO = "droneRelease";
 
-    public static final String ID_SERVO_0 = "servo0";
-    public static final String ID_SERVO_1 = "servo1";
-
     //dead wheels
     public static final String ID_LEFT_ENCODER = "lf";
     public static final String ID_RIGHT_ENCODER = "rf";

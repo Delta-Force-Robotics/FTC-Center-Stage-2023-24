@@ -31,9 +31,6 @@ public class SlideManualCommand extends CommandBase {
 
             slideSubsystem.setMotorPower(slidePower);
             slideSubsystem.slideState.setId(slideSubsystem.getSlideExtensionMeters());
-
-            //telemetry.addData("slidePower", slidePower);
-            //telemetry.update();
         }
     }
 }

@@ -50,9 +50,4 @@ public class ScoreThread extends Thread {
         else
             scoreSubsystem.rotateClaw(Constants.ROTATE_SERVO_45);
     }
-
-    public void interrupt() {
-        Constants.SLIDE_INPUT_STATE = Constants.InputState.MANUAL_CONTROL;
-        super.interrupt();
-    }
 }

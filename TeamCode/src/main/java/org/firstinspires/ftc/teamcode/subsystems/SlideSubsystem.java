@@ -150,20 +150,8 @@ public class SlideSubsystem extends SubsystemBase {
         slideMotorRight.set(power);
     }
 
-    public SlideState getSlideState() {
-        return slideState;
-    }
-
-    public void setSlideState(SlideState slideState) {
-        this.slideState = slideState;
-    }
-
     public double ticksToMeters(int ticks) {
         return (double) ticks / Constants.SLIDE_MAX_EXTENSION_TICKS * Constants.SLIDE_MAX_EXTENSION_METERS;
-    }
-
-    public double metersToTicks(double meters) {
-        return Math.round(meters / Constants.SLIDE_MAX_EXTENSION_METERS * Constants.SLIDE_MAX_EXTENSION_TICKS);
     }
 
     public int getMotorTicks() {
@@ -172,14 +160,6 @@ public class SlideSubsystem extends SubsystemBase {
 
     public double getSlideExtensionMeters() {
         return ticksToMeters(getMotorTicks());
-    }
-
-    public void changeLevel() {
-        setLevel(Constants.SLIDE_POSITIONS[currLevel-1]);
-    }
-
-    public int getCurrLevel() {
-        return currLevel;
     }
 
     public void resetEnc() {

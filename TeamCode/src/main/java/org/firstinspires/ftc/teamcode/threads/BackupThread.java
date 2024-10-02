@@ -5,7 +5,7 @@ import org.firstinspires.ftc.teamcode.subsystems.ScoreSubsystem;
 import org.firstinspires.ftc.teamcode.subsystems.SlideSubsystem;
 
 public class BackupThread extends Thread {
-    private ScoreSubsystem scoreSubsystem;
+    private final ScoreSubsystem scoreSubsystem;
     public double slideLevel = 0;
 
     public boolean selectRotate = false;
@@ -25,14 +25,9 @@ public class BackupThread extends Thread {
             e.printStackTrace();
         }
 
-        if (selectRotate == false)
+        if (!selectRotate)
             scoreSubsystem.rotateClaw(Constants.ROTATE_SERVO_INIT_POSITION);
         else
             scoreSubsystem.rotateClaw(Constants.ROTATE_SERVO_45);
-    }
-
-    public void interrupt() {
-        Constants.SLIDE_INPUT_STATE = Constants.InputState.MANUAL_CONTROL;
-        super.interrupt();
     }
 }

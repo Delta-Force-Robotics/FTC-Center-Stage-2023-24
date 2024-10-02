@@ -17,9 +17,4 @@ public class ClimbThread extends Thread{
     public void run() {
         climbSubsystem.setClimbPos((int)climbPos);
     }
-
-    public void interrupt() {
-        Constants.CLIMB_INPUT_STATE = Constants.InputState.MANUAL_CONTROL;
-        super.interrupt();
-    }
 }
