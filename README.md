@@ -50,7 +50,7 @@ Commands extend the Command abstract class.
 
 * [DriveCommand](TeamCode/src/main/java/org/firstinspires/ftc/teamcode/commands/DriveCommand.java)
 
-Contains code for the Field Centric Drive.
+Contains code for the Robot Centric Drive.
 
 * [SlideManualControl](TeamCode/src/main/java/org/firstinspires/ftc/teamcode/commands/SlideManualCommand.java)
 
